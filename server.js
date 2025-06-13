@@ -63,6 +63,13 @@ const auth = async (req, res, next) => {
 app.post('/api/register', async (req, res) => {
   try {
     const { email, password, name } = req.body;
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).send({ error: 'Email already registered' });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 8);
     
     const user = new User({
@@ -74,30 +81,70 @@ app.post('/api/register', async (req, res) => {
     await user.save();
     
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET || 'your-secret-key');
-    res.status(201).send({ user, token });
+    
+    // Send back user data without sensitive information
+    const userData = {
+      _id: user._id,
+      email: user.email,
+      name: user.name,
+      records: user.records
+    };
+    
+    res.status(201).send({ user: userData, token });
   } catch (error) {
-    res.status(400).send(error);
+    console.error('Registration error:', error);
+    res.status(400).send({ error: 'Registration failed. Please try again.' });
   }
 });
 
 app.post('/api/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.status(400).send({ error: 'Please provide email and password' });
+    }
+
     const user = await User.findOne({ email });
     
     if (!user) {
-      throw new Error('Invalid login credentials');
+      return res.status(401).send({ error: 'Invalid email or password' });
     }
     
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      throw new Error('Invalid login credentials');
+      return res.status(401).send({ error: 'Invalid email or password' });
     }
     
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET || 'your-secret-key');
-    res.send({ user, token });
+    
+    // Send back user data without sensitive information
+    const userData = {
+      _id: user._id,
+      email: user.email,
+      name: user.name,
+      records: user.records
+    };
+    
+    res.send({ user: userData, token });
   } catch (error) {
-    res.status(400).send({ error: error.message });
+    console.error('Login error:', error);
+    res.status(500).send({ error: 'Login failed. Please try again.' });
+  }
+});
+
+// Add a new route to verify token and get user data
+app.get('/api/verify-token', auth, async (req, res) => {
+  try {
+    const userData = {
+      _id: req.user._id,
+      email: req.user.email,
+      name: req.user.name,
+      records: req.user.records
+    };
+    res.send({ user: userData });
+  } catch (error) {
+    res.status(401).send({ error: 'Invalid token' });
   }
 });
 
