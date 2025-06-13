@@ -359,12 +359,21 @@
             }, 3000);
         }
 
+        // Show error message
+        function showError(formId, message) {
+            const errorElement = document.getElementById(`${formId}-error`);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 5000);
+        }
+
         // Handle login
         async function handleLogin(event) {
             event.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
-            const errorElement = document.getElementById('login-error');
             const button = event.target.querySelector('button');
 
             try {
@@ -383,12 +392,10 @@
                         window.location.href = 'index.html';
                     }, 1000);
                 } else {
-                    errorElement.textContent = data.error || 'Login failed';
-                    errorElement.style.display = 'block';
+                    showError('login', data.error || 'Login failed');
                 }
             } catch (error) {
-                errorElement.textContent = 'An error occurred. Please try again.';
-                errorElement.style.display = 'block';
+                showError('login', 'An error occurred. Please try again.');
             } finally {
                 setLoading(button, false);
             }
@@ -400,7 +407,6 @@
             const name = document.getElementById('register-name').value;
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
-            const errorElement = document.getElementById('register-error');
             const button = event.target.querySelector('button');
 
             try {
@@ -419,22 +425,34 @@
                         window.location.href = 'index.html';
                     }, 1000);
                 } else {
-                    errorElement.textContent = data.error || 'Registration failed';
-                    errorElement.style.display = 'block';
+                    showError('register', data.error || 'Registration failed');
                 }
             } catch (error) {
-                errorElement.textContent = 'An error occurred. Please try again.';
-                errorElement.style.display = 'block';
+                showError('register', 'An error occurred. Please try again.');
             } finally {
                 setLoading(button, false);
             }
         }
 
         // Check for existing session
-        function checkAuth() {
+        async function checkAuth() {
             const token = localStorage.getItem('authToken');
             if (token) {
-                window.location.href = 'index.html';
+                try {
+                    const response = await fetch('http://localhost:3000/api/verify-token', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        window.location.href = 'index.html';
+                    } else {
+                        localStorage.removeItem('authToken');
+                    }
+                } catch (error) {
+                    localStorage.removeItem('authToken');
+                }
             }
         }
 
