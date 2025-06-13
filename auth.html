@@ -26,13 +26,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 1rem;
+            color: #1d1d1f;
         }
 
         .auth-container {
             width: 100%;
-            max-width: 400px;
-            padding: 2rem;
-            margin: 1rem;
+            max-width: 420px;
+            padding: 1rem;
         }
 
         .auth-card {
@@ -42,39 +43,66 @@
             border-radius: 1.5rem;
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-            padding: 2rem;
+            padding: 2.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .auth-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
         }
 
         .auth-logo {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         .auth-logo img {
-            width: 64px;
-            height: 64px;
+            width: 72px;
+            height: 72px;
             margin: 0 auto;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .auth-logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .auth-form {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .auth-form.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
         }
 
         .auth-form input {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 1rem 1.25rem;
             margin-bottom: 1rem;
             border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 1rem;
             font-size: 1rem;
-            transition: all 0.2s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
         .auth-form input:focus {
             border-color: #007AFF;
             box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
             outline: none;
+            transform: translateY(-1px);
         }
 
         .auth-form button {
             width: 100%;
-            padding: 0.75rem;
+            padding: 1rem;
             background-color: #007AFF;
             color: white;
             border: none;
@@ -82,7 +110,9 @@
             font-size: 1rem;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
 
         .auth-form button:hover {
@@ -90,19 +120,142 @@
             transform: translateY(-1px);
         }
 
+        .auth-form button:active {
+            transform: translateY(0);
+        }
+
+        .auth-form button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .auth-form button:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
         .auth-toggle {
             text-align: center;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             color: #007AFF;
             cursor: pointer;
-            text-decoration: underline;
+            font-weight: 500;
+            transition: all 0.2s;
+            padding: 0.5rem;
+            border-radius: 0.75rem;
+        }
+
+        .auth-toggle:hover {
+            background-color: rgba(0, 122, 255, 0.1);
         }
 
         .error-message {
             color: #FF3B30;
             text-align: center;
             margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            background-color: rgba(255, 59, 48, 0.1);
             display: none;
+            animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translateX(-1px); }
+            20%, 80% { transform: translateX(2px); }
+            30%, 50%, 70% { transform: translateX(-4px); }
+            40%, 60% { transform: translateX(4px); }
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #86868b;
+            transition: all 0.2s;
+            pointer-events: none;
+            font-size: 1rem;
+        }
+
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label {
+            top: 0;
+            left: 0.75rem;
+            font-size: 0.875rem;
+            color: #007AFF;
+            background-color: white;
+            padding: 0 0.25rem;
+        }
+
+        .input-group input {
+            padding-left: 1rem;
+        }
+
+        .input-group input:focus {
+            padding-left: 1rem;
+        }
+
+        .success-message {
+            color: #34C759;
+            text-align: center;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            background-color: rgba(52, 199, 89, 0.1);
+            display: none;
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 2rem;
+            }
+
+            .auth-logo img {
+                width: 64px;
+                height: 64px;
+            }
         }
     </style>
 </head>
@@ -111,30 +264,54 @@
         <div class="auth-card">
             <div class="auth-logo">
                 <img src="favicon.svg" alt="PHAT & FIT Logo">
-                <h1 class="text-2xl font-semibold mt-4">PHAT & FIT</h1>
+                <h1 class="text-3xl font-semibold mt-4">PHAT & FIT</h1>
+                <p class="text-gray-600 mt-2">Your personal fitness companion</p>
             </div>
 
             <!-- Login Form -->
             <div id="login-form" class="auth-form">
-                <h2 class="text-xl font-semibold mb-6 text-center">Welcome Back</h2>
+                <h2 class="text-2xl font-semibold mb-6 text-center">Welcome Back</h2>
                 <div id="login-error" class="error-message"></div>
+                <div id="login-success" class="success-message"></div>
                 <form onsubmit="handleLogin(event)">
-                    <input type="email" id="login-email" placeholder="Email" required>
-                    <input type="password" id="login-password" placeholder="Password" required>
-                    <button type="submit">Sign In</button>
+                    <div class="input-group">
+                        <input type="email" id="login-email" placeholder=" " required>
+                        <label for="login-email">Email</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="login-password" placeholder=" " required>
+                        <label for="login-password">Password</label>
+                    </div>
+                    <button type="submit">
+                        <span>Sign In</span>
+                        <div class="loading"></div>
+                    </button>
                 </form>
                 <span class="auth-toggle" onclick="toggleAuthForms()">Don't have an account? Sign up</span>
             </div>
 
             <!-- Register Form -->
-            <div id="register-form" class="auth-form" style="display: none;">
-                <h2 class="text-xl font-semibold mb-6 text-center">Create Account</h2>
+            <div id="register-form" class="auth-form hidden">
+                <h2 class="text-2xl font-semibold mb-6 text-center">Create Account</h2>
                 <div id="register-error" class="error-message"></div>
+                <div id="register-success" class="success-message"></div>
                 <form onsubmit="handleRegister(event)">
-                    <input type="text" id="register-name" placeholder="Full Name" required>
-                    <input type="email" id="register-email" placeholder="Email" required>
-                    <input type="password" id="register-password" placeholder="Password" required>
-                    <button type="submit">Sign Up</button>
+                    <div class="input-group">
+                        <input type="text" id="register-name" placeholder=" " required>
+                        <label for="register-name">Full Name</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" id="register-email" placeholder=" " required>
+                        <label for="register-email">Email</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="register-password" placeholder=" " required>
+                        <label for="register-password">Password</label>
+                    </div>
+                    <button type="submit">
+                        <span>Sign Up</span>
+                        <div class="loading"></div>
+                    </button>
                 </form>
                 <span class="auth-toggle" onclick="toggleAuthForms()">Already have an account? Sign in</span>
             </div>
@@ -142,12 +319,44 @@
     </div>
 
     <script>
-        // Toggle between login and register forms
+        // Toggle between login and register forms with animation
         function toggleAuthForms() {
             const loginForm = document.getElementById('login-form');
             const registerForm = document.getElementById('register-form');
-            loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
-            registerForm.style.display = registerForm.style.display === 'none' ? 'block' : 'none';
+            
+            if (loginForm.classList.contains('hidden')) {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+            }
+        }
+
+        // Show loading state
+        function setLoading(button, isLoading) {
+            const span = button.querySelector('span');
+            const loading = button.querySelector('.loading');
+            
+            if (isLoading) {
+                span.style.opacity = '0';
+                loading.style.display = 'block';
+                button.disabled = true;
+            } else {
+                span.style.opacity = '1';
+                loading.style.display = 'none';
+                button.disabled = false;
+            }
+        }
+
+        // Show success message
+        function showSuccess(formId, message) {
+            const successElement = document.getElementById(`${formId}-success`);
+            successElement.textContent = message;
+            successElement.style.display = 'block';
+            setTimeout(() => {
+                successElement.style.display = 'none';
+            }, 3000);
         }
 
         // Handle login
@@ -156,8 +365,10 @@
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             const errorElement = document.getElementById('login-error');
+            const button = event.target.querySelector('button');
 
             try {
+                setLoading(button, true);
                 const response = await fetch('http://localhost:3000/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -166,8 +377,11 @@
 
                 const data = await response.json();
                 if (response.ok) {
+                    showSuccess('login', 'Successfully signed in!');
                     localStorage.setItem('authToken', data.token);
-                    window.location.href = 'index.html';
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
                 } else {
                     errorElement.textContent = data.error || 'Login failed';
                     errorElement.style.display = 'block';
@@ -175,6 +389,8 @@
             } catch (error) {
                 errorElement.textContent = 'An error occurred. Please try again.';
                 errorElement.style.display = 'block';
+            } finally {
+                setLoading(button, false);
             }
         }
 
@@ -185,8 +401,10 @@
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
             const errorElement = document.getElementById('register-error');
+            const button = event.target.querySelector('button');
 
             try {
+                setLoading(button, true);
                 const response = await fetch('http://localhost:3000/api/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -195,8 +413,11 @@
 
                 const data = await response.json();
                 if (response.ok) {
+                    showSuccess('register', 'Account created successfully!');
                     localStorage.setItem('authToken', data.token);
-                    window.location.href = 'index.html';
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
                 } else {
                     errorElement.textContent = data.error || 'Registration failed';
                     errorElement.style.display = 'block';
@@ -204,6 +425,8 @@
             } catch (error) {
                 errorElement.textContent = 'An error occurred. Please try again.';
                 errorElement.style.display = 'block';
+            } finally {
+                setLoading(button, false);
             }
         }
 
