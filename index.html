@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PHAT & FIT - Fitness & Nutrition Logger</title>
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -350,510 +347,1070 @@
             background-color: rgba(0, 122, 255, 0.1) !important;
             color: #007AFF;
         }
-
-        /* Auth form styles */
-        .auth-form {
-            max-width: 400px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background-color: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-        }
-        .auth-form input {
-            width: 100%;
-            margin-bottom: 1rem;
-        }
-        .auth-form button {
-            width: 100%;
-            background-color: #007AFF;
-            color: white;
-            padding: 0.75rem;
-            font-weight: 500;
-        }
-        .auth-form button:hover {
-            background-color: #0066CC;
-        }
-        .auth-toggle {
-            color: #007AFF;
-            text-decoration: underline;
-            cursor: pointer;
-            margin-top: 1rem;
-            display: block;
-            text-align: center;
-        }
     </style>
 </head>
-<body class="min-h-screen bg-gray-50">
-    <!-- Auth Container -->
-    <div id="auth-container" class="container mx-auto px-4 py-8">
-        <!-- Login Form -->
-        <div id="login-form" class="auth-form fade-in">
-            <h2 class="text-2xl font-semibold mb-6 text-center">Welcome Back</h2>
-            <form onsubmit="handleLogin(event)">
-                <input type="email" id="login-email" placeholder="Email" required>
-                <input type="password" id="login-password" placeholder="Password" required>
-                <button type="submit">Sign In</button>
-            </form>
-            <span class="auth-toggle" onclick="toggleAuthForms()">Don't have an account? Sign up</span>
-        </div>
+<body class="text-gray-900">
 
-        <!-- Register Form -->
-        <div id="register-form" class="auth-form fade-in" style="display: none;">
-            <h2 class="text-2xl font-semibold mb-6 text-center">Create Account</h2>
-            <form onsubmit="handleRegister(event)">
-                <input type="text" id="register-name" placeholder="Full Name" required>
-                <input type="email" id="register-email" placeholder="Email" required>
-                <input type="password" id="register-password" placeholder="Password" required>
-                <button type="submit">Sign Up</button>
-            </form>
-            <span class="auth-toggle" onclick="toggleAuthForms()">Already have an account? Sign in</span>
-        </div>
-    </div>
+    <div id="app-container" class="container mx-auto p-4 max-w-6xl">
 
-    <!-- Main App Container (hidden by default) -->
-    <div id="app-container" class="container mx-auto px-4 py-8" style="display: none;">
-        <div id="app-container" class="container mx-auto p-4 max-w-6xl">
-
-            <!-- Header Section -->
-            <header class="flex flex-col lg:flex-row lg:justify-between items-center gap-6 relative">
-                <h1 class="text-4xl font-bold tracking-tight bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">PHAT & FIT</h1>
-                <div class="flex flex-col md:flex-row items-center gap-4">
-                    <div class="flex items-center bg-white/80 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-sm">
-                        <button id="prev-day-btn" class="p-3 text-gray-400 hover:text-gray-800 transition-colors"><i class="fas fa-chevron-left fa-fw"></i></button>
-                        <label for="manual-date-input" class="relative">
-                            <span id="date-display" class="block px-4 py-2 text-sm font-medium text-center w-40 cursor-pointer" title="Click to select a date"></span>
-                            <input type="date" id="manual-date-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                        </label>
-                        <button id="next-day-btn" class="p-3 text-gray-400 hover:text-gray-800 transition-colors"><i class="fas fa-chevron-right fa-fw"></i></button>
-                    </div>
-                    <div class="bg-white/80 backdrop-blur-xl p-1 rounded-2xl border border-gray-200/50">
-                        <button id="workout-nav-btn" class="nav-btn active">Workout</button>
-                        <button id="food-nav-btn" class="nav-btn">Food</button>
-                        <button id="dashboard-nav-btn" class="nav-btn"><i class="fas fa-chart-line mr-1"></i>Stats</button>
-                    </div>
+        <!-- Header Section -->
+        <header class="flex flex-col lg:flex-row lg:justify-between items-center gap-6 relative">
+            <h1 class="text-4xl font-bold tracking-tight bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">PHAT & FIT</h1>
+            <div class="flex flex-col md:flex-row items-center gap-4">
+                <div class="flex items-center bg-white/80 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-sm">
+                    <button id="prev-day-btn" class="p-3 text-gray-400 hover:text-gray-800 transition-colors"><i class="fas fa-chevron-left fa-fw"></i></button>
+                    <label for="manual-date-input" class="relative">
+                        <span id="date-display" class="block px-4 py-2 text-sm font-medium text-center w-40 cursor-pointer" title="Click to select a date"></span>
+                        <input type="date" id="manual-date-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    </label>
+                    <button id="next-day-btn" class="p-3 text-gray-400 hover:text-gray-800 transition-colors"><i class="fas fa-chevron-right fa-fw"></i></button>
                 </div>
-            </header>
-
-            <main>
-                <!-- Workout Page Content -->
-                <div id="workout-page" class="fade-in">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="card p-8">
-                            <h2 class="text-2xl font-semibold mb-6 text-gray-900">Log Workout</h2>
-                            <form id="workout-form" class="space-y-6">
-                                <input type="hidden" id="edit-workout-id">
-                                <select id="workout-category" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500"></select>
-                                <div class="relative autocomplete">
-                                    <input type="text" id="exercise-name" placeholder="Exercise Name" class="w-full p-4 pr-12 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" required autocomplete="off">
-                                    <button type="button" id="clear-exercise" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden pointer-events-none">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <div class="space-y-4">
-                                    <div>
-                                        <label class="text-sm font-medium text-gray-600 mb-2 block">Sets</label>
-                                        <div class="flex items-center">
-                                            <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-l-2xl hover:bg-gray-200 transition-colors" data-input="sets" data-action="decrement">-</button>
-                                            <input type="number" id="sets" value="3" class="w-full p-4 text-center border-t border-b border-gray-200 bg-white/80 backdrop-blur-xl" min="1">
-                                            <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-r-2xl hover:bg-gray-200 transition-colors" data-input="sets" data-action="increment">+</button>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="text-sm font-medium text-gray-600 mb-2 block">Reps</label>
-                                        <div class="flex items-center">
-                                            <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-l-2xl hover:bg-gray-200 transition-colors" data-input="reps" data-action="decrement">-</button>
-                                            <input type="number" id="reps" value="10" class="w-full p-4 text-center border-t border-b border-gray-200 bg-white/80 backdrop-blur-xl" min="1">
-                                            <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-r-2xl hover:bg-gray-200 transition-colors" data-input="reps" data-action="increment">+</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <input type="number" step="0.01" id="weight" placeholder="Weight (lb)" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" inputmode="decimal" pattern="[0-9]*">
-                                <textarea id="notes" placeholder="Notes..." class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 h-24"></textarea>
-                                <button type="submit" id="submit-workout-btn" class="w-full bg-gray-900 text-white font-medium py-4 rounded-2xl hover:bg-gray-800 transition-colors">Add Exercise</button>
-                            </form>
-                        </div>
-                        <div class="card p-8">
-                            <h2 class="text-2xl font-semibold mb-6 text-gray-900">Today's Workouts</h2>
-                            <div id="workout-list" class="space-y-4 max-h-[42rem] overflow-y-auto pr-2"></div>
-                            <div id="daily-calories-burned-summary" class="mt-6 pt-6 border-t border-gray-200 text-center"></div>
-                        </div>
-                    </div>
+                <div class="bg-white/80 backdrop-blur-xl p-1 rounded-2xl border border-gray-200/50">
+                    <button id="workout-nav-btn" class="nav-btn active">Workout</button>
+                    <button id="food-nav-btn" class="nav-btn">Food</button>
+                    <button id="dashboard-nav-btn" class="nav-btn"><i class="fas fa-chart-line mr-1"></i>Stats</button>
                 </div>
+            </div>
+        </header>
 
-                <!-- Food Page Content -->
-                <div id="food-page" class="hidden fade-in">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="card p-8">
-                            <h2 class="text-2xl font-semibold mb-6 text-gray-900">Log Food</h2>
-                            <form id="food-form" class="space-y-6">
-                                <input type="hidden" id="edit-food-id">
-                                <div class="relative autocomplete">
-                                    <input type="text" id="food-name" placeholder="Food Item (e.g., Apple)" class="w-full p-4 pr-12 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" required autocomplete="off">
-                                    <button type="button" id="clear-food" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden pointer-events-none">
-                                        <i class="fas fa-times"></i>
-                                    </button>
+        <main>
+            <!-- Workout Page Content -->
+            <div id="workout-page" class="fade-in">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="card p-8">
+                        <h2 class="text-2xl font-semibold mb-6 text-gray-900">Log Workout</h2>
+                        <form id="workout-form" class="space-y-6">
+                            <input type="hidden" id="edit-workout-id">
+                            <select id="workout-category" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500"></select>
+                            <div class="relative autocomplete">
+                                <input type="text" id="exercise-name" placeholder="Exercise Name" class="w-full p-4 pr-12 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" required autocomplete="off">
+                                <button type="button" id="clear-exercise" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden pointer-events-none">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600 mb-2 block">Sets</label>
+                                    <div class="flex items-center">
+                                        <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-l-2xl hover:bg-gray-200 transition-colors" data-input="sets" data-action="decrement">-</button>
+                                        <input type="number" id="sets" value="3" class="w-full p-4 text-center border-t border-b border-gray-200 bg-white/80 backdrop-blur-xl" min="1">
+                                        <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-r-2xl hover:bg-gray-200 transition-colors" data-input="sets" data-action="increment">+</button>
+                                    </div>
                                 </div>
                                 <div>
-                                    <label class="text-sm font-medium text-gray-600 mb-2 block">Quantity</label>
+                                    <label class="text-sm font-medium text-gray-600 mb-2 block">Reps</label>
                                     <div class="flex items-center">
-                                        <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-l-2xl hover:bg-gray-200 transition-colors" data-input="quantity" data-action="decrement">-</button>
-                                        <input type="number" id="quantity" value="1" class="w-full p-4 text-center border-t border-b border-gray-200 bg-white/80 backdrop-blur-xl" min="1">
-                                        <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-r-2xl hover:bg-gray-200 transition-colors" data-input="quantity" data-action="increment">+</button>
+                                        <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-l-2xl hover:bg-gray-200 transition-colors" data-input="reps" data-action="decrement">-</button>
+                                        <input type="number" id="reps" value="10" class="w-full p-4 text-center border-t border-b border-gray-200 bg-white/80 backdrop-blur-xl" min="1">
+                                        <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-r-2xl hover:bg-gray-200 transition-colors" data-input="reps" data-action="increment">+</button>
                                     </div>
                                 </div>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <input type="number" id="calories" placeholder="Calories" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" required>
-                                    <input type="number" id="protein" placeholder="Protein (g)" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <input type="number" step="0.01" id="weight" placeholder="Weight (lb)" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" inputmode="decimal" pattern="[0-9]*">
+                            <textarea id="notes" placeholder="Notes..." class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 h-24"></textarea>
+                            <button type="submit" id="submit-workout-btn" class="w-full bg-gray-900 text-white font-medium py-4 rounded-2xl hover:bg-gray-800 transition-colors">Add Exercise</button>
+                        </form>
+                    </div>
+                    <div class="card p-8">
+                        <h2 class="text-2xl font-semibold mb-6 text-gray-900">Today's Workouts</h2>
+                        <div id="workout-list" class="space-y-4 max-h-[42rem] overflow-y-auto pr-2"></div>
+                        <div id="daily-calories-burned-summary" class="mt-6 pt-6 border-t border-gray-200 text-center"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Food Page Content -->
+            <div id="food-page" class="hidden fade-in">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="card p-8">
+                        <h2 class="text-2xl font-semibold mb-6 text-gray-900">Log Food</h2>
+                        <form id="food-form" class="space-y-6">
+                            <input type="hidden" id="edit-food-id">
+                            <div class="relative autocomplete">
+                                <input type="text" id="food-name" placeholder="Food Item (e.g., Apple)" class="w-full p-4 pr-12 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" required autocomplete="off">
+                                <button type="button" id="clear-food" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden pointer-events-none">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-600 mb-2 block">Quantity</label>
+                                <div class="flex items-center">
+                                    <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-l-2xl hover:bg-gray-200 transition-colors" data-input="quantity" data-action="decrement">-</button>
+                                    <input type="number" id="quantity" value="1" class="w-full p-4 text-center border-t border-b border-gray-200 bg-white/80 backdrop-blur-xl" min="1">
+                                    <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-r-2xl hover:bg-gray-200 transition-colors" data-input="quantity" data-action="increment">+</button>
                                 </div>
-                                <button type="submit" id="submit-food-btn" class="w-full bg-gray-900 text-white font-medium py-4 rounded-2xl hover:bg-gray-800 transition-colors">Add Food</button>
-                            </form>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="number" id="calories" placeholder="Calories" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" required>
+                                <input type="number" id="protein" placeholder="Protein (g)" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <button type="submit" id="submit-food-btn" class="w-full bg-gray-900 text-white font-medium py-4 rounded-2xl hover:bg-gray-800 transition-colors">Add Food</button>
+                        </form>
+                    </div>
+                    <div class="card p-8">
+                        <h2 class="text-2xl font-semibold mb-6 text-gray-900">Today's Food</h2>
+                        <div id="food-list" class="space-y-4 max-h-[42rem] overflow-y-auto pr-2"></div>
+                        <div id="daily-nutrition-summary" class="mt-6 pt-6 border-t border-gray-200"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Page Content -->
+            <div id="dashboard-page" class="hidden fade-in space-y-8">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <h2 class="text-3xl font-bold text-gray-900">Dashboard</h2>
+                    <div class="flex items-center space-x-2 text-sm bg-white/80 backdrop-blur-xl border border-gray-200/50 p-1 rounded-2xl">
+                        <button id="prev-week-btn" class="p-2 rounded-xl hover:bg-gray-100 transition-colors"><i class="fas fa-chevron-left"></i></button>
+                        <div class="flex items-center gap-2 px-2">
+                            <input type="date" id="start-date" class="bg-transparent border-none focus:ring-0 p-0 text-center w-32 cursor-pointer" title="Click to select start date">
+                            <span class="text-gray-400">to</span>
+                            <input type="date" id="end-date" class="bg-transparent border-none focus:ring-0 p-0 text-center w-32 cursor-pointer" title="Click to select end date">
                         </div>
-                        <div class="card p-8">
-                            <h2 class="text-2xl font-semibold mb-6 text-gray-900">Today's Food</h2>
-                            <div id="food-list" class="space-y-4 max-h-[42rem] overflow-y-auto pr-2"></div>
-                            <div id="daily-nutrition-summary" class="mt-6 pt-6 border-t border-gray-200"></div>
+                        <button id="next-week-btn" class="p-2 rounded-xl hover:bg-gray-100 transition-colors"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                
+                <div class="bg-white/80 backdrop-blur-xl p-1 rounded-2xl border border-gray-200/50 flex justify-center">
+                    <button id="overall-dash-btn" class="dash-nav-btn active">Overall</button>
+                    <button id="workout-dash-btn" class="dash-nav-btn">Workout</button>
+                    <button id="food-dash-btn" class="dash-nav-btn">Food</button>
+                </div>
+
+                <div id="overall-summary-view" class="card p-8">
+                    <h3 class="text-2xl font-semibold mb-6 text-gray-900">Overall Summary</h3>
+                    <div id="summary-stats" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8"></div>
+                    <div class="space-y-6">
+                        <div class="card p-6">
+                            <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Nutrition Progress</h3>
+                            <div id="nutrition-progress" class="space-y-4"></div>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Workout Progress</h3>
+                            <div id="workout-progress" class="space-y-4"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Dashboard Page Content -->
-                <div id="dashboard-page" class="hidden fade-in space-y-8">
-                    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                        <h2 class="text-3xl font-bold text-gray-900">Dashboard</h2>
-                        <div class="flex items-center space-x-2 text-sm bg-white/80 backdrop-blur-xl border border-gray-200/50 p-1 rounded-2xl">
-                            <button id="prev-week-btn" class="p-2 rounded-xl hover:bg-gray-100 transition-colors"><i class="fas fa-chevron-left"></i></button>
-                            <div class="flex items-center gap-2 px-2">
-                                <input type="date" id="start-date" class="bg-transparent border-none focus:ring-0 p-0 text-center w-32 cursor-pointer" title="Click to select start date">
-                                <span class="text-gray-400">to</span>
-                                <input type="date" id="end-date" class="bg-transparent border-none focus:ring-0 p-0 text-center w-32 cursor-pointer" title="Click to select end date">
-                            </div>
-                            <button id="next-week-btn" class="p-2 rounded-xl hover:bg-gray-100 transition-colors"><i class="fas fa-chevron-right"></i></button>
+                <div id="workout-summary-view" class="hidden card p-8">
+                    <h3 class="text-2xl font-semibold mb-6 text-gray-900">Workout Summary</h3>
+                    <div id="workout-summary-stats" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8"></div>
+                    <div class="space-y-6">
+                        <div class="card p-6">
+                            <h3 class="text-lg font-medium mb-4 text-gray-900">Workout Volume by Category</h3>
+                            <div id="workout-volume-progress" class="space-y-4"></div>
                         </div>
-                    </div>
-                    
-                    <div class="bg-white/80 backdrop-blur-xl p-1 rounded-2xl border border-gray-200/50 flex justify-center">
-                        <button id="overall-dash-btn" class="dash-nav-btn active">Overall</button>
-                        <button id="workout-dash-btn" class="dash-nav-btn">Workout</button>
-                        <button id="food-dash-btn" class="dash-nav-btn">Food</button>
-                    </div>
-
-                    <div id="overall-summary-view" class="card p-8">
-                        <h3 class="text-2xl font-semibold mb-6 text-gray-900">Overall Summary</h3>
-                        <div id="summary-stats" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8"></div>
-                        <div class="space-y-6">
-                            <div class="card p-6">
-                                <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Nutrition Progress</h3>
-                                <div id="nutrition-progress" class="space-y-4"></div>
-                            </div>
-                            <div class="card p-6">
-                                <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Workout Progress</h3>
-                                <div id="workout-progress" class="space-y-4"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="workout-summary-view" class="hidden card p-8">
-                        <h3 class="text-2xl font-semibold mb-6 text-gray-900">Workout Summary</h3>
-                        <div id="workout-summary-stats" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8"></div>
-                        <div class="space-y-6">
-                            <div class="card p-6">
-                                <h3 class="text-lg font-medium mb-4 text-gray-900">Workout Volume by Category</h3>
-                                <div id="workout-volume-progress" class="space-y-4"></div>
-                            </div>
-                            <div class="card p-6">
-                                <h3 class="text-lg font-medium mb-4 text-gray-900">Most Frequent Exercises</h3>
-                                <div id="frequent-exercises" class="space-y-4"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="food-summary-view" class="hidden card p-8">
-                        <h3 class="text-2xl font-semibold mb-6 text-gray-900">Food Summary</h3>
-                        <div id="food-summary-stats" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8"></div>
-                        <div class="space-y-6">
-                            <div class="card p-6">
-                                <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Nutrition Breakdown</h3>
-                                <div id="nutrition-breakdown" class="space-y-4"></div>
-                            </div>
-                            <div class="card p-6">
-                                <h3 class="text-lg font-medium mb-4 text-gray-900">Most Common Foods</h3>
-                                <div id="common-foods" class="space-y-4"></div>
-                            </div>
+                        <div class="card p-6">
+                            <h3 class="text-lg font-medium mb-4 text-gray-900">Most Frequent Exercises</h3>
+                            <div id="frequent-exercises" class="space-y-4"></div>
                         </div>
                     </div>
                 </div>
-            </main>
-        </div>
-        
-        <!-- Confirmation Modal -->
-        <div id="confirm-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50 fade-in">
-            <div class="bg-white/80 backdrop-blur-xl border border-gray-200/50 rounded-3xl shadow-xl p-8 max-w-sm w-full text-center">
-                <h2 id="confirm-title" class="text-2xl font-semibold mb-4 text-gray-900">Are you sure?</h2>
-                <p id="confirm-text" class="text-gray-600 mb-6">This action cannot be undone.</p>
-                <div class="flex justify-center space-x-4">
-                    <button id="cancel-btn" class="bg-gray-100 font-medium py-3 px-6 rounded-2xl hover:bg-gray-200 transition-colors w-full">Cancel</button>
-                    <button id="confirm-btn" class="bg-red-600 text-white font-medium py-3 px-6 rounded-2xl hover:bg-red-700 transition-colors w-full">Delete</button>
+
+                <div id="food-summary-view" class="hidden card p-8">
+                    <h3 class="text-2xl font-semibold mb-6 text-gray-900">Food Summary</h3>
+                    <div id="food-summary-stats" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8"></div>
+                    <div class="space-y-6">
+                        <div class="card p-6">
+                            <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Nutrition Breakdown</h3>
+                            <div id="nutrition-breakdown" class="space-y-4"></div>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="text-lg font-medium mb-4 text-gray-900">Most Common Foods</h3>
+                            <div id="common-foods" class="space-y-4"></div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50 fade-in">
+        <div class="bg-white/80 backdrop-blur-xl border border-gray-200/50 rounded-3xl shadow-xl p-8 max-w-sm w-full text-center">
+            <h2 id="confirm-title" class="text-2xl font-semibold mb-4 text-gray-900">Are you sure?</h2>
+            <p id="confirm-text" class="text-gray-600 mb-6">This action cannot be undone.</p>
+            <div class="flex justify-center space-x-4">
+                <button id="cancel-btn" class="bg-gray-100 font-medium py-3 px-6 rounded-2xl hover:bg-gray-200 transition-colors w-full">Cancel</button>
+                <button id="confirm-btn" class="bg-red-600 text-white font-medium py-3 px-6 rounded-2xl hover:bg-red-700 transition-colors w-full">Delete</button>
             </div>
         </div>
     </div>
 
-    <script>
-        // Auth state
-        let authToken = localStorage.getItem('authToken');
-        let currentUser = null;
+<script>
+document.addEventListener('DOMContentLoaded', () => {
 
-        // Add cache-busting to auth link
-        function updateAuthLink() {
-            const timestamp = new Date().getTime();
-            const authLink = document.getElementById('auth-link');
-            if (authLink) {
-                authLink.href = `auth.html?v=${timestamp}`;
-            }
+    const getEl = (id) => document.getElementById(id);
+    
+    // --- DOM SELECTORS ---
+    const dateDisplay = getEl('date-display'), manualDateInput = getEl('manual-date-input'), prevDayBtn = getEl('prev-day-btn'), nextDayBtn = getEl('next-day-btn');
+    const workoutNavBtn = getEl('workout-nav-btn'), foodNavBtn = getEl('food-nav-btn'), dashboardNavBtn = getEl('dashboard-nav-btn');
+    const workoutPage = getEl('workout-page'), foodPage = getEl('food-page'), dashboardPage = getEl('dashboard-page');
+    const workoutForm = getEl('workout-form'), workoutList = getEl('workout-list'), categoryInput = getEl('workout-category'), exerciseNameInput = getEl('exercise-name'), setsInput = getEl('sets'), repsInput = getEl('reps'), editWorkoutIdInput = getEl('edit-workout-id'), submitWorkoutBtn = getEl('submit-workout-btn');
+    const foodForm = getEl('food-form'), foodList = getEl('food-list'), foodNameInput = getEl('food-name'), caloriesInput = getEl('calories'), proteinInput = getEl('protein'), quantityInput = getEl('quantity'), submitFoodBtn = getEl('submit-food-btn');
+    const confirmModal = getEl('confirm-modal');
+    const prevWeekBtn = getEl('prev-week-btn'), nextWeekBtn = getEl('next-week-btn'), weekRangeDisplay = getEl('week-range-display');
+    const dailyCaloriesBurnedSummary = getEl('daily-calories-burned-summary');
+    const dailyNutritionSummary = getEl('daily-nutrition-summary');
+    const overallDashBtn = getEl('overall-dash-btn'), workoutDashBtn = getEl('workout-dash-btn'), foodDashBtn = getEl('food-dash-btn');
+    const overallSummaryView = getEl('overall-summary-view'), workoutSummaryView = getEl('workout-summary-view'), foodSummaryView = getEl('food-summary-view');
+
+    // --- DATA KNOWLEDGE BASE ---
+    const commonWorkouts = {
+        Legs: [
+            'Squat', 'Lunge', 'Deadlift', 'Leg Press', 'Calf Raise', 'Leg Extension', 'Hamstring Curl',
+            'Romanian Deadlift', 'Bulgarian Split Squat', 'Hip Thrust', 'Step Up', 'Goblet Squat',
+            'Front Squat', 'Hack Squat', 'Leg Curl', 'Leg Abduction', 'Leg Adduction', 'Box Jump',
+            'Jump Squat', 'Walking Lunge', 'Reverse Lunge', 'Side Lunge', 'Glute Bridge', 'Hip Abduction',
+            'Hip Adduction', 'Seated Calf Raise', 'Standing Calf Raise', 'Donkey Calf Raise'
+        ],
+        Arms: [
+            'Bicep Curl', 'Tricep Extension', 'Hammer Curl', 'Push-up', 'Tricep Dip', 'Preacher Curl',
+            'Concentration Curl', 'Incline Curl', 'Spider Curl', 'Cable Curl', 'Skull Crusher',
+            'Tricep Pushdown', 'Overhead Tricep Extension', 'Diamond Push-up', 'Close Grip Bench Press',
+            'Rope Pushdown', 'Reverse Curl', 'Zottman Curl', 'Cross Body Hammer Curl', 'Incline Hammer Curl',
+            'Decline Push-up', 'Tricep Kickback', 'JM Press', 'Lying Tricep Extension', 'Cable Hammer Curl'
+        ],
+        Shoulders: [
+            'Overhead Press', 'Lateral Raise', 'Front Raise', 'Shrugs', 'Arnold Press',
+            'Military Press', 'Face Pull', 'Upright Row', 'Reverse Fly', 'Cable Lateral Raise',
+            'Front Plate Raise', 'Pike Push-up', 'Handstand Push-up', 'Cable Front Raise',
+            'Reverse Pec Deck', 'Cable Face Pull', 'Dumbbell Shoulder Press', 'Barbell Shoulder Press',
+            'Machine Shoulder Press', 'Cable Shoulder Press', 'Reverse Cable Fly', 'Cable Shrug',
+            'Dumbbell Shrug', 'Barbell Shrug', 'Machine Shrug'
+        ],
+        Chest: [
+            'Bench Press', 'Dumbbell Press', 'Incline Press', 'Decline Press', 'Chest Fly',
+            'Push-up', 'Cable Fly', 'Machine Chest Press', 'Incline Dumbbell Press',
+            'Decline Dumbbell Press', 'Incline Cable Fly', 'Decline Cable Fly', 'Diamond Push-up',
+            'Wide Push-up', 'Close Grip Bench Press', 'Machine Fly', 'Cable Crossover',
+            'Incline Cable Crossover', 'Decline Cable Crossover', 'Machine Incline Press',
+            'Machine Decline Press', 'Dumbbell Pullover', 'Cable Pullover', 'Machine Pullover',
+            'Incline Dumbbell Fly', 'Decline Dumbbell Fly'
+        ],
+        Back: [
+            'Pull-up', 'Lat Pulldown', 'Bent Over Row', 'Seated Row', 'T-Bar Row',
+            'Deadlift', 'Face Pull', 'Reverse Fly', 'Cable Row', 'Machine Row',
+            'Single Arm Row', 'Inverted Row', 'Chin-up', 'Wide Grip Pull-up',
+            'Close Grip Pull-up', 'Neutral Grip Pull-up', 'Barbell Row', 'Dumbbell Row',
+            'Cable Lat Pulldown', 'Machine Lat Pulldown', 'Cable Face Pull',
+            'Machine Reverse Fly', 'Cable Reverse Fly', 'Dumbbell Reverse Fly',
+            'Barbell Reverse Fly', 'Machine Row'
+        ],
+        Abs: [
+            'Crunches', 'Leg Raises', 'Plank', 'Russian Twist', 'Sit-up',
+            'Bicycle Crunch', 'Mountain Climber', 'Flutter Kicks', 'V-Up',
+            'Ab Wheel Rollout', 'Cable Crunch', 'Machine Crunch', 'Decline Crunch',
+            'Reverse Crunch', 'Hanging Leg Raise', 'Cable Woodchop', 'Side Plank',
+            'Dead Bug', 'Bird Dog', 'Cable Rotation', 'Machine Rotation',
+            'Decline Russian Twist', 'Cable Side Bend', 'Machine Side Bend',
+            'Decline Sit-up', 'Machine Sit-up'
+        ]
+    };
+
+    const commonFoods = {
+        // Proteins
+        'Chicken Breast (100g)': { calories: 165, protein: 31 },
+        'Salmon (100g)': { calories: 208, protein: 20 },
+        'Tuna (100g)': { calories: 132, protein: 28 },
+        'Ground Beef 90% (100g)': { calories: 176, protein: 26 },
+        'Egg (large)': { calories: 78, protein: 6 },
+        'Greek Yogurt (1 cup)': { calories: 100, protein: 17 },
+        'Cottage Cheese (1 cup)': { calories: 220, protein: 28 },
+        'Tofu (100g)': { calories: 76, protein: 8 },
+        'Tempeh (100g)': { calories: 192, protein: 20 },
+        'Pork Chop (100g)': { calories: 143, protein: 27 },
+        'Turkey Breast (100g)': { calories: 157, protein: 30 },
+        'Shrimp (100g)': { calories: 99, protein: 24 },
+        'Lentils (1 cup cooked)': { calories: 230, protein: 18 },
+        'Chickpeas (1 cup cooked)': { calories: 269, protein: 14.5 },
+        'Black Beans (1 cup cooked)': { calories: 227, protein: 15 },
+        'Quinoa (1 cup cooked)': { calories: 222, protein: 8 },
+        'Edamame (1 cup)': { calories: 188, protein: 18 },
+        'Protein Shake (1 scoop)': { calories: 120, protein: 24 },
+        'Whey Protein (1 scoop)': { calories: 120, protein: 24 },
+        'Casein Protein (1 scoop)': { calories: 120, protein: 24 },
+
+        // Dairy
+        'Milk (1 cup)': { calories: 103, protein: 8 },
+        'Almond Milk (1 cup)': { calories: 30, protein: 1 },
+        'Soy Milk (1 cup)': { calories: 80, protein: 7 },
+        'Cheese (1 oz)': { calories: 113, protein: 7 },
+        'Feta Cheese (1 oz)': { calories: 75, protein: 4 },
+        'Mozzarella (1 oz)': { calories: 85, protein: 6 },
+        'Cheddar (1 oz)': { calories: 113, protein: 7 },
+
+        // Grains
+        'Brown Rice (1 cup cooked)': { calories: 215, protein: 5 },
+        'White Rice (1 cup cooked)': { calories: 205, protein: 4 },
+        'Oatmeal (1 cup cooked)': { calories: 158, protein: 6 },
+        'Whole Wheat Bread (1 slice)': { calories: 79, protein: 4 },
+        'Pasta (1 cup cooked)': { calories: 200, protein: 7 },
+        'Whole Wheat Pasta (1 cup cooked)': { calories: 174, protein: 7 },
+        'Quinoa (1 cup cooked)': { calories: 222, protein: 8 },
+        'Barley (1 cup cooked)': { calories: 193, protein: 3.5 },
+
+        // Vegetables
+        'Broccoli (1 cup)': { calories: 55, protein: 3.7 },
+        'Spinach (1 cup)': { calories: 7, protein: 0.9 },
+        'Kale (1 cup)': { calories: 33, protein: 2.9 },
+        'Sweet Potato (1 medium)': { calories: 103, protein: 2 },
+        'Carrots (1 cup)': { calories: 52, protein: 1.2 },
+        'Cauliflower (1 cup)': { calories: 27, protein: 2.1 },
+        'Brussels Sprouts (1 cup)': { calories: 38, protein: 3 },
+        'Green Beans (1 cup)': { calories: 31, protein: 1.8 },
+        'Asparagus (1 cup)': { calories: 27, protein: 2.9 },
+        'Bell Pepper (1 medium)': { calories: 31, protein: 1 },
+        'Mushrooms (1 cup)': { calories: 15, protein: 2.2 },
+        'Zucchini (1 cup)': { calories: 19, protein: 1.4 },
+        'Eggplant (1 cup)': { calories: 20, protein: 0.8 },
+
+        // Fruits
+        'Apple': { calories: 95, protein: 0.5 },
+        'Banana': { calories: 105, protein: 1.3 },
+        'Orange': { calories: 62, protein: 1.2 },
+        'Strawberries (1 cup)': { calories: 49, protein: 1 },
+        'Blueberries (1 cup)': { calories: 84, protein: 1.1 },
+        'Grapes (1 cup)': { calories: 104, protein: 1.1 },
+        'Watermelon (1 cup)': { calories: 46, protein: 0.9 },
+        'Pineapple (1 cup)': { calories: 82, protein: 0.9 },
+        'Mango (1 cup)': { calories: 99, protein: 1.4 },
+        'Peach': { calories: 59, protein: 1.1 },
+        'Pear': { calories: 101, protein: 0.6 },
+        'Kiwi': { calories: 42, protein: 0.8 },
+
+        // Nuts and Seeds
+        'Almonds (1 oz)': { calories: 164, protein: 6 },
+        'Walnuts (1 oz)': { calories: 185, protein: 4.3 },
+        'Cashews (1 oz)': { calories: 157, protein: 5.2 },
+        'Pistachios (1 oz)': { calories: 159, protein: 5.7 },
+        'Pumpkin Seeds (1 oz)': { calories: 151, protein: 7 },
+        'Chia Seeds (1 oz)': { calories: 138, protein: 4.7 },
+        'Flax Seeds (1 oz)': { calories: 151, protein: 5.2 },
+        'Sunflower Seeds (1 oz)': { calories: 164, protein: 5.5 },
+
+        // Common Meals
+        'Chicken Salad (1 cup)': { calories: 250, protein: 25 },
+        'Tuna Salad (1 cup)': { calories: 200, protein: 30 },
+        'Grilled Chicken Sandwich': { calories: 350, protein: 30 },
+        'Turkey Sandwich': { calories: 300, protein: 25 },
+        'Veggie Burger': { calories: 250, protein: 15 },
+        'Chicken Stir Fry (1 cup)': { calories: 300, protein: 25 },
+        'Beef Stir Fry (1 cup)': { calories: 350, protein: 30 },
+        'Pasta with Meat Sauce (1 cup)': { calories: 400, protein: 20 },
+        'Rice and Beans (1 cup)': { calories: 300, protein: 12 },
+        'Quinoa Bowl with Vegetables': { calories: 350, protein: 15 }
+    };
+
+    // --- APP STATE & LOCALSTORAGE ---
+    const getTodayString = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    let state = {
+        currentDate: getTodayString(),
+        workouts: JSON.parse(localStorage.getItem('workouts')) || {},
+        food: JSON.parse(localStorage.getItem('food')) || {},
+        favorites: JSON.parse(localStorage.getItem('favorites')) || [],
+        itemToDelete: null,
+        dashboardWeekOffset: 0,
+        activeDashboardView: 'overall',
+        customDateRange: false
+    };
+    
+    const saveData = () => {
+        localStorage.setItem('workouts', JSON.stringify(state.workouts));
+        localStorage.setItem('food', JSON.stringify(state.food));
+        localStorage.setItem('favorites', JSON.stringify(state.favorites));
+    };
+
+    const showPage = (pageName) => {
+        workoutPage.classList.add('hidden');
+        foodPage.classList.add('hidden');
+        dashboardPage.classList.add('hidden');
+        
+        workoutNavBtn.classList.remove('active');
+        foodNavBtn.classList.remove('active');
+        dashboardNavBtn.classList.remove('active');
+
+        if (pageName === 'workout') {
+            workoutPage.classList.remove('hidden');
+            workoutNavBtn.classList.add('active');
+        } else if (pageName === 'food') {
+            foodPage.classList.remove('hidden');
+            foodNavBtn.classList.add('active');
+        } else {
+            state.dashboardWeekOffset = 0;
+            dashboardPage.classList.remove('hidden');
+            dashboardNavBtn.classList.add('active');
+            showDashboardView('overall');
         }
+    };
+    
+    const showDashboardView = (viewName) => {
+        state.activeDashboardView = viewName;
+        overallSummaryView.classList.add('hidden');
+        workoutSummaryView.classList.add('hidden');
+        foodSummaryView.classList.add('hidden');
 
-        // Verify token and get user data
-        async function verifyToken() {
-            try {
-                const response = await fetch('http://localhost:3000/api/verify-token', {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
+        overallDashBtn.classList.remove('active');
+        workoutDashBtn.classList.remove('active');
+        foodDashBtn.classList.remove('active');
 
-                if (!response.ok) {
-                    throw new Error('Invalid token');
-                }
-
-                const data = await response.json();
-                currentUser = data.user;
-                return true;
-            } catch (error) {
-                console.error('Token verification failed:', error);
-                return false;
-            }
+        if(viewName === 'overall'){
+            overallSummaryView.classList.remove('hidden');
+            overallDashBtn.classList.add('active');
+        } else if (viewName === 'workout'){
+            workoutSummaryView.classList.remove('hidden');
+            workoutDashBtn.classList.add('active');
+        } else {
+            foodSummaryView.classList.remove('hidden');
+            foodDashBtn.classList.add('active');
         }
+        renderSummary();
+    };
 
-        // Check authentication
-        async function checkAuth() {
-            if (!authToken) {
-                updateAuthLink();
-                window.location.href = document.getElementById('auth-link').href;
-                return;
-            }
 
-            try {
-                // First verify the token
-                const isValid = await verifyToken();
-                if (!isValid) {
-                    throw new Error('Invalid token');
-                }
-
-                // Then get the user's records
-                const response = await fetch('http://localhost:3000/api/records', {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch records');
-                }
-
-                const records = await response.json();
-                updateDashboard(records);
-            } catch (error) {
-                console.error('Auth error:', error);
-                localStorage.removeItem('authToken');
-                updateAuthLink();
-                window.location.href = document.getElementById('auth-link').href;
-            }
+    const renderAll = () => {
+        updateDateDisplay();
+        renderWorkouts();
+        renderFoodLog();
+        if (!dashboardPage.classList.contains('hidden')) {
+            renderSummary();
         }
+    };
 
-        // Sign out function
-        function signOut() {
-            localStorage.removeItem('authToken');
-            currentUser = null;
-            updateAuthLink();
-            window.location.href = document.getElementById('auth-link').href;
-        }
+    const updateDateDisplay = () => {
+        const today = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+        const currentDateObj = new Date(state.currentDate + 'T00:00:00');
 
-        // Add sign out button to header
-        const header = document.querySelector('header');
-        const signOutButton = document.createElement('button');
-        signOutButton.className = 'nav-btn';
-        signOutButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Sign Out';
-        signOutButton.onclick = signOut;
-        header.appendChild(signOutButton);
+        let displayText;
+        if (currentDateObj.toDateString() === today.toDateString()) displayText = "Today";
+        else if (currentDateObj.toDateString() === yesterday.toDateString()) displayText = "Yesterday";
+        else displayText = currentDateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        
+        dateDisplay.textContent = displayText;
+        manualDateInput.value = state.currentDate;
+    };
 
-        // Add hidden auth link
-        const authLink = document.createElement('a');
-        authLink.id = 'auth-link';
-        authLink.href = 'auth.html';
-        authLink.style.display = 'none';
-        document.body.appendChild(authLink);
+    const calculateCaloriesBurned = (workout) => {
+        const reps = Number(workout.reps) || 0;
+        const sets = Number(workout.sets) || 0;
+        const weight = Number(workout.weight) || 1;
+        const categoryMultipliers = { Legs: 1.5, Back: 1.5, Chest: 1.2, Shoulders: 1.2, Arms: 1.0, Abs: 1.0 };
+        const multiplier = categoryMultipliers[workout.category] || 1.0;
+        return sets * reps * 0.25 * multiplier * (1 + (Math.log(weight) / 10));
+    };
 
-        // Initialize app
-        checkAuth();
+    const renderWorkouts = () => {
+        workoutList.innerHTML = '';
+        const dailyWorkouts = state.workouts[state.currentDate] || [];
+        let dailyCaloriesBurned = 0;
 
-        // Toggle between login and register forms
-        function toggleAuthForms() {
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
-            registerForm.style.display = registerForm.style.display === 'none' ? 'block' : 'none';
-        }
-
-        // Handle login
-        async function handleLogin(event) {
-            event.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-
-            try {
-                const response = await fetch('http://localhost:3000/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await response.json();
-                if (response.ok) {
-                    currentUser = data.user;
-                    authToken = data.token;
-                    localStorage.setItem('authToken', authToken);
-                    showApp();
-                } else {
-                    alert(data.error || 'Login failed');
-                }
-            } catch (error) {
-                alert('An error occurred. Please try again.');
-            }
-        }
-
-        // Handle registration
-        async function handleRegister(event) {
-            event.preventDefault();
-            const name = document.getElementById('register-name').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-
-            try {
-                const response = await fetch('http://localhost:3000/api/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, password })
-                });
-
-                const data = await response.json();
-                if (response.ok) {
-                    currentUser = data.user;
-                    authToken = data.token;
-                    localStorage.setItem('authToken', authToken);
-                    showApp();
-                } else {
-                    alert(data.error || 'Registration failed');
-                }
-            } catch (error) {
-                alert('An error occurred. Please try again.');
-            }
-        }
-
-        // Show main app
-        function showApp() {
-            document.getElementById('auth-container').style.display = 'none';
-            document.getElementById('app-container').style.display = 'block';
-            loadUserData();
-        }
-
-        // Load user data
-        async function loadUserData() {
-            try {
-                const response = await fetch('http://localhost:3000/api/records', {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-
-                if (response.ok) {
-                    const records = await response.json();
-                    // Update UI with user's records
-                    updateDashboard(records);
-                }
-            } catch (error) {
-                console.error('Error loading user data:', error);
-            }
-        }
-
-        // Update dashboard with user data
-        function updateDashboard(records) {
-            // Update weight chart
-            const weightData = records.map(record => ({
-                x: new Date(record.date),
-                y: record.weight
-            }));
-            weightChart.data.datasets[0].data = weightData;
-            weightChart.update();
-
-            // Update nutrition chart
-            const nutritionData = records.map(record => ({
-                x: new Date(record.date),
-                y: record.calories
-            }));
-            nutritionChart.data.datasets[0].data = nutritionData;
-            nutritionChart.update();
-
-            // Update exercise list
-            const exerciseList = document.getElementById('exercise-list');
-            exerciseList.innerHTML = '';
-            records.forEach(record => {
-                record.exercises.forEach(exercise => {
-                    const exerciseItem = document.createElement('div');
-                    exerciseItem.className = 'list-item';
-                    exerciseItem.innerHTML = `
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-semibold">${exercise.name}</h3>
-                                <p class="text-sm text-gray-600">${exercise.sets} sets × ${exercise.reps} reps</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="font-semibold">${exercise.weight} kg</p>
-                                <p class="text-sm text-gray-600">${new Date(record.date).toLocaleDateString()}</p>
-                            </div>
+        if (dailyWorkouts.length === 0) {
+            workoutList.innerHTML = `<p class="text-gray-500 text-center py-8">No workouts logged.</p>`;
+        } else {
+            dailyWorkouts.forEach(workout => {
+                dailyCaloriesBurned += calculateCaloriesBurned(workout);
+                const isPR = checkForPR(workout.name, workout.weight);
+                const card = document.createElement('div');
+                card.className = 'list-item fade-in';
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-semibold text-gray-900">${workout.name} <span class="text-xs font-medium text-gray-500">(${workout.category})</span></h4>
+                            <p class="text-sm text-gray-600 mt-1">
+                                ${workout.sets} sets, ${workout.reps} reps @ ${workout.weight} lb
+                                ${isPR ? `<span class="ml-2 bg-yellow-400/20 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded-full">PR!</span>` : ''}
+                            </p>
                         </div>
-                    `;
-                    exerciseList.appendChild(exerciseItem);
-                });
+                        <div class="flex items-center space-x-2">
+                            <button onclick="editWorkout('${workout.id}')" class="p-2 text-gray-400 hover:text-gray-600 transition-colors"><i class="fas fa-pencil-alt h-4 w-4"></i></button>
+                            <button onclick="requestDeleteItem('workouts', '${workout.id}')" class="p-2 text-gray-400 hover:text-red-500 transition-colors"><i class="fas fa-trash-alt h-4 w-4"></i></button>
+                        </div>
+                    </div>`;
+                workoutList.appendChild(card);
+            });
+        }
+        
+        dailyCaloriesBurnedSummary.innerHTML = `
+            <div class="stats-card">
+                <p class="text-sm text-gray-500">Est. Calories Burned</p>
+                <p class="text-3xl font-semibold text-blue-600 mt-1">${Math.round(dailyCaloriesBurned)}</p>
+            </div>`;
+    };
+    
+    const renderFoodLog = () => {
+        foodList.innerHTML = '';
+        const dailyFood = state.food[state.currentDate] || [];
+        let totalCals = 0, totalProt = 0;
+
+        if (dailyFood.length === 0) {
+            foodList.innerHTML = `<p class="text-gray-500 text-center py-8">No food logged.</p>`;
+        } else {
+            dailyFood.forEach(item => {
+                totalCals += (item.calories || 0) * (item.quantity || 1);
+                totalProt += (item.protein || 0) * (item.quantity || 1);
+                const card = document.createElement('div');
+                card.className = 'list-item fade-in';
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-semibold text-gray-900">${item.quantity} x ${item.name}</h4>
+                            <p class="text-sm text-gray-600 mt-1">${item.calories} kcal, ${item.protein}g protein (each)</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="editFood('${item.id}')" class="p-2 text-gray-400 hover:text-gray-600 transition-colors"><i class="fas fa-pencil-alt h-4 w-4"></i></button>
+                            <button onclick="requestDeleteItem('food', '${item.id}')" class="p-2 text-gray-400 hover:text-red-500 transition-colors"><i class="fas fa-trash-alt h-4 w-4"></i></button>
+                        </div>
+                    </div>`;
+                foodList.appendChild(card);
             });
         }
 
-        // Save record with authentication
-        async function saveRecord(record) {
-            try {
-                const response = await fetch('http://localhost:3000/api/records', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify(record)
+        dailyNutritionSummary.innerHTML = `
+            <div class="grid grid-cols-2 gap-4">
+                <div class="stats-card">
+                    <p class="text-sm text-gray-500">Total Calories</p>
+                    <p class="text-3xl font-semibold text-blue-600 mt-1">${Math.round(totalCals)}</p>
+                </div>
+                <div class="stats-card">
+                    <p class="text-sm text-gray-500">Total Protein</p>
+                    <p class="text-3xl font-semibold text-blue-600 mt-1">${Math.round(totalProt)}g</p>
+                </div>
+            </div>`;
+    };
+
+    let nutritionChart, dailyEffortChart, workoutVolumeChart, foodDetailsChart;
+    const getDateRange = () => {
+        if (state.customDateRange) {
+            return {
+                startDate: new Date(getEl('start-date').value),
+                endDate: new Date(getEl('end-date').value)
+            };
+        }
+
+        const baseDate = new Date();
+        baseDate.setDate(baseDate.getDate() + (state.dashboardWeekOffset * 7));
+        const dayOfWeek = baseDate.getDay();
+        const startOfWeek = new Date(baseDate);
+        startOfWeek.setDate(baseDate.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        
+        return { startDate: startOfWeek, endDate: endOfWeek };
+    };
+
+    const updateDateInputs = (startDate, endDate) => {
+        getEl('start-date').value = startDate.toISOString().split('T')[0];
+        getEl('end-date').value = endDate.toISOString().split('T')[0];
+    };
+
+    const renderSummary = () => {
+        const { startDate, endDate } = getDateRange();
+        updateDateInputs(startDate, endDate);
+        
+        const labels = [], calorieData = [], proteinData = [], dailySetsData = [], dailyRepsData = [];
+        let totalCalories = 0, totalProtein = 0, workoutCount = 0, totalCaloriesBurned = 0, totalSets = 0, totalReps = 0;
+        
+        const exerciseFrequency = {};
+        const categoryVolume = {};
+        
+        let currentDate = new Date(startDate);
+        while (currentDate <= endDate) {
+            const dayString = currentDate.toISOString().split('T')[0];
+            labels.push(currentDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }));
+            
+            let dailySets = 0, dailyReps = 0;
+            if (state.workouts && state.workouts[dayString]) {
+                workoutCount++;
+                state.workouts[dayString].forEach(w => {
+                    dailySets += Number(w.sets);
+                    dailyReps += Number(w.reps);
+                    totalCaloriesBurned += calculateCaloriesBurned(w);
+                    
+                    exerciseFrequency[w.name] = (exerciseFrequency[w.name] || 0) + 1;
+                    categoryVolume[w.category] = (categoryVolume[w.category] || 0) + (Number(w.reps) * Number(w.weight));
                 });
+            }
+            dailySetsData.push(dailySets);
+            dailyRepsData.push(dailyReps);
+            totalSets += dailySets;
+            totalReps += dailyReps;
 
-                if (!response.ok) {
-                    throw new Error('Failed to save record');
+            let dailyCals = 0, dailyProt = 0;
+            if (state.food && state.food[dayString]) {
+                state.food[dayString].forEach(f => {
+                    dailyCals += f.calories * f.quantity;
+                    dailyProt += f.protein * f.quantity;
+                });
+            }
+            totalCalories += dailyCals;
+            totalProtein += dailyProt;
+            calorieData.push(dailyCals);
+            proteinData.push(dailyProt);
+
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        
+        const avgCalories = Math.round(totalCalories / labels.length);
+        const avgProtein = Math.round(totalProtein / labels.length);
+        
+        // Update stats cards
+        getEl('summary-stats').innerHTML = `
+            <div class="stats-card">
+                <p class="text-sm text-gray-500">Avg Cals</p>
+                <p class="text-2xl font-semibold text-gray-900 mt-1">${avgCalories}</p>
+            </div>
+            <div class="stats-card">
+                <p class="text-sm text-gray-500">Avg Protein</p>
+                <p class="text-2xl font-semibold text-gray-900 mt-1">${avgProtein}g</p>
+            </div>
+            <div class="stats-card">
+                <p class="text-sm text-gray-500">Workouts</p>
+                <p class="text-2xl font-semibold text-gray-900 mt-1">${workoutCount}</p>
+            </div>
+            <div class="stats-card">
+                <p class="text-sm text-gray-500">Cals Burned</p>
+                <p class="text-2xl font-semibold text-gray-900 mt-1">${Math.round(totalCaloriesBurned)}</p>
+            </div>`;
+
+        // Render nutrition progress
+        const nutritionProgress = getEl('nutrition-progress');
+        nutritionProgress.innerHTML = '';
+        for (let i = 0; i < 7; i++) {
+            const day = labels[i];
+            const calories = calorieData[i];
+            const protein = proteinData[i];
+            const maxCalories = Math.max(...calorieData);
+            const maxProtein = Math.max(...proteinData);
+            
+            nutritionProgress.innerHTML += `
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium text-gray-600">${day}</span>
+                        <span class="text-sm text-gray-500">${calories} cal / ${protein}g protein</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" style="width: ${(calories / maxCalories) * 100}%"></div>
+                    </div>
+                </div>`;
+        }
+
+        // Render workout progress
+        const workoutProgress = getEl('workout-progress');
+        workoutProgress.innerHTML = '';
+        for (let i = 0; i < 7; i++) {
+            const day = labels[i];
+            const sets = dailySetsData[i];
+            const reps = dailyRepsData[i];
+            const maxSets = Math.max(...dailySetsData);
+            const maxReps = Math.max(...dailyRepsData);
+            
+            workoutProgress.innerHTML += `
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium text-gray-600">${day}</span>
+                        <span class="text-sm text-gray-500">${sets} sets / ${reps} reps</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" style="width: ${(sets / maxSets) * 100}%"></div>
+                    </div>
+                </div>`;
+        }
+
+        // Render workout volume by category
+        const workoutVolumeProgress = getEl('workout-volume-progress');
+        workoutVolumeProgress.innerHTML = '';
+        const maxVolume = Math.max(...Object.values(categoryVolume));
+        Object.entries(categoryVolume).forEach(([category, volume]) => {
+            workoutVolumeProgress.innerHTML += `
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium text-gray-600">${category}</span>
+                        <span class="text-sm text-gray-500">${Math.round(volume)} lb</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" style="width: ${(volume / maxVolume) * 100}%"></div>
+                    </div>
+                </div>`;
+        });
+
+        // Render most frequent exercises
+        const frequentExercises = getEl('frequent-exercises');
+        frequentExercises.innerHTML = '';
+        const sortedExercises = Object.entries(exerciseFrequency)
+            .sort(([,a], [,b]) => b - a)
+            .slice(0, 5);
+        
+        sortedExercises.forEach(([exercise, count]) => {
+            frequentExercises.innerHTML += `
+                <div class="list-item">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium text-gray-600">${exercise}</span>
+                        <span class="text-sm text-gray-500">${count} times</span>
+                    </div>
+                </div>`;
+        });
+
+        // Render nutrition breakdown
+        const nutritionBreakdown = getEl('nutrition-breakdown');
+        nutritionBreakdown.innerHTML = '';
+        for (let i = 0; i < 7; i++) {
+            const day = labels[i];
+            const calories = calorieData[i];
+            const protein = proteinData[i];
+            
+            nutritionBreakdown.innerHTML += `
+                <div class="list-item">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium text-gray-600">${day}</span>
+                        <span class="text-sm text-gray-500">${calories} calories</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" style="width: ${(protein / 200) * 100}%"></div>
+                    </div>
+                    <div class="text-right mt-1">
+                        <span class="text-xs text-gray-500">${protein}g protein</span>
+                    </div>
+                </div>`;
+        }
+
+        // Render common foods
+        const commonFoods = getEl('common-foods');
+        const foodFrequency = {};
+        Object.values(state.food).flat().forEach(food => {
+            foodFrequency[food.name] = (foodFrequency[food.name] || 0) + food.quantity;
+        });
+        
+        commonFoods.innerHTML = '';
+        const sortedFoods = Object.entries(foodFrequency)
+            .sort(([,a], [,b]) => b - a)
+            .slice(0, 5);
+        
+        sortedFoods.forEach(([food, count]) => {
+            commonFoods.innerHTML += `
+                <div class="list-item">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium text-gray-600">${food}</span>
+                        <span class="text-sm text-gray-500">${count} times</span>
+                    </div>
+                </div>`;
+        });
+    };
+
+    const fullResetWorkoutForm = () => { 
+        workoutForm.reset(); 
+        setsInput.value = 3; 
+        repsInput.value = 10; 
+        partialResetWorkoutForm(); 
+    };
+    const partialResetWorkoutForm = () => {
+        exerciseNameInput.value = '';
+        getEl('weight').value = ''; 
+        editWorkoutIdInput.value = '';
+        submitWorkoutBtn.innerHTML = 'Add Exercise';
+        submitWorkoutBtn.classList.remove('bg-green-600');
+        submitWorkoutBtn.classList.add('bg-gray-900');
+    };
+    const resetFoodForm = () => { foodForm.reset(); quantityInput.value = 1; getEl('edit-food-id').value = ''; submitFoodBtn.innerHTML = 'Add Food'; submitFoodBtn.classList.remove('bg-green-600'); submitFoodBtn.classList.add('bg-gray-900'); };
+
+    window.editWorkout = (id) => {
+        showPage('workout');
+        const workout = state.workouts[state.currentDate]?.find(w => w.id === id);
+        if (!workout) return;
+        editWorkoutIdInput.value = id; categoryInput.value = workout.category;
+        exerciseNameInput.value = workout.name; setsInput.value = workout.sets;
+        repsInput.value = workout.reps; getEl('weight').value = workout.weight;
+        getEl('notes').value = workout.notes;
+        submitWorkoutBtn.innerHTML = 'Update Exercise';
+        submitWorkoutBtn.classList.remove('bg-gray-900');
+        submitWorkoutBtn.classList.add('bg-green-600');
+    };
+    
+    window.editFood = (id) => {
+        const food = state.food[state.currentDate]?.find(f => f.id === id);
+        if (!food) return;
+        getEl('edit-food-id').value = id;
+        foodNameInput.value = food.name;
+        quantityInput.value = food.quantity;
+        caloriesInput.value = food.calories;
+        proteinInput.value = food.protein;
+        submitFoodBtn.innerHTML = 'Update Food';
+        submitFoodBtn.classList.remove('bg-gray-900');
+        submitFoodBtn.classList.add('bg-green-600');
+    };
+    
+    window.requestDeleteItem = (type, id) => {
+        state.itemToDelete = { type, id };
+        getEl('confirm-title').textContent = `Delete this ${type === 'workouts' ? 'workout' : 'food item'}?`;
+        confirmModal.classList.remove('hidden');
+    };
+    
+    const deleteItem = ({ type, id }) => {
+        if (!type || !id || !state[type] || !state[type][state.currentDate]) return;
+        state[type][state.currentDate] = state[type][state.currentDate].filter(item => item.id !== id);
+        if (state[type][state.currentDate].length === 0) {
+            delete state[type][state.currentDate];
+        }
+        saveData();
+        renderAll();
+    };
+
+    const checkForPR = (name, weight) => {
+        let maxWeight = 0;
+        Object.keys(state.workouts).forEach(date => {
+            if (date === state.currentDate) return;
+            state.workouts[date].forEach(w => {
+                if (w.name.toLowerCase() === name.toLowerCase() && w.weight > maxWeight) {
+                    maxWeight = w.weight;
                 }
+            });
+        });
+        return weight > maxWeight;
+    };
+    
+    const changeDate = (days) => {
+        const currentDateObj = new Date(state.currentDate + 'T00:00:00');
+        currentDateObj.setDate(currentDateObj.getDate() + days);
+        state.currentDate = currentDateObj.toISOString().split('T')[0];
+        renderAll();
+    };
 
-                const records = await response.json();
-                updateDashboard(records);
-            } catch (error) {
-                console.error('Error saving record:', error);
-                alert('Failed to save record. Please try again.');
+    function setupAutocomplete(inp, getSuggestions, onSelect) {
+        let currentFocus;
+        inp.addEventListener("input", function(e) {
+            let a, b, i, val = this.value;
+            closeAllLists();
+            if (!val) { return false; }
+            currentFocus = -1;
+            a = document.createElement("DIV");
+            a.setAttribute("id", this.id + "autocomplete-list");
+            a.setAttribute("class", "autocomplete-items");
+            this.parentNode.appendChild(a);
+
+            const suggestions = getSuggestions();
+            suggestions.forEach(item => {
+                if (item.substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                    b = document.createElement("DIV");
+                    b.innerHTML = "<strong>" + item.substr(0, val.length) + "</strong>";
+                    b.innerHTML += item.substr(val.length);
+                    b.innerHTML += "<input type='hidden' value='" + item + "'>";
+                    b.addEventListener("click", function(e) {
+                        const selectedValue = this.getElementsByTagName("input")[0].value;
+                        inp.value = selectedValue;
+                        if(onSelect) onSelect(selectedValue);
+                        closeAllLists();
+                    });
+                    a.appendChild(b);
+                }
+            });
+        });
+
+        inp.addEventListener("keydown", function(e) {
+            let x = document.getElementById(this.id + "autocomplete-list");
+            if (x) x = x.getElementsByTagName("div");
+            if (e.keyCode == 40) { currentFocus++; addActive(x); } 
+            else if (e.keyCode == 38) { currentFocus--; addActive(x); } 
+            else if (e.keyCode == 13) { e.preventDefault(); if (currentFocus > -1) { if (x) x[currentFocus].click(); } }
+        });
+
+        function addActive(x) {
+            if (!x) return false;
+            removeActive(x);
+            if (currentFocus >= x.length) currentFocus = 0;
+            if (currentFocus < 0) currentFocus = (x.length - 1);
+            x[currentFocus].classList.add("autocomplete-active");
+        }
+        function removeActive(x) { for (let i = 0; i < x.length; i++) { x[i].classList.remove("autocomplete-active"); } }
+        function closeAllLists(elmnt) {
+            const x = document.getElementsByClassName("autocomplete-items");
+            for (let i = 0; i < x.length; i++) {
+                if (elmnt != x[i] && elmnt != inp) {
+                    x[i].parentNode.removeChild(x[i]);
+                }
             }
         }
-    </script>
+        document.addEventListener("click", function (e) { closeAllLists(e.target); });
+    }
+
+    prevDayBtn.addEventListener('click', () => changeDate(-1));
+    nextDayBtn.addEventListener('click', () => changeDate(1));
+    manualDateInput.addEventListener('change', (e) => {
+        if(e.target.value) { state.currentDate = e.target.value; renderAll(); }
+    });
+
+    workoutNavBtn.addEventListener('click', () => showPage('workout'));
+    foodNavBtn.addEventListener('click', () => showPage('food'));
+    dashboardNavBtn.addEventListener('click', () => showPage('dashboard'));
+    
+    overallDashBtn.addEventListener('click', () => showDashboardView('overall'));
+    workoutDashBtn.addEventListener('click', () => showDashboardView('workout'));
+    foodDashBtn.addEventListener('click', () => showDashboardView('food'));
+
+    categoryInput.addEventListener('change', () => {
+        exerciseNameInput.value = '';
+    });
+
+    workoutForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const editingId = editWorkoutIdInput.value;
+        const weightInput = getEl('weight');
+        const weightValue = weightInput.value === '' ? 0 : parseFloat(weightInput.value);
+        const workoutData = { 
+            name: exerciseNameInput.value.trim(), 
+            category: categoryInput.value, 
+            sets: setsInput.value, 
+            reps: repsInput.value, 
+            weight: weightValue, 
+            notes: getEl('notes').value.trim() 
+        };
+        if (editingId) {
+            const index = state.workouts[state.currentDate].findIndex(w => w.id === editingId);
+            if (index > -1) state.workouts[state.currentDate][index] = { ...state.workouts[state.currentDate][index], ...workoutData };
+        } else {
+            if (!state.workouts[state.currentDate]) state.workouts[state.currentDate] = [];
+            state.workouts[state.currentDate].push({ id: Date.now().toString(), ...workoutData });
+        }
+        saveData(); renderAll(); partialResetWorkoutForm();
+    });
+
+    foodForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const editingId = getEl('edit-food-id').value;
+        const foodData = { 
+            name: foodNameInput.value.trim(), 
+            calories: parseInt(caloriesInput.value) || 0, 
+            protein: parseInt(proteinInput.value) || 0,
+            quantity: parseInt(quantityInput.value) || 1,
+        };
+        if (editingId) {
+             const index = state.food[state.currentDate].findIndex(f => f.id === editingId);
+            if (index > -1) state.food[state.currentDate][index] = { ...state.food[state.currentDate][index], ...foodData };
+        } else {
+            if (!state.food[state.currentDate]) state.food[state.currentDate] = [];
+            state.food[state.currentDate].push({ id: Date.now().toString(), ...foodData });
+        }
+        saveData(); renderAll(); resetFoodForm();
+    });
+
+    getEl('cancel-btn').addEventListener('click', () => { confirmModal.classList.add('hidden'); });
+    getEl('confirm-btn').addEventListener('click', () => {
+        if(state.itemToDelete) deleteItem(state.itemToDelete);
+        confirmModal.classList.add('hidden');
+    });
+
+    document.querySelectorAll('.number-control-btn').forEach(btn => btn.addEventListener('click', () => {
+        const input = getEl(btn.dataset.input); let value = parseInt(input.value);
+        if (btn.dataset.action === 'increment') value++; else if (value > 1) value--;
+        input.value = value;
+    }));
+    
+    prevWeekBtn.addEventListener('click', () => {
+        state.customDateRange = false;
+        state.dashboardWeekOffset--;
+        renderSummary();
+    });
+
+    nextWeekBtn.addEventListener('click', () => {
+        state.customDateRange = false;
+        state.dashboardWeekOffset++;
+        renderSummary();
+    });
+
+    // Add event listeners for date inputs
+    getEl('start-date').addEventListener('change', () => {
+        state.customDateRange = true;
+        renderSummary();
+    });
+
+    getEl('end-date').addEventListener('change', () => {
+        state.customDateRange = true;
+        renderSummary();
+    });
+
+    // Initialize date inputs
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay());
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    updateDateInputs(startOfWeek, endOfWeek);
+
+    const initializeApp = () => {
+        const categories = ['Legs', 'Arms', 'Shoulders', 'Chest', 'Back', 'Abs'];
+        categories.forEach(cat => categoryInput.add(new Option(cat, cat)));
+        
+        // Add clear button functionality
+        const clearExerciseBtn = getEl('clear-exercise');
+        const clearFoodBtn = getEl('clear-food');
+
+        exerciseNameInput.addEventListener('input', () => {
+            clearExerciseBtn.classList.toggle('hidden', !exerciseNameInput.value);
+            clearExerciseBtn.style.pointerEvents = exerciseNameInput.value ? 'auto' : 'none';
+        });
+
+        foodNameInput.addEventListener('input', () => {
+            clearFoodBtn.classList.toggle('hidden', !foodNameInput.value);
+            clearFoodBtn.style.pointerEvents = foodNameInput.value ? 'auto' : 'none';
+        });
+        
+        clearExerciseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            exerciseNameInput.value = '';
+            clearExerciseBtn.classList.add('hidden');
+            clearExerciseBtn.style.pointerEvents = 'none';
+            exerciseNameInput.focus();
+        });
+
+        clearFoodBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            foodNameInput.value = '';
+            clearFoodBtn.classList.add('hidden');
+            clearFoodBtn.style.pointerEvents = 'none';
+            foodNameInput.focus();
+        });
+        
+        setupAutocomplete(exerciseNameInput, () => {
+            const currentCategory = categoryInput.value;
+            const userExercises = Object.values(state.workouts).flat()
+                .filter(w => w.category === currentCategory)
+                .map(w => w.name);
+            const common = commonWorkouts[currentCategory] || [];
+            return [...new Set([...userExercises, ...common])];
+        });
+
+        setupAutocomplete(foodNameInput, 
+            () => {
+                const userFoods = Object.values(state.food).flat().map(f => f.name);
+                const commonFoodNames = Object.keys(commonFoods);
+                return [...new Set([...userFoods, ...commonFoodNames])];
+            },
+            (selectedValue) => {
+                const allFood = Object.values(state.food).flat();
+                const lastEntry = allFood.reverse().find(f => f.name === selectedValue);
+                if (lastEntry) {
+                    caloriesInput.value = lastEntry.calories;
+                    proteinInput.value = lastEntry.protein;
+                } else if (commonFoods[selectedValue]) {
+                    caloriesInput.value = commonFoods[selectedValue].calories;
+                    proteinInput.value = commonFoods[selectedValue].protein;
+                }
+            }
+        );
+
+        showPage('workout');
+        renderAll();
+    };
+    
+    initializeApp();
+});
+</script>
+
 </body>
 </html>
