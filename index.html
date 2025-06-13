@@ -607,6 +607,69 @@
         let authToken = localStorage.getItem('authToken');
         let currentUser = null;
 
+        // Add cache-busting to auth link
+        function updateAuthLink() {
+            const timestamp = new Date().getTime();
+            const authLink = document.getElementById('auth-link');
+            if (authLink) {
+                authLink.href = `auth.html?v=${timestamp}`;
+            }
+        }
+
+        // Check authentication
+        async function checkAuth() {
+            if (!authToken) {
+                updateAuthLink();
+                window.location.href = document.getElementById('auth-link').href;
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/records', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Authentication failed');
+                }
+
+                const records = await response.json();
+                updateDashboard(records);
+            } catch (error) {
+                console.error('Auth error:', error);
+                localStorage.removeItem('authToken');
+                updateAuthLink();
+                window.location.href = document.getElementById('auth-link').href;
+            }
+        }
+
+        // Sign out function
+        function signOut() {
+            localStorage.removeItem('authToken');
+            updateAuthLink();
+            window.location.href = document.getElementById('auth-link').href;
+        }
+
+        // Add sign out button to header
+        const header = document.querySelector('header');
+        const signOutButton = document.createElement('button');
+        signOutButton.className = 'nav-btn';
+        signOutButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Sign Out';
+        signOutButton.onclick = signOut;
+        header.appendChild(signOutButton);
+
+        // Add hidden auth link
+        const authLink = document.createElement('a');
+        authLink.id = 'auth-link';
+        authLink.href = 'auth.html';
+        authLink.style.display = 'none';
+        document.body.appendChild(authLink);
+
+        // Initialize app
+        checkAuth();
+
         // Toggle between login and register forms
         function toggleAuthForms() {
             const loginForm = document.getElementById('login-form');
@@ -696,18 +759,6 @@
             }
         }
 
-        // Check for existing session
-        function checkAuth() {
-            const token = localStorage.getItem('authToken');
-            if (token) {
-                authToken = token;
-                showApp();
-            }
-        }
-
-        // Initialize app
-        checkAuth();
-
         // Update dashboard with user data
         function updateDashboard(records) {
             // Update weight chart
@@ -773,22 +824,6 @@
                 alert('Failed to save record. Please try again.');
             }
         }
-
-        // Sign out function
-        function signOut() {
-            localStorage.removeItem('authToken');
-            window.location.href = 'auth.html';
-        }
-
-        // Add sign out button to header
-        const header = document.querySelector('header');
-        const signOutButton = document.createElement('button');
-        signOutButton.className = 'nav-btn';
-        signOutButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Sign Out';
-        signOutButton.onclick = signOut;
-        header.appendChild(signOutButton);
-
-        // ... rest of existing JavaScript code ...
     </script>
 </body>
 </html>
