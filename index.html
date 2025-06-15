@@ -1768,10 +1768,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let nutritionChart, dailyEffortChart, workoutVolumeChart, foodDetailsChart;
     const getDateRange = () => {
         if (state.customDateRange) {
-            return {
-                startDate: new Date(getEl('start-date').value),
-                endDate: new Date(getEl('end-date').value)
-            };
+            const startDate = new Date(getEl('start-date').value);
+            const endDate = new Date(getEl('end-date').value);
+            // Ensure end date is not before start date
+            if (endDate < startDate) {
+                endDate.setTime(startDate.getTime());
+            }
+            return { startDate, endDate };
         }
 
         const baseDate = new Date();
@@ -1779,8 +1782,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const dayOfWeek = baseDate.getDay();
         const startOfWeek = new Date(baseDate);
         startOfWeek.setDate(baseDate.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+        startOfWeek.setHours(0, 0, 0, 0);
         const endOfWeek = new Date(startOfWeek);
         endOfWeek.setDate(startOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
         
         return { startDate: startOfWeek, endDate: endOfWeek };
     };
@@ -1805,6 +1810,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const commonFoods = {};
         
+        // Initialize state.workouts if it doesn't exist
+        if (!state.workouts) {
+            state.workouts = {};
+        }
+        
         let currentDate = new Date(startDate);
         while (currentDate <= endDate) {
             const dayString = currentDate.toISOString().split('T')[0];
@@ -1815,17 +1825,27 @@ document.addEventListener('DOMContentLoaded', () => {
             // Calculate calories burned from workouts
             let dailyCaloriesBurned = 0;
             let dailyWorkouts = 0;
-            if (state.workouts && state.workouts[dayString]) {
-                state.workouts[dayString].forEach(w => {
+            
+            // Ensure the day's workouts array exists
+            if (!state.workouts[dayString]) {
+                state.workouts[dayString] = [];
+            }
+            
+            state.workouts[dayString].forEach(w => {
+                if (w && typeof w === 'object') {
                     const caloriesBurned = calculateCaloriesBurned(w);
                     dailyCaloriesBurned += caloriesBurned;
                     dailyWorkouts++;
                     totalWorkouts++;
-                });
+                }
+            });
+            
+            if (dailyWorkouts > 0) {
                 workoutDays++;
             }
+            
             totalCaloriesBurned += dailyCaloriesBurned;
-            workoutData.caloriesBurned.push(dailyCaloriesBurned);
+            workoutData.caloriesBurned.push(Math.round(dailyCaloriesBurned));
             workoutData.workoutCount.push(dailyWorkouts);
 
             let dailyCals = 0, dailyProt = 0;
