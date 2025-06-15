@@ -2045,7 +2045,16 @@ document.addEventListener('DOMContentLoaded', () => {
             frequency: {},
             totalVolume: 0,
             totalWorkouts: 0,
-            caloriesBurned: 0
+            caloriesBurned: 0,
+            recentPRs: [],
+            workoutStreak: 0,
+            bestExercises: [],
+            muscleBalance: {},
+            workoutConsistency: {
+                daysPerWeek: 0,
+                averageSetsPerWorkout: 0,
+                averageRepsPerWorkout: 0
+            }
         };
         
         const nutritionData = {
@@ -2053,20 +2062,36 @@ document.addEventListener('DOMContentLoaded', () => {
             totalProtein: 0,
             averageCalories: 0,
             averageProtein: 0,
-            daysTracked: 0
+            daysTracked: 0,
+            commonFoods: {},
+            nutritionStreak: 0,
+            nutritionConsistency: {
+                daysPerWeek: 0,
+                averageMealsPerDay: 0
+            }
         };
         
         let currentDate = new Date(startDate);
+        let lastWorkoutDate = null;
+        let lastNutritionDate = null;
+        let currentWorkoutStreak = 0;
+        let currentNutritionStreak = 0;
+        
         while (currentDate <= endDate) {
             const dayString = currentDate.toISOString().split('T')[0];
             
             // Analyze workouts
             if (state.workouts && state.workouts[dayString]) {
                 workoutData.totalWorkouts++;
+                const dailySets = 0;
+                const dailyReps = 0;
+                
                 state.workouts[dayString].forEach(w => {
                     const volume = Number(w.reps) * Number(w.weight);
                     workoutData.totalVolume += volume;
                     workoutData.caloriesBurned += calculateCaloriesBurned(w);
+                    dailySets += Number(w.sets);
+                    dailyReps += Number(w.reps);
                     
                     // Track exercise data
                     if (!workoutData.exercises[w.name]) {
@@ -2074,7 +2099,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             totalVolume: 0,
                             maxWeight: 0,
                             frequency: 0,
-                            progression: []
+                            progression: [],
+                            lastPR: null
                         };
                     }
                     workoutData.exercises[w.name].totalVolume += volume;
@@ -2086,34 +2112,117 @@ document.addEventListener('DOMContentLoaded', () => {
                         volume: volume
                     });
                     
+                    // Check for PR
+                    if (Number(w.weight) > workoutData.exercises[w.name].maxWeight) {
+                        workoutData.exercises[w.name].lastPR = {
+                            date: dayString,
+                            weight: Number(w.weight)
+                        };
+                        workoutData.recentPRs.push({
+                            exercise: w.name,
+                            weight: Number(w.weight),
+                            date: dayString
+                        });
+                    }
+                    
                     // Track category data
                     if (!workoutData.categories[w.category]) {
                         workoutData.categories[w.category] = {
                             totalVolume: 0,
-                            frequency: 0
+                            frequency: 0,
+                            exercises: new Set()
                         };
                     }
                     workoutData.categories[w.category].totalVolume += volume;
                     workoutData.categories[w.category].frequency++;
+                    workoutData.categories[w.category].exercises.add(w.name);
                 });
+                
+                // Update workout streak
+                if (lastWorkoutDate) {
+                    const daysSinceLastWorkout = Math.floor((currentDate - lastWorkoutDate) / (1000 * 60 * 60 * 24));
+                    if (daysSinceLastWorkout === 1) {
+                        currentWorkoutStreak++;
+                    } else {
+                        currentWorkoutStreak = 1;
+                    }
+                } else {
+                    currentWorkoutStreak = 1;
+                }
+                workoutData.workoutStreak = Math.max(workoutData.workoutStreak, currentWorkoutStreak);
+                lastWorkoutDate = new Date(currentDate);
             }
             
             // Analyze nutrition
             if (state.food && state.food[dayString]) {
                 nutritionData.daysTracked++;
+                const mealsToday = state.food[dayString].length;
+                nutritionData.nutritionConsistency.averageMealsPerDay += mealsToday;
+                
                 state.food[dayString].forEach(f => {
-                    nutritionData.totalCalories += f.calories * f.quantity;
-                    nutritionData.totalProtein += f.protein * f.quantity;
+                    const calories = f.calories * f.quantity;
+                    const protein = f.protein * f.quantity;
+                    nutritionData.totalCalories += calories;
+                    nutritionData.totalProtein += protein;
+                    
+                    // Track common foods
+                    if (!nutritionData.commonFoods[f.name]) {
+                        nutritionData.commonFoods[f.name] = {
+                            frequency: 0,
+                            totalCalories: 0,
+                            totalProtein: 0
+                        };
+                    }
+                    nutritionData.commonFoods[f.name].frequency++;
+                    nutritionData.commonFoods[f.name].totalCalories += calories;
+                    nutritionData.commonFoods[f.name].totalProtein += protein;
                 });
+                
+                // Update nutrition streak
+                if (lastNutritionDate) {
+                    const daysSinceLastNutrition = Math.floor((currentDate - lastNutritionDate) / (1000 * 60 * 60 * 24));
+                    if (daysSinceLastNutrition === 1) {
+                        currentNutritionStreak++;
+                    } else {
+                        currentNutritionStreak = 1;
+                    }
+                } else {
+                    currentNutritionStreak = 1;
+                }
+                nutritionData.nutritionStreak = Math.max(nutritionData.nutritionStreak, currentNutritionStreak);
+                lastNutritionDate = new Date(currentDate);
             }
             
             currentDate.setDate(currentDate.getDate() + 1);
         }
         
-        // Calculate averages
+        // Calculate averages and finalize data
         const daysInRange = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
         nutritionData.averageCalories = nutritionData.totalCalories / daysInRange;
         nutritionData.averageProtein = nutritionData.totalProtein / daysInRange;
+        nutritionData.nutritionConsistency.daysPerWeek = (nutritionData.daysTracked / daysInRange) * 7;
+        nutritionData.nutritionConsistency.averageMealsPerDay /= nutritionData.daysTracked;
+        
+        // Sort and limit recent PRs
+        workoutData.recentPRs.sort((a, b) => new Date(b.date) - new Date(a.date));
+        workoutData.recentPRs = workoutData.recentPRs.slice(0, 5);
+        
+        // Calculate muscle balance
+        const totalVolume = Object.values(workoutData.categories).reduce((sum, cat) => sum + cat.totalVolume, 0);
+        Object.entries(workoutData.categories).forEach(([category, data]) => {
+            workoutData.muscleBalance[category] = {
+                percentage: (data.totalVolume / totalVolume) * 100,
+                exercises: Array.from(data.exercises)
+            };
+        });
+        
+        // Calculate workout consistency
+        workoutData.workoutConsistency.daysPerWeek = (workoutData.totalWorkouts / daysInRange) * 7;
+        
+        // Sort common foods by frequency
+        nutritionData.commonFoods = Object.entries(nutritionData.commonFoods)
+            .sort(([, a], [, b]) => b.frequency - a.frequency)
+            .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
         
         return {
             workoutData,
@@ -2168,7 +2277,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 messages: [
                     {
                         role: 'system',
-                        content: `You are a fitness AI assistant. Use the following user data to answer their question in a personalized way.\nUser Data (last 7 days): ${JSON.stringify(userData)}\nBe specific and reference their actual logs when possible.`
+                        content: `You are a fitness AI assistant with expertise in both workout and nutrition analysis. Use the following comprehensive user data to provide personalized, data-driven insights and recommendations. Focus on specific details from their logs and provide actionable advice.
+
+User Data (last 7 days):
+${JSON.stringify(userData, null, 2)}
+
+Guidelines for responses:
+1. Reference specific exercises, weights, and progressions when discussing workouts
+2. Mention actual calorie and protein intake when discussing nutrition
+3. Highlight recent achievements and streaks
+4. Identify patterns in their workout and nutrition habits
+5. Provide specific, actionable recommendations based on their data
+6. Use their actual numbers and metrics in your analysis
+7. Be encouraging but honest about areas for improvement
+8. Consider their workout consistency and nutrition tracking habits
+9. Reference their muscle balance and exercise variety
+10. Acknowledge their PRs and achievements
+
+Be specific and reference their actual logs when possible.`
                     },
                     { role: 'user', content: question }
                 ]
