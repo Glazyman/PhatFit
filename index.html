@@ -1932,6 +1932,48 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             });
+
+            // Update workout volume by category
+            const workoutVolumeProgress = getEl('workout-volume-progress');
+            workoutVolumeProgress.innerHTML = '';
+
+            // Calculate workout volume by category
+            const categoryVolume = {};
+            currentDate = new Date(startDate);
+            while (currentDate <= endDate) {
+                const dayString = currentDate.toISOString().split('T')[0];
+                if (state.workouts && state.workouts[dayString]) {
+                    state.workouts[dayString].forEach(w => {
+                        if (!categoryVolume[w.category]) {
+                            categoryVolume[w.category] = {
+                                total: 0,
+                                count: 0
+                            };
+                        }
+                        categoryVolume[w.category].total += calculateCaloriesBurned(w);
+                        categoryVolume[w.category].count++;
+                    });
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            // Find max volume for percentage calculation
+            const maxVolume = Math.max(...Object.values(categoryVolume).map(v => v.total));
+
+            // Render category progress bars
+            Object.entries(categoryVolume).forEach(([category, data]) => {
+                const percentage = (data.total / maxVolume) * 100;
+                workoutVolumeProgress.innerHTML += `
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-600">${category}</span>
+                            <span class="text-sm text-gray-500">${data.total} cal / ${data.count} workouts</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>`;
+            });
         }
 
         // Calculate workout days this week
