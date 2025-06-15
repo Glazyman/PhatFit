@@ -1998,7 +1998,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="space-y-2">
                         <div class="flex justify-between items-center">
                             <span class="text-sm font-medium text-gray-600">${category}</span>
-                            <span class="text-sm text-gray-500">${data.total} cal / ${data.count} workouts</span>
+                            <span class="text-sm text-gray-500">${Math.round(data.total)} cal / ${data.count} workouts</span>
                         </div>
                         <div class="progress-bar">
                             <div class="progress-bar-fill" style="width: ${percentage}%"></div>
