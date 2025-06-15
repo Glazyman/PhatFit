@@ -846,44 +846,41 @@
 
                     <div id="workout-summary-view" class="hidden card p-8">
                         <h3 class="text-2xl font-semibold mb-6 text-gray-900">Workout Summary</h3>
-                        <div id="workout-summary-stats" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8"></div>
                         <div class="space-y-6">
+                            <!-- Stats Cards -->
+                            <div class="card p-6">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-blue-600" id="avg-daily-calories-burned">0</div>
+                                        <div class="text-sm text-gray-600">Avg Daily Calories Burned</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-emerald-600" id="weekly-calories-burned">0</div>
+                                        <div class="text-sm text-gray-600">Weekly Calories Burned</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-purple-600" id="workout-days">0</div>
+                                        <div class="text-sm text-gray-600">Workout Days</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-orange-600" id="total-workouts">0</div>
+                                        <div class="text-sm text-gray-600">Total Workouts</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Weekly Workout Chart -->
+                            <div class="card p-6">
+                                <h4 class="text-lg font-medium mb-4 text-gray-900">Weekly Workout Activity</h4>
+                                <div class="h-64">
+                                    <canvas id="weekly-workout-chart"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Workout Volume by Category -->
                             <div class="card p-6">
                                 <h3 class="text-lg font-medium mb-4 text-gray-900">Workout Volume by Category</h3>
                                 <div id="workout-volume-progress" class="space-y-4"></div>
-                            </div>
-                            <div class="card p-6">
-                                <h3 class="text-lg font-medium mb-4 text-gray-900">Workout Insights</h3>
-                                <div id="workout-insights" class="space-y-4">
-                                    <div class="insight-card">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <i class="fas fa-chart-line text-blue-600"></i>
-                                            <h4 class="text-sm font-medium text-gray-900">Progression Trends</h4>
-                                        </div>
-                                        <div id="progression-trends" class="text-sm text-gray-600"></div>
-                                    </div>
-                                    <div class="insight-card">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <i class="fas fa-balance-scale text-yellow-600"></i>
-                                            <h4 class="text-sm font-medium text-gray-900">Muscle Balance</h4>
-                                        </div>
-                                        <div id="muscle-balance" class="text-sm text-gray-600"></div>
-                                    </div>
-                                    <div class="insight-card">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <i class="fas fa-lightbulb text-green-600"></i>
-                                            <h4 class="text-sm font-medium text-gray-900">Workout Variety</h4>
-                                        </div>
-                                        <div id="workout-variety" class="text-sm text-gray-600"></div>
-                                    </div>
-                                    <div class="insight-card">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <i class="fas fa-trophy text-purple-600"></i>
-                                            <h4 class="text-sm font-medium text-gray-900">Recent Achievements</h4>
-                                        </div>
-                                        <div id="recent-achievements" class="text-sm text-gray-600"></div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -1799,20 +1796,37 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const labels = [], calorieData = [], proteinData = [];
         let totalCalories = 0, totalProtein = 0, totalCaloriesBurned = 0;
+        let totalWorkouts = 0, workoutDays = 0;
+        let workoutData = {
+            labels: [],
+            caloriesBurned: [],
+            workoutCount: []
+        };
         
         const commonFoods = {};
         
         let currentDate = new Date(startDate);
         while (currentDate <= endDate) {
             const dayString = currentDate.toISOString().split('T')[0];
+            const dayLabel = currentDate.toLocaleDateString('en-US', { weekday: 'short' });
             labels.push(currentDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }));
+            workoutData.labels.push(dayLabel);
 
             // Calculate calories burned from workouts
+            let dailyCaloriesBurned = 0;
+            let dailyWorkouts = 0;
             if (state.workouts && state.workouts[dayString]) {
                 state.workouts[dayString].forEach(w => {
-                    totalCaloriesBurned += calculateCaloriesBurned(w);
+                    const caloriesBurned = calculateCaloriesBurned(w);
+                    dailyCaloriesBurned += caloriesBurned;
+                    dailyWorkouts++;
+                    totalWorkouts++;
                 });
+                workoutDays++;
             }
+            totalCaloriesBurned += dailyCaloriesBurned;
+            workoutData.caloriesBurned.push(dailyCaloriesBurned);
+            workoutData.workoutCount.push(dailyWorkouts);
 
             let dailyCals = 0, dailyProt = 0;
             if (state.food && state.food[dayString]) {
@@ -1844,22 +1858,80 @@ document.addEventListener('DOMContentLoaded', () => {
         const daysInRange = labels.length;
         const avgCalories = Math.round(totalCalories / daysInRange);
         const avgProtein = Math.round(totalProtein / daysInRange);
+        const avgCaloriesBurned = Math.round(totalCaloriesBurned / daysInRange);
 
-        // Update food summary stats
-        if (state.activeDashboardView === 'food') {
-            getEl('avg-daily-calories').textContent = avgCalories;
-            getEl('avg-daily-protein').textContent = avgProtein;
-            getEl('total-calories').textContent = totalCalories;
+        // Update workout summary stats
+        if (state.activeDashboardView === 'workout') {
+            getEl('avg-daily-calories-burned').textContent = avgCaloriesBurned;
+            getEl('weekly-calories-burned').textContent = totalCaloriesBurned;
+            getEl('workout-days').textContent = workoutDays;
+            getEl('total-workouts').textContent = totalWorkouts;
 
-            // Update weekly progress
-            const weeklyCalorieGoal = state.goals.nutrition.calorieGoal * 7;
-            const weeklyProteinGoal = state.goals.nutrition.proteinGoal * 7;
-            
-            getEl('weekly-calorie-progress-text').textContent = `${totalCalories}/${weeklyCalorieGoal} cal`;
-            getEl('weekly-protein-progress-text').textContent = `${totalProtein}/${weeklyProteinGoal} g`;
-            
-            getEl('weekly-calorie-progress-bar').style.width = `${Math.min((totalCalories / weeklyCalorieGoal) * 100, 100)}%`;
-            getEl('weekly-protein-progress-bar').style.width = `${Math.min((totalProtein / weeklyProteinGoal) * 100, 100)}%`;
+            // Create weekly workout chart
+            const ctx = document.getElementById('weekly-workout-chart').getContext('2d');
+            if (window.weeklyWorkoutChart) {
+                window.weeklyWorkoutChart.destroy();
+            }
+            window.weeklyWorkoutChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: workoutData.labels,
+                    datasets: [
+                        {
+                            label: 'Calories Burned',
+                            data: workoutData.caloriesBurned,
+                            backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                            borderColor: 'rgb(59, 130, 246)',
+                            borderWidth: 1,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Workouts',
+                            data: workoutData.workoutCount,
+                            type: 'line',
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgb(16, 185, 129)',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Calories Burned'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Number of Workouts'
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         // Calculate workout days this week
