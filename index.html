@@ -882,9 +882,13 @@
                                         <div class="text-2xl font-bold text-emerald-600" id="avg-daily-protein">0</div>
                                         <div class="text-sm text-gray-600">Avg Daily Protein</div>
                                     </div>
-                                    <div class="text-center col-span-2">
+                                    <div class="text-center">
                                         <div class="text-2xl font-bold text-orange-600" id="total-calories">0</div>
                                         <div class="text-sm text-gray-600">Total Calories</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-emerald-600" id="total-protein">0</div>
+                                        <div class="text-sm text-gray-600">Total Protein</div>
                                     </div>
                                 </div>
                             </div>
@@ -1928,6 +1932,7 @@ document.addEventListener('DOMContentLoaded', () => {
             getEl('avg-daily-calories').textContent = avgCalories;
             getEl('avg-daily-protein').textContent = avgProtein;
             getEl('total-calories').textContent = totalCalories;
+            getEl('total-protein').textContent = `${totalProtein}g`;
 
             // Update weekly progress
             const weeklyCalorieGoal = state.goals.nutrition.calorieGoal * 7;
