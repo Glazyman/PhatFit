@@ -902,11 +902,7 @@
                                         <div class="text-2xl font-bold text-emerald-600" id="avg-daily-protein">0</div>
                                         <div class="text-sm text-gray-600">Avg Daily Protein</div>
                                     </div>
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold text-purple-600" id="days-tracked">0</div>
-                                        <div class="text-sm text-gray-600">Days Tracked</div>
-                                    </div>
-                                    <div class="text-center">
+                                    <div class="text-center col-span-2">
                                         <div class="text-2xl font-bold text-orange-600" id="total-calories">0</div>
                                         <div class="text-sm text-gray-600">Total Calories</div>
                                     </div>
@@ -929,7 +925,7 @@
                                     <div>
                                         <div class="flex justify-between items-center mb-2">
                                             <span class="text-sm font-medium text-gray-700">Weekly Protein Goal</span>
-                                            <span class="text-sm text-gray-500" id="weekly-protein-progress-text">0/0g</span>
+                                            <span class="text-sm text-gray-500" id="weekly-protein-progress-text">0/0 g</span>
                                         </div>
                                         <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
                                             <div class="h-full bg-emerald-500 rounded-full" id="weekly-protein-progress-bar" style="width: 0%"></div>
@@ -1827,9 +1823,26 @@ document.addEventListener('DOMContentLoaded', () => {
             currentDate.setDate(currentDate.getDate() + 1);
         }
         
-        const avgCalories = Math.round(totalCalories / labels.length);
-        const avgProtein = Math.round(totalProtein / labels.length);
-        const daysTracked = labels.filter((_, i) => calorieData[i] > 0).length;
+        const daysInRange = labels.length;
+        const avgCalories = Math.round(totalCalories / daysInRange);
+        const avgProtein = Math.round(totalProtein / daysInRange);
+
+        // Update food summary stats
+        if (state.activeDashboardView === 'food') {
+            getEl('avg-daily-calories').textContent = avgCalories;
+            getEl('avg-daily-protein').textContent = avgProtein;
+            getEl('total-calories').textContent = totalCalories;
+
+            // Update weekly progress
+            const weeklyCalorieGoal = state.goals.nutrition.calorieGoal * 7;
+            const weeklyProteinGoal = state.goals.nutrition.proteinGoal * 7;
+            
+            getEl('weekly-calorie-progress-text').textContent = `${totalCalories}/${weeklyCalorieGoal} cal`;
+            getEl('weekly-protein-progress-text').textContent = `${totalProtein}/${weeklyProteinGoal} g`;
+            
+            getEl('weekly-calorie-progress-bar').style.width = `${Math.min((totalCalories / weeklyCalorieGoal) * 100, 100)}%`;
+            getEl('weekly-protein-progress-bar').style.width = `${Math.min((totalProtein / weeklyProteinGoal) * 100, 100)}%`;
+        }
 
         // Calculate workout days this week
         let workoutDaysThisWeek = 0;
@@ -1842,7 +1855,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentDate.setDate(currentDate.getDate() + 1);
         }
 
-        // Update food summary stats
+        // Update overall summary stats
         getEl('summary-stats').innerHTML = `
             <div class="stats-card">
                 <p class="text-sm text-gray-500">Avg Cals</p>
