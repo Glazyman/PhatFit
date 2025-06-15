@@ -1446,6 +1446,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const avgProtein = Math.round(totalProtein / labels.length);
         const daysTracked = labels.filter((_, i) => calorieData[i] > 0).length;
 
+        // Calculate workout days this week
+        let workoutDaysThisWeek = 0;
+        currentDate = new Date(startDate);
+        while (currentDate <= endDate) {
+            const dayString = currentDate.toISOString().split('T')[0];
+            if (state.workouts && state.workouts[dayString] && state.workouts[dayString].length > 0) {
+                workoutDaysThisWeek++;
+            }
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
         // Update food summary stats
         getEl('summary-stats').innerHTML = `
             <div class="stats-card">
@@ -1457,8 +1468,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p class="text-2xl font-semibold text-gray-900 mt-1">${avgProtein}g</p>
             </div>
             <div class="stats-card">
-                <p class="text-sm text-gray-500">Days Tracked</p>
-                <p class="text-2xl font-semibold text-gray-900 mt-1">${daysTracked}</p>
+                <p class="text-sm text-gray-500">Workout Days</p>
+                <p class="text-2xl font-semibold text-gray-900 mt-1">${workoutDaysThisWeek}/7</p>
             </div>
             <div class="stats-card">
                 <p class="text-sm text-gray-500">Cals Burned</p>
