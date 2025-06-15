@@ -842,28 +842,23 @@
 
                     <div id="workout-summary-view" class="hidden card p-8">
                         <h3 class="text-2xl font-semibold mb-6 text-gray-900">Workout Summary</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
-                            <div class="stats-card">
-                                <p class="text-sm text-gray-500">Daily Calories Burned</p>
-                                <p class="text-2xl font-semibold text-blue-600 mt-1" id="daily-calories-burned">0</p>
-                            </div>
-                            <div class="stats-card">
-                                <p class="text-sm text-gray-500">Weekly Calories Burned</p>
-                                <p class="text-2xl font-semibold text-blue-600 mt-1" id="weekly-calories-burned">0</p>
-                            </div>
-                            <div class="stats-card">
-                                <p class="text-sm text-gray-500">Workout Days</p>
-                                <p class="text-2xl font-semibold text-blue-600 mt-1" id="workout-days-count">0/7</p>
-                            </div>
-                        </div>
-                        <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Stats Cards -->
                             <div class="card p-6">
-                                <h3 class="text-lg font-medium mb-4 text-gray-900">Weekly Workout Distribution</h3>
-                                <div id="weekly-workout-distribution" class="space-y-2"></div>
-                            </div>
-                            <div class="card p-6">
-                                <h3 class="text-lg font-medium mb-4 text-gray-900">Workout Volume by Category</h3>
-                                <div id="workout-volume-progress" class="space-y-4"></div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-blue-600" id="daily-calories-burned">0</div>
+                                        <div class="text-sm text-gray-600">Daily Calories Burned</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-blue-600" id="weekly-calories-burned">0</div>
+                                        <div class="text-sm text-gray-600">Weekly Calories Burned</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-blue-600" id="workout-days-count">0/7</div>
+                                        <div class="text-sm text-gray-600">Workout Days</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
