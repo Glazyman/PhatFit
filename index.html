@@ -826,6 +826,7 @@
                     <div class="bg-white/80 backdrop-blur-xl p-1 rounded-2xl border border-gray-200/50 flex justify-center">
                         <button id="overall-dash-btn" class="dash-nav-btn active">Overall</button>
                         <button id="food-dash-btn" class="dash-nav-btn">Food</button>
+                        <button id="workout-dash-btn" class="dash-nav-btn">Workout</button>
                     </div>
 
                     <div id="overall-summary-view" class="card p-8">
@@ -836,34 +837,45 @@
                                 <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Nutrition Progress</h3>
                                 <div id="nutrition-progress" class="space-y-4"></div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div id="workout-summary-view" class="hidden card p-8">
+                        <h3 class="text-2xl font-semibold mb-6 text-gray-900">Workout Summary</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                            <div class="stats-card">
+                                <p class="text-sm text-gray-500">Daily Calories Burned</p>
+                                <p class="text-2xl font-semibold text-blue-600 mt-1" id="daily-calories-burned">0</p>
+                            </div>
+                            <div class="stats-card">
+                                <p class="text-sm text-gray-500">Weekly Calories Burned</p>
+                                <p class="text-2xl font-semibold text-blue-600 mt-1" id="weekly-calories-burned">0</p>
+                            </div>
+                            <div class="stats-card">
+                                <p class="text-sm text-gray-500">Workout Days</p>
+                                <p class="text-2xl font-semibold text-blue-600 mt-1" id="workout-days-count">0</p>
+                            </div>
+                            <div class="stats-card">
+                                <p class="text-sm text-gray-500">Current Streak</p>
+                                <p class="text-2xl font-semibold text-blue-600 mt-1" id="workout-streak">0</p>
+                            </div>
+                        </div>
+                        <div class="space-y-6">
                             <div class="card p-6">
-                                <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Workout Progress</h3>
-                                <div id="workout-progress" class="space-y-4"></div>
+                                <h3 class="text-lg font-medium mb-4 text-gray-900">Weekly Workout Distribution</h3>
+                                <div id="weekly-workout-distribution" class="space-y-2"></div>
                             </div>
                             <div class="card p-6">
-                                <h3 class="text-lg font-medium mb-4 text-gray-900">Workout Summary</h3>
-                                <div class="grid grid-cols-2 gap-4 mb-4">
-                                    <div class="stats-card">
-                                        <p class="text-sm text-gray-500">Daily Calories Burned</p>
-                                        <p class="text-2xl font-semibold text-blue-600 mt-1" id="daily-calories-burned">0</p>
-                                    </div>
-                                    <div class="stats-card">
-                                        <p class="text-sm text-gray-500">Weekly Calories Burned</p>
-                                        <p class="text-2xl font-semibold text-blue-600 mt-1" id="weekly-calories-burned">0</p>
-                                    </div>
-                                    <div class="stats-card">
-                                        <p class="text-sm text-gray-500">Workout Days</p>
-                                        <p class="text-2xl font-semibold text-blue-600 mt-1" id="workout-days-count">0</p>
-                                    </div>
-                                    <div class="stats-card">
-                                        <p class="text-sm text-gray-500">Current Streak</p>
-                                        <p class="text-2xl font-semibold text-blue-600 mt-1" id="workout-streak">0</p>
-                                    </div>
-                                </div>
-                                <div class="mt-4">
-                                    <h4 class="text-sm font-medium text-gray-700 mb-2">Weekly Workout Distribution</h4>
-                                    <div id="weekly-workout-distribution" class="space-y-2"></div>
-                                </div>
+                                <h3 class="text-lg font-medium mb-4 text-gray-900">Most Frequent Exercises</h3>
+                                <div id="frequent-exercises" class="space-y-2"></div>
+                            </div>
+                            <div class="card p-6">
+                                <h3 class="text-lg font-medium mb-4 text-gray-900">Recent Achievements</h3>
+                                <div id="recent-achievements" class="space-y-2"></div>
+                            </div>
+                            <div class="card p-6">
+                                <h3 class="text-lg font-medium mb-4 text-gray-900">Workout Volume by Category</h3>
+                                <div id="workout-volume-progress" class="space-y-4"></div>
                             </div>
                         </div>
                     </div>
@@ -1558,9 +1570,11 @@ document.addEventListener('DOMContentLoaded', () => {
         state.activeDashboardView = viewName;
         overallSummaryView.classList.add('hidden');
         foodSummaryView.classList.add('hidden');
+        getEl('workout-summary-view').classList.add('hidden');
 
         overallDashBtn.classList.remove('active');
         foodDashBtn.classList.remove('active');
+        getEl('workout-dash-btn').classList.remove('active');
 
         if(viewName === 'overall'){
             overallSummaryView.classList.remove('hidden');
@@ -1568,6 +1582,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (viewName === 'food') {
             foodSummaryView.classList.remove('hidden');
             foodDashBtn.classList.add('active');
+        } else if (viewName === 'workout') {
+            getEl('workout-summary-view').classList.remove('hidden');
+            getEl('workout-dash-btn').classList.add('active');
         }
         renderSummary();
     };
@@ -1748,31 +1765,19 @@ document.addEventListener('DOMContentLoaded', () => {
         let maxStreak = 0;
         let lastWorkoutDate = null;
         const weeklyWorkoutDistribution = {};
+        const exerciseFrequency = {};
+        const categoryVolume = {};
+        const categoryFrequency = {};
+        const recentPRs = [];
         
         let currentDate = new Date(startDate);
         while (currentDate <= endDate) {
             const dayString = currentDate.toISOString().split('T')[0];
             const dayLabel = currentDate.toLocaleDateString('en-US', { weekday: 'short' });
-            labels.push(currentDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }));
-
-            // Calculate workout statistics
+            
+            // Process workouts
             if (state.workouts && state.workouts[dayString]) {
                 const dailyWorkouts = state.workouts[dayString];
-                let dailyWorkoutCalories = 0;
-                
-                dailyWorkouts.forEach(workout => {
-                    // Use AI calories if available, otherwise fallback to calculated
-                    dailyWorkoutCalories += (typeof workout.caloriesBurned === 'number' && !isNaN(workout.caloriesBurned))
-                        ? workout.caloriesBurned
-                        : calculateCaloriesBurned(workout);
-                });
-                
-                // Update daily calories if it's today
-                if (dayString === state.currentDate) {
-                    dailyCaloriesBurned = dailyWorkoutCalories;
-                }
-                
-                weeklyCaloriesBurned += dailyWorkoutCalories;
                 workoutDays++;
                 
                 // Update streak
@@ -1789,13 +1794,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 lastWorkoutDate = new Date(currentDate);
                 
-                // Track weekly distribution
-                weeklyWorkoutDistribution[dayLabel] = (weeklyWorkoutDistribution[dayLabel] || 0) + dailyWorkoutCalories;
-            } else {
-                currentStreak = 0;
+                // Process each workout
+                dailyWorkouts.forEach(w => {
+                    if (w && typeof w === 'object') {
+                        // Use AI calories if available, otherwise calculate
+                        const caloriesBurned = (typeof w.caloriesBurned === 'number' && !isNaN(w.caloriesBurned))
+                            ? w.caloriesBurned
+                            : calculateCaloriesBurned(w);
+                        dailyCaloriesBurned += caloriesBurned;
+                        weeklyCaloriesBurned += caloriesBurned;
+                        
+                        // Track exercise frequency
+                        exerciseFrequency[w.name] = (exerciseFrequency[w.name] || 0) + 1;
+                        
+                        // Track category data
+                        if (!categoryVolume[w.category]) {
+                            categoryVolume[w.category] = 0;
+                            categoryFrequency[w.category] = 0;
+                        }
+                        categoryVolume[w.category] += caloriesBurned;
+                        categoryFrequency[w.category]++;
+                        
+                        // Check for PR
+                        if (checkForPR(w.name, w.weight)) {
+                            recentPRs.push({
+                                name: w.name,
+                                weight: w.weight,
+                                date: new Date(dayString)
+                            });
+                        }
+                    }
+                });
+                
+                // Update weekly distribution
+                weeklyWorkoutDistribution[dayLabel] = (weeklyWorkoutDistribution[dayLabel] || 0) + dailyCaloriesBurned;
             }
 
-            // Existing nutrition calculations
+            // Process nutrition data
             let dailyCals = 0, dailyProt = 0;
             if (state.food && state.food[dayString]) {
                 state.food[dayString].forEach(f => {
@@ -1818,38 +1853,84 @@ document.addEventListener('DOMContentLoaded', () => {
             totalProtein += dailyProt;
             calorieData.push(dailyCals);
             proteinData.push(dailyProt);
+            labels.push(dayLabel);
 
             currentDate.setDate(currentDate.getDate() + 1);
         }
 
-        // Update workout summary elements
-        getEl('daily-calories-burned').textContent = Math.round(dailyCaloriesBurned);
-        getEl('weekly-calories-burned').textContent = Math.round(weeklyCaloriesBurned);
-        getEl('workout-days-count').textContent = workoutDays;
-        getEl('workout-streak').textContent = maxStreak;
+        // Update workout summary elements if workout view is active
+        if (state.activeDashboardView === 'workout') {
+            getEl('daily-calories-burned').textContent = Math.round(dailyCaloriesBurned);
+            getEl('weekly-calories-burned').textContent = Math.round(weeklyCaloriesBurned);
+            getEl('workout-days-count').textContent = workoutDays;
+            getEl('workout-streak').textContent = maxStreak;
 
-        // Update weekly workout distribution
-        const weeklyDistributionEl = getEl('weekly-workout-distribution');
-        const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        const maxCalories = Math.max(...Object.values(weeklyWorkoutDistribution));
-        
-        weeklyDistributionEl.innerHTML = daysOfWeek.map(day => {
-            const calories = weeklyWorkoutDistribution[day] || 0;
-            const percentage = maxCalories > 0 ? (calories / maxCalories) * 100 : 0;
-            return `
-                <div class="space-y-1">
+            // Update weekly workout distribution
+            const weeklyDistributionEl = getEl('weekly-workout-distribution');
+            const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const maxCalories = Math.max(...Object.values(weeklyWorkoutDistribution));
+            
+            weeklyDistributionEl.innerHTML = daysOfWeek.map(day => {
+                const calories = weeklyWorkoutDistribution[day] || 0;
+                const percentage = maxCalories > 0 ? (calories / maxCalories) * 100 : 0;
+                return `
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-600">${day}</span>
+                            <span class="text-sm text-gray-500">${Math.round(calories)} cal</span>
+                        </div>
+                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-500 rounded-full" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Update most frequent exercises
+            const frequentExercises = getEl('frequent-exercises');
+            frequentExercises.innerHTML = Object.entries(exerciseFrequency)
+                .sort(([, a], [, b]) => b - a)
+                .slice(0, 5)
+                .map(([name, count]) => `
                     <div class="flex justify-between items-center">
-                        <span class="text-sm font-medium text-gray-600">${day}</span>
-                        <span class="text-sm text-gray-500">${Math.round(calories)} cal</span>
+                        <span class="text-sm font-medium text-gray-600">${name}</span>
+                        <span class="text-sm text-gray-500">${count} times</span>
                     </div>
-                    <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                        <div class="h-full bg-blue-500 rounded-full" style="width: ${percentage}%"></div>
-                    </div>
-                </div>
-            `;
-        }).join('');
+                `).join('');
 
-        // Continue with existing summary updates
+            // Update recent achievements
+            const recentAchievements = getEl('recent-achievements');
+            recentAchievements.innerHTML = recentPRs
+                .sort((a, b) => b.date - a.date)
+                .slice(0, 3)
+                .map(pr => `
+                    <div class="flex items-center gap-2">
+                        <span class="text-yellow-500">🏆</span>
+                        <span class="text-sm text-gray-600">${pr.name}: ${pr.weight}lb</span>
+                        <span class="text-xs text-gray-400">${pr.date.toLocaleDateString()}</span>
+                    </div>
+                `).join('') || '<div class="text-sm text-gray-500">No recent achievements</div>';
+
+            // Update workout volume by category
+            const workoutVolumeProgress = getEl('workout-volume-progress');
+            const maxVolume = Math.max(...Object.values(categoryVolume), 0);
+            
+            workoutVolumeProgress.innerHTML = Object.entries(categoryVolume)
+                .sort(([, a], [, b]) => b - a)
+                .map(([category, volume]) => `
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-600">${category}</span>
+                            <span class="text-sm text-gray-500">${Math.round(volume)} cal</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" style="width: ${maxVolume > 0 ? (volume / maxVolume) * 100 : 0}%"></div>
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        // Continue with existing summary updates for other views
         const daysInRange = labels.length;
         const avgCalories = Math.round(totalCalories / daysInRange);
         const avgProtein = Math.round(totalProtein / daysInRange);
@@ -1886,49 +1967,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Update overall summary stats
-        getEl('summary-stats').innerHTML = `
-            <div class="stats-card">
-                <p class="text-sm text-gray-500">Avg Cals</p>
-                <p class="text-2xl font-semibold text-gray-900 mt-1">${avgCalories}</p>
-            </div>
-            <div class="stats-card">
-                <p class="text-sm text-gray-500">Avg Protein</p>
-                <p class="text-2xl font-semibold text-gray-900 mt-1">${avgProtein}g</p>
-            </div>
-            <div class="stats-card">
-                <p class="text-sm text-gray-500">Total Calories</p>
-                <p class="text-2xl font-semibold text-gray-900 mt-1">${totalCalories}</p>
-            </div>
-            <div class="stats-card">
-                <p class="text-sm text-gray-500">Total Protein</p>
-                <p class="text-2xl font-semibold text-gray-900 mt-1">${totalProtein}g</p>
-            </div>`;
+        if (state.activeDashboardView === 'overall') {
+            getEl('summary-stats').innerHTML = `
+                <div class="stats-card">
+                    <p class="text-sm text-gray-500">Avg Daily Calories</p>
+                    <p class="text-2xl font-semibold text-blue-600 mt-1">${avgCalories}</p>
+                </div>
+                <div class="stats-card">
+                    <p class="text-sm text-gray-500">Avg Daily Protein</p>
+                    <p class="text-2xl font-semibold text-blue-600 mt-1">${avgProtein}g</p>
+                </div>
+                <div class="stats-card">
+                    <p class="text-sm text-gray-500">Total Calories</p>
+                    <p class="text-2xl font-semibold text-blue-600 mt-1">${totalCalories}</p>
+                </div>
+                <div class="stats-card">
+                    <p class="text-sm text-gray-500">Total Protein</p>
+                    <p class="text-2xl font-semibold text-blue-600 mt-1">${totalProtein}g</p>
+                </div>
+            `;
 
-        // Render nutrition progress
-        const nutritionProgress = getEl('nutrition-progress');
-        nutritionProgress.innerHTML = '';
-        for (let i = 0; i < 7; i++) {
-            const day = labels[i];
-            const calories = calorieData[i];
-            const protein = proteinData[i];
+            // Update nutrition progress
+            const nutritionProgress = getEl('nutrition-progress');
+            nutritionProgress.innerHTML = '';
             const maxCalories = Math.max(...calorieData);
             const maxProtein = Math.max(...proteinData);
-            
-            nutritionProgress.innerHTML += `
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm font-medium text-gray-600">${day}</span>
-                        <span class="text-sm text-gray-500">${calories} cal / ${protein}g protein</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="progress-bar">
-                            <div class="progress-bar-fill" style="width: ${(calories / maxCalories) * 100}%"></div>
+
+            labels.forEach((day, index) => {
+                const calories = calorieData[index];
+                const protein = proteinData[index];
+                
+                nutritionProgress.innerHTML += `
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-600">${day}</span>
+                            <span class="text-sm text-gray-500">${calories} cal / ${protein}g protein</span>
                         </div>
-                        <div class="progress-bar">
-                            <div class="progress-bar-fill" style="width: ${(protein / maxProtein) * 100}%"></div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill" style="width: ${(calories / maxCalories) * 100}%"></div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill" style="width: ${(protein / maxProtein) * 100}%"></div>
+                            </div>
                         </div>
-                    </div>
-                </div>`;
+                    </div>`;
+            });
         }
     };
 
@@ -2150,6 +2234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     overallDashBtn.addEventListener('click', () => showDashboardView('overall'));
     foodDashBtn.addEventListener('click', () => showDashboardView('food'));
+    getEl('workout-dash-btn').addEventListener('click', () => showDashboardView('workout'));
 
     categoryInput.addEventListener('change', () => {
         exerciseNameInput.value = '';
