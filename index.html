@@ -370,6 +370,24 @@
         .insight-card div[id] {
             @apply text-sm text-gray-600;
         }
+        
+        .quick-question-btn {
+            @apply px-3 py-1.5 text-sm bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-xl hover:bg-white/80 hover:border-gray-300/50 transition-all duration-200 text-gray-600;
+        }
+        
+        @media (max-width: 640px) {
+            .dash-nav-btn {
+                @apply text-sm px-2;
+            }
+            
+            .dash-nav-btn i {
+                @apply mr-0;
+            }
+            
+            .dash-nav-btn span {
+                @apply hidden;
+            }
+        }
     </style>
 </head>
 <body class="text-gray-900">
@@ -599,17 +617,25 @@
                 <div id="ai-helper-view" class="hidden card p-8">
                     <h3 class="text-2xl font-semibold mb-6 text-gray-900">AI Helper</h3>
                     <div class="space-y-6">
-                        <div class="card p-6">
+                        <div class="card p-4 sm:p-6">
                             <div class="flex flex-col space-y-4">
                                 <div class="flex items-center gap-2">
                                     <i class="fas fa-robot text-blue-600"></i>
                                     <h4 class="text-lg font-medium text-gray-900">Ask me anything about your fitness journey</h4>
                                 </div>
-                                <div class="relative">
-                                    <textarea id="ai-question" placeholder="e.g., How have I grown in the past week? What's my recommended calorie intake? How can I improve my workout routine?" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 h-32 resize-none"></textarea>
-                                    <button id="ask-ai-btn" class="absolute bottom-4 right-4 bg-gray-900 text-white px-4 py-2 rounded-xl hover:bg-gray-800 transition-colors">
-                                        <i class="fas fa-paper-plane mr-2"></i>Ask
-                                    </button>
+                                <div class="flex flex-col sm:flex-row gap-2">
+                                    <div class="flex-1 relative">
+                                        <textarea id="ai-question" placeholder="e.g., How have I grown in the past week? What's my recommended calorie intake? How can I improve my workout routine?" class="w-full p-4 pr-24 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 h-24 sm:h-32 resize-none"></textarea>
+                                        <button id="ask-ai-btn" class="absolute bottom-4 right-4 bg-gray-900 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl hover:bg-gray-800 transition-colors text-sm sm:text-base">
+                                            <i class="fas fa-paper-plane mr-1 sm:mr-2"></i>Ask
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="quick-question-btn" data-question="How have I grown in the past week?">Past Week Progress</button>
+                                    <button class="quick-question-btn" data-question="What's my recommended calorie intake?">Calorie Needs</button>
+                                    <button class="quick-question-btn" data-question="How can I improve my workout routine?">Workout Tips</button>
+                                    <button class="quick-question-btn" data-question="What's my muscle balance like?">Muscle Balance</button>
                                 </div>
                                 <div id="ai-response" class="mt-4 p-4 bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-xl hidden">
                                     <div class="flex items-start gap-3">
@@ -619,7 +645,7 @@
                                             <div id="ai-loading" class="hidden">
                                                 <div class="flex items-center gap-2 text-gray-500">
                                                     <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-500"></div>
-                                                    <span>Thinking...</span>
+                                                    <span>Analyzing your data...</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1764,6 +1790,10 @@ document.addEventListener('DOMContentLoaded', () => {
         getEl('ai-response').classList.add('hidden');
         getEl('ai-loading').classList.remove('hidden');
         
+        // Analyze user data based on the question
+        const { startDate, endDate } = getDateRange();
+        const userData = analyzeUserData(startDate, endDate);
+        
         const response = await fetch('https://ai-proxy-git-main-daniels-projects-dce54a5d.vercel.app/api/openai', {
             method: 'POST',
             headers: {
@@ -1771,7 +1801,10 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             body: JSON.stringify({
                 messages: [
-                    { role: "system", content: "You are a helpful assistant." },
+                    { 
+                        role: "system", 
+                        content: `You are a fitness AI assistant. Analyze the following user data and provide personalized insights: ${JSON.stringify(userData)}` 
+                    },
                     { role: "user", content: question }
                 ]
             })
@@ -1782,6 +1815,102 @@ document.addEventListener('DOMContentLoaded', () => {
         getEl('ai-response').classList.remove('hidden');
         getEl('ai-response-content').textContent = data.choices[0].message.content;
     });
+
+    // Add quick question buttons functionality
+    document.querySelectorAll('.quick-question-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            getEl('ai-question').value = btn.dataset.question;
+            getEl('ask-ai-btn').click();
+        });
+    });
+
+    const analyzeUserData = (startDate, endDate) => {
+        const workoutData = {
+            exercises: {},
+            categories: {},
+            progression: {},
+            frequency: {},
+            totalVolume: 0,
+            totalWorkouts: 0,
+            caloriesBurned: 0
+        };
+        
+        const nutritionData = {
+            totalCalories: 0,
+            totalProtein: 0,
+            averageCalories: 0,
+            averageProtein: 0,
+            daysTracked: 0
+        };
+        
+        let currentDate = new Date(startDate);
+        while (currentDate <= endDate) {
+            const dayString = currentDate.toISOString().split('T')[0];
+            
+            // Analyze workouts
+            if (state.workouts && state.workouts[dayString]) {
+                workoutData.totalWorkouts++;
+                state.workouts[dayString].forEach(w => {
+                    const volume = Number(w.reps) * Number(w.weight);
+                    workoutData.totalVolume += volume;
+                    workoutData.caloriesBurned += calculateCaloriesBurned(w);
+                    
+                    // Track exercise data
+                    if (!workoutData.exercises[w.name]) {
+                        workoutData.exercises[w.name] = {
+                            totalVolume: 0,
+                            maxWeight: 0,
+                            frequency: 0,
+                            progression: []
+                        };
+                    }
+                    workoutData.exercises[w.name].totalVolume += volume;
+                    workoutData.exercises[w.name].maxWeight = Math.max(workoutData.exercises[w.name].maxWeight, Number(w.weight));
+                    workoutData.exercises[w.name].frequency++;
+                    workoutData.exercises[w.name].progression.push({
+                        date: dayString,
+                        weight: Number(w.weight),
+                        volume: volume
+                    });
+                    
+                    // Track category data
+                    if (!workoutData.categories[w.category]) {
+                        workoutData.categories[w.category] = {
+                            totalVolume: 0,
+                            frequency: 0
+                        };
+                    }
+                    workoutData.categories[w.category].totalVolume += volume;
+                    workoutData.categories[w.category].frequency++;
+                });
+            }
+            
+            // Analyze nutrition
+            if (state.food && state.food[dayString]) {
+                nutritionData.daysTracked++;
+                state.food[dayString].forEach(f => {
+                    nutritionData.totalCalories += f.calories * f.quantity;
+                    nutritionData.totalProtein += f.protein * f.quantity;
+                });
+            }
+            
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        
+        // Calculate averages
+        const daysInRange = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+        nutritionData.averageCalories = nutritionData.totalCalories / daysInRange;
+        nutritionData.averageProtein = nutritionData.totalProtein / daysInRange;
+        
+        return {
+            workoutData,
+            nutritionData,
+            dateRange: {
+                start: startDate.toISOString().split('T')[0],
+                end: endDate.toISOString().split('T')[0]
+            }
+        };
+    };
 });
 </script>
 
