@@ -1204,6 +1204,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize Settings Modal
     if (settingsNavBtn && settingsModal && closeSettingsModal) {
+        // Set initial state based on localStorage
+        const goalsSaved = localStorage.getItem('goalsSaved') === 'true';
+        if (goalsSaved) {
+            settingsCalorieGoal.disabled = true;
+            settingsProteinGoal.disabled = true;
+            saveSettingsGoalsBtn.textContent = 'Saved';
+            saveSettingsGoalsBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            saveSettingsGoalsBtn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+            editSettingsGoalsBtn.classList.remove('hidden');
+            
+            // Disable number control buttons
+            const numberControlBtns = settingsModal.querySelectorAll('.number-control-btn');
+            numberControlBtns.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            });
+        }
+
         settingsNavBtn.addEventListener('click', () => {
             // Load current goals into settings form
             settingsCalorieGoal.value = state.goals.nutrition.calorieGoal || 2000;
@@ -2260,6 +2278,25 @@ document.addEventListener('DOMContentLoaded', () => {
             customDateRange: false,
             activeDashboardView: 'overall'
         };
+
+        // Initialize settings goals form
+        const goalsSaved = localStorage.getItem('goalsSaved') === 'true';
+        if (goalsSaved) {
+            // Disable inputs and show edit button
+            settingsCalorieGoal.disabled = true;
+            settingsProteinGoal.disabled = true;
+            saveSettingsGoalsBtn.textContent = 'Saved';
+            saveSettingsGoalsBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            saveSettingsGoalsBtn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+            editSettingsGoalsBtn.classList.remove('hidden');
+            
+            // Disable number control buttons
+            const numberControlBtns = settingsModal.querySelectorAll('.number-control-btn');
+            numberControlBtns.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            });
+        }
 
         const categories = ['Legs', 'Arms', 'Shoulders', 'Chest', 'Back', 'Abs'];
         categories.forEach(cat => categoryInput.add(new Option(cat, cat)));
