@@ -372,7 +372,15 @@
         }
         
         .quick-question-btn {
-            @apply px-3 py-1.5 text-sm bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-xl hover:bg-white/80 hover:border-gray-300/50 transition-all duration-200 text-gray-600;
+            @apply px-4 py-2 text-sm bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-xl hover:bg-white/80 hover:border-gray-300/50 transition-all duration-200 text-gray-600 flex items-center;
+        }
+        
+        .quick-question-btn:hover {
+            @apply transform -translate-y-0.5 shadow-sm;
+        }
+        
+        .quick-question-btn i {
+            @apply text-blue-600;
         }
         
         @media (max-width: 640px) {
@@ -390,23 +398,23 @@
         }
         
         .chat-message {
-            @apply p-4 rounded-xl max-w-[85%] break-words;
+            @apply p-4 rounded-xl max-w-[85%] break-words relative;
         }
         
         .user-message {
-            @apply bg-blue-500 text-white ml-auto;
+            @apply bg-blue-600 text-white ml-auto;
         }
         
         .ai-message {
-            @apply bg-white/50 backdrop-blur-sm border border-gray-200/50;
+            @apply bg-white border border-gray-200/50;
         }
         
         .message-content {
-            @apply text-sm sm:text-base;
+            @apply text-sm sm:text-base leading-relaxed;
         }
         
         .message-time {
-            @apply text-xs text-gray-500 mt-1;
+            @apply text-xs text-gray-500 mt-2 opacity-75;
         }
         
         #chat-messages::-webkit-scrollbar {
@@ -423,6 +431,29 @@
         
         #chat-messages::-webkit-scrollbar-thumb:hover {
             @apply bg-gray-300;
+        }
+        
+        /* Typing indicator animation */
+        .typing-indicator {
+            @apply flex space-x-1 items-center p-2;
+        }
+        
+        .typing-indicator span {
+            @apply w-2 h-2 bg-gray-400 rounded-full;
+            animation: typing 1s infinite ease-in-out;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
         }
     </style>
 </head>
@@ -655,33 +686,49 @@
                     <div class="space-y-6">
                         <div class="card p-4 sm:p-6">
                             <div class="flex flex-col space-y-4">
-                                <div class="flex items-center gap-2">
-                                    <i class="fas fa-robot text-blue-600"></i>
-                                    <h4 class="text-lg font-medium text-gray-900">Ask me anything about your fitness journey</h4>
+                                <div class="flex items-center gap-2 mb-4">
+                                    <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
+                                        <i class="fas fa-robot text-white"></i>
+                                    </div>
+                                    <h4 class="text-lg font-medium text-gray-900">Your AI Fitness Assistant</h4>
                                 </div>
                                 
                                 <!-- Chat Messages Container -->
-                                <div id="chat-messages" class="flex-1 space-y-4 max-h-[400px] overflow-y-auto p-4 bg-white/30 backdrop-blur-sm rounded-xl">
-                                    <!-- Messages will be inserted here -->
+                                <div id="chat-messages" class="flex-1 space-y-4 max-h-[500px] overflow-y-auto p-4 bg-gray-50/50 backdrop-blur-sm rounded-xl">
+                                    <!-- Welcome Message -->
+                                    <div class="chat-message ai-message">
+                                        <div class="message-content">
+                                            Hi! I'm your AI fitness assistant. I can help you analyze your workout and nutrition data, provide insights, and answer any fitness-related questions. How can I help you today?
+                                        </div>
+                                        <div class="message-time">Just now</div>
+                                    </div>
                                 </div>
 
                                 <!-- Quick Question Buttons -->
-                                <div class="flex flex-wrap gap-2">
-                                    <button class="quick-question-btn" data-question="How have I grown in the past week?">Past Week Progress</button>
-                                    <button class="quick-question-btn" data-question="What's my recommended calorie intake?">Calorie Needs</button>
-                                    <button class="quick-question-btn" data-question="How can I improve my workout routine?">Workout Tips</button>
-                                    <button class="quick-question-btn" data-question="What's my muscle balance like?">Muscle Balance</button>
+                                <div class="flex flex-wrap gap-2 p-2">
+                                    <button class="quick-question-btn" data-question="How have I grown in the past week?">
+                                        <i class="fas fa-chart-line mr-2"></i>Past Week Progress
+                                    </button>
+                                    <button class="quick-question-btn" data-question="What's my recommended calorie intake?">
+                                        <i class="fas fa-fire mr-2"></i>Calorie Needs
+                                    </button>
+                                    <button class="quick-question-btn" data-question="How can I improve my workout routine?">
+                                        <i class="fas fa-dumbbell mr-2"></i>Workout Tips
+                                    </button>
+                                    <button class="quick-question-btn" data-question="What's my muscle balance like?">
+                                        <i class="fas fa-balance-scale mr-2"></i>Muscle Balance
+                                    </button>
                                 </div>
 
                                 <!-- Input Area -->
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-2 mt-4">
                                     <div class="flex-1 relative">
                                         <input type="text" id="ai-question" placeholder="Ask me anything about your fitness journey..." class="w-full p-4 pr-12 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500">
                                         <button id="clear-ai-input" class="absolute right-12 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                                             <i class="fas fa-times"></i>
                                         </button>
                                     </div>
-                                    <button id="ask-ai-btn" class="bg-gray-900 text-white px-4 py-4 rounded-xl hover:bg-gray-800 transition-colors">
+                                    <button id="ask-ai-btn" class="bg-blue-600 text-white px-6 py-4 rounded-xl hover:bg-blue-700 transition-colors">
                                         <i class="fas fa-paper-plane"></i>
                                     </button>
                                 </div>
@@ -1886,7 +1933,18 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const contentDiv = document.createElement('div');
         contentDiv.className = 'message-content';
-        contentDiv.textContent = content;
+        
+        if (isLoading) {
+            contentDiv.innerHTML = `
+                <div class="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+        } else {
+            contentDiv.textContent = content;
+        }
         
         const timeDiv = document.createElement('div');
         timeDiv.className = 'message-time';
@@ -1896,8 +1954,11 @@ document.addEventListener('DOMContentLoaded', () => {
         messageDiv.appendChild(timeDiv);
         messagesContainer.appendChild(messageDiv);
         
-        // Scroll to bottom
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        // Scroll to bottom with smooth animation
+        messagesContainer.scrollTo({
+            top: messagesContainer.scrollHeight,
+            behavior: 'smooth'
+        });
         
         return messageId;
     }
