@@ -3542,7 +3542,10 @@ Example bad response:
                 // Process each workout
                 dailyWorkouts.forEach(w => {
                     if (w && typeof w === 'object') {
-                        const caloriesBurned = calculateCaloriesBurned(w);
+                        // Use AI calories if available, otherwise calculate
+                        const caloriesBurned = (typeof w.caloriesBurned === 'number' && !isNaN(w.caloriesBurned))
+                            ? w.caloriesBurned
+                            : calculateCaloriesBurned(w);
                         totalCaloriesBurned += caloriesBurned;
                         
                         // Track exercise frequency
