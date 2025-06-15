@@ -1862,6 +1862,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update workout summary stats
         if (state.activeDashboardView === 'workout') {
+            console.log('Updating workout summary with:', {
+                avgCaloriesBurned,
+                totalCaloriesBurned,
+                workoutDays,
+                totalWorkouts,
+                workoutData
+            });
+
             getEl('avg-daily-calories-burned').textContent = avgCaloriesBurned;
             getEl('weekly-calories-burned').textContent = totalCaloriesBurned;
             getEl('workout-days').textContent = workoutDays;
@@ -3410,6 +3418,44 @@ Example bad response:
     getEl('settings-nav-btn-mobile').addEventListener('click', () => {
         settingsModal.classList.remove('hidden');
     });
+
+    // Initialize dashboard views
+    const dashboardViews = {
+        food: getEl('food-summary-view'),
+        workout: getEl('workout-summary-view')
+    };
+
+    // Initialize navigation buttons
+    const navButtons = {
+        food: getEl('food-nav-btn'),
+        workout: getEl('workout-nav-btn')
+    };
+
+    // Set up navigation
+    Object.entries(navButtons).forEach(([view, button]) => {
+        button.addEventListener('click', () => {
+            // Update active view
+            state.activeDashboardView = view;
+            
+            // Update button states
+            Object.values(navButtons).forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-gray-100', 'text-gray-600');
+            });
+            button.classList.remove('bg-gray-100', 'text-gray-600');
+            button.classList.add('bg-blue-600', 'text-white');
+            
+            // Update view visibility
+            Object.values(dashboardViews).forEach(v => v.classList.add('hidden'));
+            dashboardViews[view].classList.remove('hidden');
+            
+            // Render summary for the active view
+            renderSummary();
+        });
+    });
+
+    // Set initial active view
+    navButtons[state.activeDashboardView].click();
 });
 </script>
 
