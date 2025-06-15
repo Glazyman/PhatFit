@@ -712,6 +712,32 @@
                             <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Nutrition Breakdown</h3>
                             <div id="nutrition-breakdown" class="space-y-4"></div>
                         </div>
+                        <div class="card p-6">
+                            <h3 class="text-lg font-medium mb-4 text-gray-900">Nutrition Insights</h3>
+                            <div id="nutrition-insights" class="space-y-4">
+                                <div class="insight-card">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fas fa-utensils text-emerald-600"></i>
+                                        <h4 class="text-sm font-medium text-gray-900">Most Common Foods</h4>
+                                    </div>
+                                    <div id="common-foods" class="text-sm text-gray-600"></div>
+                                </div>
+                                <div class="insight-card">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fas fa-chart-line text-blue-600"></i>
+                                        <h4 class="text-sm font-medium text-gray-900">Nutrition Trends</h4>
+                                    </div>
+                                    <div id="nutrition-trends" class="text-sm text-gray-600"></div>
+                                </div>
+                                <div class="insight-card">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fas fa-bullseye text-purple-600"></i>
+                                        <h4 class="text-sm font-medium text-gray-900">Goals Progress</h4>
+                                    </div>
+                                    <div id="nutrition-goals" class="text-sm text-gray-600"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1287,6 +1313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const exerciseFrequency = {};
         const categoryVolume = {};
+        const commonFoods = {};
         
         let currentDate = new Date(startDate);
         while (currentDate <= endDate) {
@@ -1315,6 +1342,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.food[dayString].forEach(f => {
                     dailyCals += f.calories * f.quantity;
                     dailyProt += f.protein * f.quantity;
+                    
+                    // Track common foods
+                    if (!commonFoods[f.name]) {
+                        commonFoods[f.name] = {
+                            frequency: 0,
+                            totalCalories: 0,
+                            totalProtein: 0
+                        };
+                    }
+                    commonFoods[f.name].frequency++;
+                    commonFoods[f.name].totalCalories += f.calories * f.quantity;
+                    commonFoods[f.name].totalProtein += f.protein * f.quantity;
                 });
             }
             totalCalories += dailyCals;
@@ -1327,7 +1366,120 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const avgCalories = Math.round(totalCalories / labels.length);
         const avgProtein = Math.round(totalProtein / labels.length);
+        const daysTracked = labels.filter((_, i) => calorieData[i] > 0).length;
         
+        // Update food summary stats
+        getEl('food-summary-stats').innerHTML = `
+            <div class="stats-card">
+                <p class="text-sm text-gray-500">Avg Daily Calories</p>
+                <p class="text-2xl font-semibold text-gray-900 mt-1">${avgCalories}</p>
+            </div>
+            <div class="stats-card">
+                <p class="text-sm text-gray-500">Avg Daily Protein</p>
+                <p class="text-2xl font-semibold text-gray-900 mt-1">${avgProtein}g</p>
+            </div>
+            <div class="stats-card">
+                <p class="text-sm text-gray-500">Days Tracked</p>
+                <p class="text-2xl font-semibold text-gray-900 mt-1">${daysTracked}</p>
+            </div>
+            <div class="stats-card">
+                <p class="text-sm text-gray-500">Total Calories</p>
+                <p class="text-2xl font-semibold text-gray-900 mt-1">${Math.round(totalCalories)}</p>
+            </div>`;
+
+        // Render nutrition breakdown with improved design
+        const nutritionBreakdown = getEl('nutrition-breakdown');
+        nutritionBreakdown.innerHTML = '';
+        for (let i = 0; i < 7; i++) {
+            const day = labels[i];
+            const calories = calorieData[i];
+            const protein = proteinData[i];
+            const maxCalories = Math.max(...calorieData);
+            const maxProtein = Math.max(...proteinData);
+            
+            nutritionBreakdown.innerHTML += `
+                <div class="list-item p-4 bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-xl">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-sm font-medium text-gray-900">${day}</span>
+                        <div class="flex items-center gap-4">
+                            <span class="text-sm text-gray-600">${calories} cal</span>
+                            <span class="text-sm text-gray-600">${protein}g protein</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-gray-500 w-16">Calories</span>
+                            <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-blue-500 rounded-full" style="width: ${(calories / maxCalories) * 100}%"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-gray-500 w-16">Protein</span>
+                            <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-emerald-500 rounded-full" style="width: ${(protein / maxProtein) * 100}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        // Render common foods
+        const commonFoodsList = getEl('common-foods');
+        const sortedFoods = Object.entries(commonFoods)
+            .sort(([, a], [, b]) => b.frequency - a.frequency)
+            .slice(0, 5);
+        
+        commonFoodsList.innerHTML = sortedFoods.map(([name, data]) => `
+            <div class="flex justify-between items-center py-1">
+                <span class="text-gray-700">${name}</span>
+                <span class="text-gray-500">${data.frequency}x</span>
+            </div>
+        `).join('');
+
+        // Render nutrition trends
+        const nutritionTrends = getEl('nutrition-trends');
+        const calorieTrend = calorieData.slice(-3);
+        const proteinTrend = proteinData.slice(-3);
+        const calorieChange = ((calorieTrend[2] - calorieTrend[0]) / calorieTrend[0] * 100).toFixed(1);
+        const proteinChange = ((proteinTrend[2] - proteinTrend[0]) / proteinTrend[0] * 100).toFixed(1);
+        
+        nutritionTrends.innerHTML = `
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-700">Calorie Intake</span>
+                    <span class="text-${calorieChange > 0 ? 'emerald' : 'red'}-600">${calorieChange > 0 ? '+' : ''}${calorieChange}%</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-700">Protein Intake</span>
+                    <span class="text-${proteinChange > 0 ? 'emerald' : 'red'}-600">${proteinChange > 0 ? '+' : ''}${proteinChange}%</span>
+                </div>
+            </div>`;
+
+        // Render nutrition goals
+        const nutritionGoals = getEl('nutrition-goals');
+        const avgCaloriesPerDay = totalCalories / daysTracked;
+        const avgProteinPerDay = totalProtein / daysTracked;
+        const calorieGoal = 2000; // Example goal
+        const proteinGoal = 150; // Example goal
+        
+        nutritionGoals.innerHTML = `
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-700">Daily Calories</span>
+                    <span class="text-gray-500">${Math.round(avgCaloriesPerDay)} / ${calorieGoal}</span>
+                </div>
+                <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div class="h-full bg-blue-500 rounded-full" style="width: ${Math.min((avgCaloriesPerDay / calorieGoal) * 100, 100)}%"></div>
+                </div>
+                <div class="flex justify-between items-center mt-2">
+                    <span class="text-gray-700">Daily Protein</span>
+                    <span class="text-gray-500">${Math.round(avgProteinPerDay)}g / ${proteinGoal}g</span>
+                </div>
+                <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div class="h-full bg-emerald-500 rounded-full" style="width: ${Math.min((avgProteinPerDay / proteinGoal) * 100, 100)}%"></div>
+                </div>
+            </div>`;
+
         // Update stats cards
         getEl('summary-stats').innerHTML = `
             <div class="stats-card">
@@ -1407,29 +1559,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>`;
         });
-
-        // Render nutrition breakdown
-        const nutritionBreakdown = getEl('nutrition-breakdown');
-        nutritionBreakdown.innerHTML = '';
-        for (let i = 0; i < 7; i++) {
-            const day = labels[i];
-            const calories = calorieData[i];
-            const protein = proteinData[i];
-            
-            nutritionBreakdown.innerHTML += `
-                <div class="list-item">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm font-medium text-gray-600">${day}</span>
-                        <span class="text-sm text-gray-500">${calories} calories</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-bar-fill" style="width: ${(protein / 200) * 100}%"></div>
-                    </div>
-                    <div class="text-right mt-1">
-                        <span class="text-xs text-gray-500">${protein}g protein</span>
-                    </div>
-                </div>`;
-        }
     };
 
     const generateWorkoutInsights = (progression, categoryVolume, frequency, recentPRs) => {
