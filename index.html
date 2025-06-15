@@ -1986,7 +1986,7 @@ document.addEventListener('DOMContentLoaded', () => {
             getEl('total-calories').textContent = totalCalories;
             getEl('total-protein').textContent = `${totalProtein}g`;
             getEl('overall-weekly-calories-burned').textContent = Math.round(weeklyCaloriesBurned);
-            getEl('overall-avg-daily-calories-burned').textContent = Math.round(weeklyCaloriesBurned / 7);
+            getEl('overall-avg-daily-calories-burned').textContent = workoutDays > 0 ? Math.round(weeklyCaloriesBurned / workoutDays) : 0;
 
             // Update nutrition progress
             const nutritionProgress = getEl('nutrition-progress');
