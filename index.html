@@ -853,7 +853,7 @@
                             </div>
                             <div class="stats-card">
                                 <p class="text-sm text-gray-500">Workout Days</p>
-                                <p class="text-2xl font-semibold text-blue-600 mt-1" id="workout-days-count">0</p>
+                                <p class="text-2xl font-semibold text-blue-600 mt-1" id="workout-days-count">0/7</p>
                             </div>
                             <div class="stats-card">
                                 <p class="text-sm text-gray-500">Current Streak</p>
@@ -1862,7 +1862,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.activeDashboardView === 'workout') {
             getEl('daily-calories-burned').textContent = Math.round(dailyCaloriesBurned);
             getEl('weekly-calories-burned').textContent = Math.round(weeklyCaloriesBurned);
-            getEl('workout-days-count').textContent = workoutDays;
+            getEl('workout-days-count').textContent = `${workoutDays}/7`;
             getEl('workout-streak').textContent = maxStreak;
 
             // Update weekly workout distribution
