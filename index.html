@@ -783,7 +783,6 @@
                     <button id="overall-dash-btn" class="dash-nav-btn active">Overall</button>
                     <button id="workout-dash-btn" class="dash-nav-btn">Workout</button>
                     <button id="food-dash-btn" class="dash-nav-btn">Food</button>
-                    <button id="goals-dash-btn" class="dash-nav-btn">Goals</button>
                 </div>
 
                 <div id="overall-summary-view" class="card p-8">
@@ -1149,8 +1148,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevWeekBtn = getEl('prev-week-btn'), nextWeekBtn = getEl('next-week-btn'), weekRangeDisplay = getEl('week-range-display');
     const dailyCaloriesBurnedSummary = getEl('daily-calories-burned-summary');
     const dailyNutritionSummary = getEl('daily-nutrition-summary');
-    const overallDashBtn = getEl('overall-dash-btn'), workoutDashBtn = getEl('workout-dash-btn'), foodDashBtn = getEl('food-dash-btn'), goalsDashBtn = getEl('goals-dash-btn');
-    const overallSummaryView = getEl('overall-summary-view'), workoutSummaryView = getEl('workout-summary-view'), foodSummaryView = getEl('food-summary-view'), goalsSummaryView = getEl('goals-summary-view');
+    const overallDashBtn = getEl('overall-dash-btn'), workoutDashBtn = getEl('workout-dash-btn'), foodDashBtn = getEl('food-dash-btn');
+    const overallSummaryView = getEl('overall-summary-view'), workoutSummaryView = getEl('workout-summary-view'), foodSummaryView = getEl('food-summary-view');
     const aiHelperMenuBtn = getEl('ai-helper-menu-btn');
     const aiHelperModal = getEl('ai-helper-modal');
     const closeAiHelperModal = getEl('close-ai-helper-modal');
@@ -1525,12 +1524,10 @@ document.addEventListener('DOMContentLoaded', () => {
         overallSummaryView.classList.add('hidden');
         workoutSummaryView.classList.add('hidden');
         foodSummaryView.classList.add('hidden');
-        goalsSummaryView.classList.add('hidden');
 
         overallDashBtn.classList.remove('active');
         workoutDashBtn.classList.remove('active');
         foodDashBtn.classList.remove('active');
-        goalsDashBtn.classList.remove('active');
 
         if(viewName === 'overall'){
             overallSummaryView.classList.remove('hidden');
@@ -2064,7 +2061,6 @@ document.addEventListener('DOMContentLoaded', () => {
     overallDashBtn.addEventListener('click', () => showDashboardView('overall'));
     workoutDashBtn.addEventListener('click', () => showDashboardView('workout'));
     foodDashBtn.addEventListener('click', () => showDashboardView('food'));
-    goalsDashBtn.addEventListener('click', () => showDashboardView('goals'));
 
     categoryInput.addEventListener('change', () => {
         exerciseNameInput.value = '';
