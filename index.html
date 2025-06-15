@@ -845,7 +845,10 @@ document.addEventListener('DOMContentLoaded', () => {
             workoutList.innerHTML = `<p class="text-gray-500 text-center py-8">No workouts logged.</p>`;
         } else {
             dailyWorkouts.forEach(workout => {
-                dailyCaloriesBurned += calculateCaloriesBurned(workout);
+                // Use AI calories if available, otherwise fallback to calculated
+                dailyCaloriesBurned += (typeof workout.caloriesBurned === 'number' && !isNaN(workout.caloriesBurned))
+                    ? workout.caloriesBurned
+                    : calculateCaloriesBurned(workout);
                 const isPR = checkForPR(workout.name, workout.weight);
                 const card = document.createElement('div');
                 card.className = 'list-item fade-in';
