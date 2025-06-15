@@ -350,6 +350,26 @@
             background-color: rgba(0, 122, 255, 0.1) !important;
             color: #007AFF;
         }
+        
+        .insight-card {
+            @apply bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-xl p-4;
+        }
+        
+        .insight-card:hover {
+            @apply bg-white/80 border-gray-300/50 transition-all duration-200;
+        }
+        
+        .insight-card i {
+            @apply text-lg;
+        }
+        
+        .insight-card h4 {
+            @apply text-sm font-medium text-gray-900;
+        }
+        
+        .insight-card div[id] {
+            @apply text-sm text-gray-600;
+        }
     </style>
 </head>
 <body class="text-gray-900">
@@ -546,6 +566,40 @@
                         <div class="card p-6">
                             <h3 class="text-lg font-medium mb-4 text-gray-900">Most Common Foods</h3>
                             <div id="common-foods" class="space-y-4"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card p-6">
+                    <h3 class="text-lg font-medium mb-4 text-gray-900">Workout Insights</h3>
+                    <div id="workout-insights" class="space-y-4">
+                        <div class="insight-card">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-chart-line text-blue-600"></i>
+                                <h4 class="text-sm font-medium text-gray-900">Progression Trends</h4>
+                            </div>
+                            <div id="progression-trends" class="text-sm text-gray-600"></div>
+                        </div>
+                        <div class="insight-card">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-balance-scale text-yellow-600"></i>
+                                <h4 class="text-sm font-medium text-gray-900">Muscle Balance</h4>
+                            </div>
+                            <div id="muscle-balance" class="text-sm text-gray-600"></div>
+                        </div>
+                        <div class="insight-card">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-lightbulb text-green-600"></i>
+                                <h4 class="text-sm font-medium text-gray-900">Workout Variety</h4>
+                            </div>
+                            <div id="workout-variety" class="text-sm text-gray-600"></div>
+                        </div>
+                        <div class="insight-card">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-trophy text-purple-600"></i>
+                                <h4 class="text-sm font-medium text-gray-900">Recent Achievements</h4>
+                            </div>
+                            <div id="recent-achievements" class="text-sm text-gray-600"></div>
                         </div>
                     </div>
                 </div>
@@ -966,6 +1020,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const exerciseFrequency = {};
         const categoryVolume = {};
+        const exerciseProgression = {};
+        const recentPRs = [];
         
         let currentDate = new Date(startDate);
         while (currentDate <= endDate) {
@@ -982,6 +1038,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     exerciseFrequency[w.name] = (exerciseFrequency[w.name] || 0) + 1;
                     categoryVolume[w.category] = (categoryVolume[w.category] || 0) + (Number(w.reps) * Number(w.weight));
+                    
+                    // Track progression
+                    if (!exerciseProgression[w.name]) {
+                        exerciseProgression[w.name] = [];
+                    }
+                    exerciseProgression[w.name].push({
+                        date: new Date(dayString),
+                        weight: Number(w.weight),
+                        sets: Number(w.sets),
+                        reps: Number(w.reps)
+                    });
+                    
+                    // Check for PRs
+                    if (checkForPR(w.name, w.weight)) {
+                        recentPRs.push({
+                            name: w.name,
+                            weight: w.weight,
+                            date: new Date(dayString)
+                        });
+                    }
                 });
             }
             dailySetsData.push(dailySets);
@@ -1148,6 +1224,80 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>`;
         });
+
+        // Generate Workout Insights
+        generateWorkoutInsights(exerciseProgression, categoryVolume, exerciseFrequency, recentPRs);
+    };
+
+    const generateWorkoutInsights = (progression, categoryVolume, frequency, recentPRs) => {
+        // Progression Trends
+        const progressionTrends = getEl('progression-trends');
+        const topExercises = Object.entries(progression)
+            .filter(([, data]) => data.length >= 3)
+            .sort(([, a], [, b]) => {
+                const aProgress = calculateProgress(a);
+                const bProgress = calculateProgress(b);
+                return bProgress - aProgress;
+            })
+            .slice(0, 3);
+
+        progressionTrends.innerHTML = topExercises.map(([exercise, data]) => {
+            const progress = calculateProgress(data);
+            const trend = progress > 0 ? '📈' : progress < 0 ? '📉' : '➡️';
+            return `<div class="mb-2">${exercise}: ${trend} ${Math.abs(progress)}% change</div>`;
+        }).join('') || '<div class="text-gray-500">Not enough data to show trends</div>';
+
+        // Muscle Balance
+        const muscleBalance = getEl('muscle-balance');
+        const totalVolume = Object.values(categoryVolume).reduce((a, b) => a + b, 0);
+        const imbalances = Object.entries(categoryVolume)
+            .map(([category, volume]) => ({
+                category,
+                percentage: (volume / totalVolume) * 100
+            }))
+            .sort((a, b) => b.percentage - a.percentage);
+
+        muscleBalance.innerHTML = imbalances.map(({ category, percentage }) => {
+            const status = percentage > 30 ? '⚠️' : percentage < 10 ? '💪' : '✅';
+            return `<div class="mb-2">${category}: ${status} ${Math.round(percentage)}% of total volume</div>`;
+        }).join('');
+
+        // Workout Variety
+        const workoutVariety = getEl('workout-variety');
+        const totalExercises = Object.keys(frequency).length;
+        const mostFrequent = Object.entries(frequency)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, 3);
+        const leastFrequent = Object.entries(frequency)
+            .sort(([, a], [, b]) => a - b)
+            .slice(0, 3);
+
+        workoutVariety.innerHTML = `
+            <div class="mb-2">Total unique exercises: ${totalExercises}</div>
+            <div class="mb-2">Most frequent: ${mostFrequent.map(([name]) => name).join(', ')}</div>
+            <div class="mb-2">Try more: ${leastFrequent.map(([name]) => name).join(', ')}</div>
+        `;
+
+        // Recent Achievements
+        const recentAchievements = getEl('recent-achievements');
+        const sortedPRs = recentPRs
+            .sort((a, b) => b.date - a.date)
+            .slice(0, 3);
+
+        recentAchievements.innerHTML = sortedPRs.map(pr => {
+            const date = pr.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            return `<div class="mb-2">🏆 New PR: ${pr.name} (${pr.weight}lb) on ${date}</div>`;
+        }).join('') || '<div class="text-gray-500">No recent achievements</div>';
+    };
+
+    const calculateProgress = (data) => {
+        if (data.length < 2) return 0;
+        const sorted = data.sort((a, b) => a.date - b.date);
+        const first = sorted[0];
+        const last = sorted[sorted.length - 1];
+        const firstVolume = first.weight * first.sets * first.reps;
+        const lastVolume = last.weight * last.sets * last.reps;
+        return ((lastVolume - firstVolume) / firstVolume) * 100;
     };
 
     const fullResetWorkoutForm = () => { 
