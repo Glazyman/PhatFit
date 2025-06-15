@@ -853,7 +853,11 @@
                                     </div>
                                     <div class="stats-card">
                                         <p class="text-sm text-gray-500">Workout Days</p>
-                                        <p class="text-2xl font-semibold text-blue-600 mt-1" id="workout-days-count">0/7</p>
+                                        <p class="text-2xl font-semibold text-blue-600 mt-1" id="workout-days-count">0</p>
+                                    </div>
+                                    <div class="stats-card">
+                                        <p class="text-sm text-gray-500">Current Streak</p>
+                                        <p class="text-2xl font-semibold text-blue-600 mt-1" id="workout-streak">0</p>
                                     </div>
                                 </div>
                                 <div class="mt-4">
@@ -1740,6 +1744,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let dailyCaloriesBurned = 0;
         let weeklyCaloriesBurned = 0;
         let workoutDays = 0;
+        let currentStreak = 0;
+        let maxStreak = 0;
+        let lastWorkoutDate = null;
         const weeklyWorkoutDistribution = {};
         
         let currentDate = new Date(startDate);
@@ -1768,8 +1775,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 weeklyCaloriesBurned += dailyWorkoutCalories;
                 workoutDays++;
                 
+                // Update streak
+                if (lastWorkoutDate) {
+                    const daysSinceLastWorkout = Math.floor((currentDate - lastWorkoutDate) / (1000 * 60 * 60 * 24));
+                    if (daysSinceLastWorkout === 1) {
+                        currentStreak++;
+                        maxStreak = Math.max(maxStreak, currentStreak);
+                    } else {
+                        currentStreak = 1;
+                    }
+                } else {
+                    currentStreak = 1;
+                }
+                lastWorkoutDate = new Date(currentDate);
+                
                 // Track weekly distribution
                 weeklyWorkoutDistribution[dayLabel] = (weeklyWorkoutDistribution[dayLabel] || 0) + dailyWorkoutCalories;
+            } else {
+                currentStreak = 0;
             }
 
             // Existing nutrition calculations
@@ -1802,7 +1825,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update workout summary elements
         getEl('daily-calories-burned').textContent = Math.round(dailyCaloriesBurned);
         getEl('weekly-calories-burned').textContent = Math.round(weeklyCaloriesBurned);
-        getEl('workout-days-count').textContent = `${workoutDays}/7`;
+        getEl('workout-days-count').textContent = workoutDays;
         getEl('workout-streak').textContent = maxStreak;
 
         // Update weekly workout distribution
