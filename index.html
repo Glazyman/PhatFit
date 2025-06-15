@@ -620,6 +620,31 @@
                         <h2 class="text-2xl font-semibold mb-6 text-gray-900">Today's Food</h2>
                         <div id="food-list" class="space-y-4 max-h-[42rem] overflow-y-auto pr-2"></div>
                         <div id="daily-nutrition-summary" class="mt-6 pt-6 border-t border-gray-200"></div>
+                        
+                        <!-- Daily Progress -->
+                        <div class="card p-6 mt-6">
+                            <h4 class="text-lg font-medium mb-4 text-gray-900">Today's Progress</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium text-gray-700">Calorie Goal</span>
+                                        <span class="text-sm text-gray-500" id="daily-calorie-progress-text">0/0 cal</span>
+                                    </div>
+                                    <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-blue-500 rounded-full" id="daily-calorie-progress-bar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium text-gray-700">Protein Goal</span>
+                                        <span class="text-sm text-gray-500" id="daily-protein-progress-text">0/0g</span>
+                                    </div>
+                                    <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-emerald-500 rounded-full" id="daily-protein-progress-bar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -643,6 +668,7 @@
                     <button id="overall-dash-btn" class="dash-nav-btn active">Overall</button>
                     <button id="workout-dash-btn" class="dash-nav-btn">Workout</button>
                     <button id="food-dash-btn" class="dash-nav-btn">Food</button>
+                    <button id="goals-dash-btn" class="dash-nav-btn">Goals</button>
                 </div>
 
                 <div id="overall-summary-view" class="card p-8">
@@ -706,14 +732,32 @@
 
                 <div id="food-summary-view" class="hidden card p-8">
                     <h3 class="text-2xl font-semibold mb-6 text-gray-900">Food Summary</h3>
-                    <div id="food-summary-stats" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8"></div>
-                    <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Stats Cards -->
                         <div class="card p-6">
-                            <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Nutrition Breakdown</h3>
-                            <div id="nutrition-breakdown" class="space-y-4"></div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-blue-600" id="avg-daily-calories">0</div>
+                                    <div class="text-sm text-gray-600">Avg Daily Calories</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-emerald-600" id="avg-daily-protein">0</div>
+                                    <div class="text-sm text-gray-600">Avg Daily Protein</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-purple-600" id="days-tracked">0</div>
+                                    <div class="text-sm text-gray-600">Days Tracked</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-orange-600" id="total-calories">0</div>
+                                    <div class="text-sm text-gray-600">Total Calories</div>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Nutrition Insights -->
                         <div class="card p-6">
-                            <h3 class="text-lg font-medium mb-4 text-gray-900">Nutrition Insights</h3>
+                            <h4 class="text-lg font-medium mb-4 text-gray-900">Nutrition Insights</h4>
                             <div id="nutrition-insights" class="space-y-4">
                                 <div class="insight-card">
                                     <div class="flex items-center gap-2 mb-2">
@@ -729,12 +773,68 @@
                                     </div>
                                     <div id="nutrition-trends" class="text-sm text-gray-600"></div>
                                 </div>
-                                <div class="insight-card">
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <i class="fas fa-bullseye text-purple-600"></i>
-                                        <h4 class="text-sm font-medium text-gray-900">Goals Progress</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="goals-summary-view" class="hidden card p-8">
+                    <h3 class="text-2xl font-semibold mb-6 text-gray-900">Fitness Goals</h3>
+                    <div class="grid grid-cols-1 gap-6">
+                        <!-- Nutrition Goals -->
+                        <div class="card p-6">
+                            <h4 class="text-lg font-medium mb-4 text-gray-900">Nutrition Goals</h4>
+                            <form id="nutrition-goals-form" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Daily Calorie Target</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="number" id="calorie-goal" class="flex-1 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500" placeholder="e.g., 2000">
+                                        <span class="text-gray-500">calories</span>
                                     </div>
-                                    <div id="nutrition-goals" class="text-sm text-gray-600"></div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Daily Protein Target</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="number" id="protein-goal" class="flex-1 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500" placeholder="e.g., 150">
+                                        <span class="text-gray-500">grams</span>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button type="submit" id="save-nutrition-goals" class="flex-1 bg-blue-600 text-white font-medium py-3 rounded-xl hover:bg-blue-700 transition-colors">
+                                        Save Nutrition Goals
+                                    </button>
+                                    <button type="button" id="edit-nutrition-goals" class="hidden bg-gray-600 text-white font-medium py-3 px-4 rounded-xl hover:bg-gray-700 transition-colors">
+                                        Edit
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Progress -->
+                    <div class="mt-8">
+                        <h4 class="text-lg font-medium mb-4 text-gray-900">Weekly Progress</h4>
+                        <div class="grid grid-cols-1 gap-6">
+                            <div class="card p-6">
+                                <div class="space-y-4">
+                                    <div>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-sm font-medium text-gray-700">Weekly Calorie Goal</span>
+                                            <span class="text-sm text-gray-500" id="weekly-calorie-progress-text">0/0 cal</span>
+                                        </div>
+                                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                            <div class="h-full bg-blue-500 rounded-full" id="weekly-calorie-progress-bar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-sm font-medium text-gray-700">Weekly Protein Goal</span>
+                                            <span class="text-sm text-gray-500" id="weekly-protein-progress-text">0/0g</span>
+                                        </div>
+                                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                            <div class="h-full bg-emerald-500 rounded-full" id="weekly-protein-progress-bar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -883,8 +983,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevWeekBtn = getEl('prev-week-btn'), nextWeekBtn = getEl('next-week-btn'), weekRangeDisplay = getEl('week-range-display');
     const dailyCaloriesBurnedSummary = getEl('daily-calories-burned-summary');
     const dailyNutritionSummary = getEl('daily-nutrition-summary');
-    const overallDashBtn = getEl('overall-dash-btn'), workoutDashBtn = getEl('workout-dash-btn'), foodDashBtn = getEl('food-dash-btn');
-    const overallSummaryView = getEl('overall-summary-view'), workoutSummaryView = getEl('workout-summary-view'), foodSummaryView = getEl('food-summary-view');
+    const overallDashBtn = getEl('overall-dash-btn'), workoutDashBtn = getEl('workout-dash-btn'), foodDashBtn = getEl('food-dash-btn'), goalsDashBtn = getEl('goals-dash-btn');
+    const overallSummaryView = getEl('overall-summary-view'), workoutSummaryView = getEl('workout-summary-view'), foodSummaryView = getEl('food-summary-view'), goalsSummaryView = getEl('goals-summary-view');
     const aiHelperMenuBtn = getEl('ai-helper-menu-btn');
     const aiHelperModal = getEl('ai-helper-modal');
     const closeAiHelperModal = getEl('close-ai-helper-modal');
@@ -1057,13 +1157,20 @@ document.addEventListener('DOMContentLoaded', () => {
         itemToDelete: null,
         dashboardWeekOffset: 0,
         activeDashboardView: 'overall',
-        customDateRange: false
+        customDateRange: false,
+        goals: JSON.parse(localStorage.getItem('goals')) || {
+            nutrition: {
+                calorieGoal: 2000,
+                proteinGoal: 150
+            }
+        }
     };
     
     const saveData = () => {
         localStorage.setItem('workouts', JSON.stringify(state.workouts));
         localStorage.setItem('food', JSON.stringify(state.food));
         localStorage.setItem('favorites', JSON.stringify(state.favorites));
+        localStorage.setItem('goals', JSON.stringify(state.goals));
     };
 
     const showPage = (pageName) => {
@@ -1081,6 +1188,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (pageName === 'food') {
             foodPage.classList.remove('hidden');
             foodNavBtn.classList.add('active');
+            updateFoodProgress(); // Add this line to update progress when showing food page
         } else {
             state.dashboardWeekOffset = 0;
             dashboardPage.classList.remove('hidden');
@@ -1094,10 +1202,12 @@ document.addEventListener('DOMContentLoaded', () => {
         overallSummaryView.classList.add('hidden');
         workoutSummaryView.classList.add('hidden');
         foodSummaryView.classList.add('hidden');
+        goalsSummaryView.classList.add('hidden');
 
         overallDashBtn.classList.remove('active');
         workoutDashBtn.classList.remove('active');
         foodDashBtn.classList.remove('active');
+        goalsDashBtn.classList.remove('active');
 
         if(viewName === 'overall'){
             overallSummaryView.classList.remove('hidden');
@@ -1145,6 +1255,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (viewName === 'food') {
             foodSummaryView.classList.remove('hidden');
             foodDashBtn.classList.add('active');
+        } else if (viewName === 'goals') {
+            goalsSummaryView.classList.remove('hidden');
+            goalsDashBtn.classList.add('active');
+            updateGoalsProgress();
         }
         renderSummary();
     };
@@ -1308,34 +1422,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const { startDate, endDate } = getDateRange();
         updateDateInputs(startDate, endDate);
         
-        const labels = [], calorieData = [], proteinData = [], dailySetsData = [], dailyRepsData = [];
-        let totalCalories = 0, totalProtein = 0, workoutCount = 0, totalCaloriesBurned = 0, totalSets = 0, totalReps = 0;
+        const labels = [], calorieData = [], proteinData = [];
+        let totalCalories = 0, totalProtein = 0, totalCaloriesBurned = 0;
         
-        const exerciseFrequency = {};
-        const categoryVolume = {};
         const commonFoods = {};
         
         let currentDate = new Date(startDate);
         while (currentDate <= endDate) {
             const dayString = currentDate.toISOString().split('T')[0];
             labels.push(currentDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }));
-            
-            let dailySets = 0, dailyReps = 0;
+
+            // Calculate calories burned from workouts
             if (state.workouts && state.workouts[dayString]) {
-                workoutCount++;
                 state.workouts[dayString].forEach(w => {
-                    dailySets += Number(w.sets);
-                    dailyReps += Number(w.reps);
                     totalCaloriesBurned += calculateCaloriesBurned(w);
-                    
-                    exerciseFrequency[w.name] = (exerciseFrequency[w.name] || 0) + 1;
-                    categoryVolume[w.category] = (categoryVolume[w.category] || 0) + (Number(w.reps) * Number(w.weight));
                 });
             }
-            dailySetsData.push(dailySets);
-            dailyRepsData.push(dailyReps);
-            totalSets += dailySets;
-            totalReps += dailyReps;
 
             let dailyCals = 0, dailyProt = 0;
             if (state.food && state.food[dayString]) {
@@ -1367,120 +1469,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const avgCalories = Math.round(totalCalories / labels.length);
         const avgProtein = Math.round(totalProtein / labels.length);
         const daysTracked = labels.filter((_, i) => calorieData[i] > 0).length;
-        
+
         // Update food summary stats
-        getEl('food-summary-stats').innerHTML = `
-            <div class="stats-card">
-                <p class="text-sm text-gray-500">Avg Daily Calories</p>
-                <p class="text-2xl font-semibold text-gray-900 mt-1">${avgCalories}</p>
-            </div>
-            <div class="stats-card">
-                <p class="text-sm text-gray-500">Avg Daily Protein</p>
-                <p class="text-2xl font-semibold text-gray-900 mt-1">${avgProtein}g</p>
-            </div>
-            <div class="stats-card">
-                <p class="text-sm text-gray-500">Days Tracked</p>
-                <p class="text-2xl font-semibold text-gray-900 mt-1">${daysTracked}</p>
-            </div>
-            <div class="stats-card">
-                <p class="text-sm text-gray-500">Total Calories</p>
-                <p class="text-2xl font-semibold text-gray-900 mt-1">${Math.round(totalCalories)}</p>
-            </div>`;
-
-        // Render nutrition breakdown with improved design
-        const nutritionBreakdown = getEl('nutrition-breakdown');
-        nutritionBreakdown.innerHTML = '';
-        for (let i = 0; i < 7; i++) {
-            const day = labels[i];
-            const calories = calorieData[i];
-            const protein = proteinData[i];
-            const maxCalories = Math.max(...calorieData);
-            const maxProtein = Math.max(...proteinData);
-            
-            nutritionBreakdown.innerHTML += `
-                <div class="list-item p-4 bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-xl">
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-sm font-medium text-gray-900">${day}</span>
-                        <div class="flex items-center gap-4">
-                            <span class="text-sm text-gray-600">${calories} cal</span>
-                            <span class="text-sm text-gray-600">${protein}g protein</span>
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-gray-500 w-16">Calories</span>
-                            <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-blue-500 rounded-full" style="width: ${(calories / maxCalories) * 100}%"></div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-gray-500 w-16">Protein</span>
-                            <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-emerald-500 rounded-full" style="width: ${(protein / maxProtein) * 100}%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-        }
-
-        // Render common foods
-        const commonFoodsList = getEl('common-foods');
-        const sortedFoods = Object.entries(commonFoods)
-            .sort(([, a], [, b]) => b.frequency - a.frequency)
-            .slice(0, 5);
-        
-        commonFoodsList.innerHTML = sortedFoods.map(([name, data]) => `
-            <div class="flex justify-between items-center py-1">
-                <span class="text-gray-700">${name}</span>
-                <span class="text-gray-500">${data.frequency}x</span>
-            </div>
-        `).join('');
-
-        // Render nutrition trends
-        const nutritionTrends = getEl('nutrition-trends');
-        const calorieTrend = calorieData.slice(-3);
-        const proteinTrend = proteinData.slice(-3);
-        const calorieChange = ((calorieTrend[2] - calorieTrend[0]) / calorieTrend[0] * 100).toFixed(1);
-        const proteinChange = ((proteinTrend[2] - proteinTrend[0]) / proteinTrend[0] * 100).toFixed(1);
-        
-        nutritionTrends.innerHTML = `
-            <div class="space-y-2">
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-700">Calorie Intake</span>
-                    <span class="text-${calorieChange > 0 ? 'emerald' : 'red'}-600">${calorieChange > 0 ? '+' : ''}${calorieChange}%</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-700">Protein Intake</span>
-                    <span class="text-${proteinChange > 0 ? 'emerald' : 'red'}-600">${proteinChange > 0 ? '+' : ''}${proteinChange}%</span>
-                </div>
-            </div>`;
-
-        // Render nutrition goals
-        const nutritionGoals = getEl('nutrition-goals');
-        const avgCaloriesPerDay = totalCalories / daysTracked;
-        const avgProteinPerDay = totalProtein / daysTracked;
-        const calorieGoal = 2000; // Example goal
-        const proteinGoal = 150; // Example goal
-        
-        nutritionGoals.innerHTML = `
-            <div class="space-y-2">
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-700">Daily Calories</span>
-                    <span class="text-gray-500">${Math.round(avgCaloriesPerDay)} / ${calorieGoal}</span>
-                </div>
-                <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div class="h-full bg-blue-500 rounded-full" style="width: ${Math.min((avgCaloriesPerDay / calorieGoal) * 100, 100)}%"></div>
-                </div>
-                <div class="flex justify-between items-center mt-2">
-                    <span class="text-gray-700">Daily Protein</span>
-                    <span class="text-gray-500">${Math.round(avgProteinPerDay)}g / ${proteinGoal}g</span>
-                </div>
-                <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div class="h-full bg-emerald-500 rounded-full" style="width: ${Math.min((avgProteinPerDay / proteinGoal) * 100, 100)}%"></div>
-                </div>
-            </div>`;
-
-        // Update stats cards
         getEl('summary-stats').innerHTML = `
             <div class="stats-card">
                 <p class="text-sm text-gray-500">Avg Cals</p>
@@ -1491,8 +1481,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p class="text-2xl font-semibold text-gray-900 mt-1">${avgProtein}g</p>
             </div>
             <div class="stats-card">
-                <p class="text-sm text-gray-500">Workouts</p>
-                <p class="text-2xl font-semibold text-gray-900 mt-1">${workoutCount}</p>
+                <p class="text-sm text-gray-500">Days Tracked</p>
+                <p class="text-2xl font-semibold text-gray-900 mt-1">${daysTracked}</p>
             </div>
             <div class="stats-card">
                 <p class="text-sm text-gray-500">Cals Burned</p>
@@ -1507,7 +1497,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const calories = calorieData[i];
             const protein = proteinData[i];
             const maxCalories = Math.max(...calorieData);
-            const maxProtein = Math.max(...proteinData);
             
             nutritionProgress.innerHTML += `
                 <div class="space-y-2">
@@ -1520,45 +1509,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>`;
         }
-
-        // Render workout progress
-        const workoutProgress = getEl('workout-progress');
-        workoutProgress.innerHTML = '';
-        for (let i = 0; i < 7; i++) {
-            const day = labels[i];
-            const sets = dailySetsData[i];
-            const reps = dailyRepsData[i];
-            const maxSets = Math.max(...dailySetsData);
-            const maxReps = Math.max(...dailyRepsData);
-            
-            workoutProgress.innerHTML += `
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm font-medium text-gray-600">${day}</span>
-                        <span class="text-sm text-gray-500">${sets} sets / ${reps} reps</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-bar-fill" style="width: ${(sets / maxSets) * 100}%"></div>
-                    </div>
-                </div>`;
-        }
-
-        // Render workout volume by category
-        const workoutVolumeProgress = getEl('workout-volume-progress');
-        workoutVolumeProgress.innerHTML = '';
-        const maxVolume = Math.max(...Object.values(categoryVolume));
-        Object.entries(categoryVolume).forEach(([category, volume]) => {
-            workoutVolumeProgress.innerHTML += `
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm font-medium text-gray-600">${category}</span>
-                        <span class="text-sm text-gray-500">${Math.round(volume)} lb</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-bar-fill" style="width: ${(volume / maxVolume) * 100}%"></div>
-                    </div>
-                </div>`;
-        });
     };
 
     const generateWorkoutInsights = (progression, categoryVolume, frequency, recentPRs) => {
@@ -1780,6 +1730,7 @@ document.addEventListener('DOMContentLoaded', () => {
     overallDashBtn.addEventListener('click', () => showDashboardView('overall'));
     workoutDashBtn.addEventListener('click', () => showDashboardView('workout'));
     foodDashBtn.addEventListener('click', () => showDashboardView('food'));
+    goalsDashBtn.addEventListener('click', () => showDashboardView('goals'));
 
     categoryInput.addEventListener('change', () => {
         exerciseNameInput.value = '';
@@ -2530,6 +2481,136 @@ Example bad response:
         clearAiHelperInput.classList.add('hidden');
         clearAiHelperInput.style.pointerEvents = 'none';
         aiHelperModalInput.focus();
+    });
+
+    // Add event listeners for goals forms
+    getEl('nutrition-goals-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        state.goals.nutrition = {
+            calorieGoal: parseInt(getEl('calorie-goal').value) || 2000,
+            proteinGoal: parseInt(getEl('protein-goal').value) || 150
+        };
+        saveData();
+        updateGoalsProgress();
+
+        // Update button states
+        const saveBtn = getEl('save-nutrition-goals');
+        const editBtn = getEl('edit-nutrition-goals');
+        const inputs = [getEl('calorie-goal'), getEl('protein-goal')];
+
+        // Disable inputs and show edit button
+        inputs.forEach(input => input.disabled = true);
+        saveBtn.textContent = 'Saved';
+        saveBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+        saveBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+        editBtn.classList.remove('hidden');
+    });
+
+    // Add edit button functionality
+    getEl('edit-nutrition-goals').addEventListener('click', () => {
+        const saveBtn = getEl('save-nutrition-goals');
+        const editBtn = getEl('edit-nutrition-goals');
+        const inputs = [getEl('calorie-goal'), getEl('protein-goal')];
+
+        // Enable inputs and hide edit button
+        inputs.forEach(input => input.disabled = false);
+        saveBtn.textContent = 'Save Nutrition Goals';
+        saveBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+        saveBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+        editBtn.classList.add('hidden');
+    });
+
+    // Initialize goals form values
+    getEl('calorie-goal').value = state.goals.nutrition.calorieGoal;
+    getEl('protein-goal').value = state.goals.nutrition.proteinGoal;
+
+    function updateGoalsProgress() {
+        const { startDate, endDate } = getDateRange();
+        let totalCalories = 0, totalProtein = 0;
+        let daysWithData = 0;
+
+        // Calculate today's progress for food section
+        const today = new Date().toISOString().split('T')[0];
+        let todayCalories = 0, todayProtein = 0;
+        if (state.food && state.food[today]) {
+            state.food[today].forEach(f => {
+                todayCalories += f.calories * f.quantity;
+                todayProtein += f.protein * f.quantity;
+            });
+        }
+        
+        // Update daily progress in food section
+        getEl('daily-calorie-progress-text').textContent = `${Math.round(todayCalories)}/${state.goals.nutrition.calorieGoal} cal`;
+        getEl('daily-protein-progress-text').textContent = `${Math.round(todayProtein)}/${state.goals.nutrition.proteinGoal}g`;
+        getEl('daily-calorie-progress-bar').style.width = `${Math.min((todayCalories / state.goals.nutrition.calorieGoal) * 100, 100)}%`;
+        getEl('daily-protein-progress-bar').style.width = `${Math.min((todayProtein / state.goals.nutrition.proteinGoal) * 100, 100)}%`;
+
+        // Calculate weekly progress
+        let currentDate = new Date(startDate);
+        while (currentDate <= endDate) {
+            const dayString = currentDate.toISOString().split('T')[0];
+            
+            // Calculate nutrition progress
+            if (state.food && state.food[dayString]) {
+                daysWithData++;
+                state.food[dayString].forEach(f => {
+                    totalCalories += f.calories * f.quantity;
+                    totalProtein += f.protein * f.quantity;
+                });
+            }
+
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        // Update weekly progress in goals section
+        const weeklyCalorieGoal = state.goals.nutrition.calorieGoal * 7;
+        const weeklyProteinGoal = state.goals.nutrition.proteinGoal * 7;
+        
+        getEl('weekly-calorie-progress-text').textContent = `${Math.round(totalCalories)}/${weeklyCalorieGoal} cal`;
+        getEl('weekly-protein-progress-text').textContent = `${Math.round(totalProtein)}/${weeklyProteinGoal}g`;
+        getEl('weekly-calorie-progress-bar').style.width = `${Math.min((totalCalories / weeklyCalorieGoal) * 100, 100)}%`;
+        getEl('weekly-protein-progress-bar').style.width = `${Math.min((totalProtein / weeklyProteinGoal) * 100, 100)}%`;
+    }
+
+    // Update progress when adding/removing food items
+    function updateFoodProgress() {
+        updateGoalsProgress();
+    }
+
+    // Add updateFoodProgress call to relevant functions
+    const originalAddFoodItem = addFoodItem;
+    addFoodItem = function() {
+        originalAddFoodItem();
+        updateFoodProgress();
+    };
+
+    const originalRemoveFoodItem = removeFoodItem;
+    removeFoodItem = function() {
+        originalRemoveFoodItem();
+        updateFoodProgress();
+    };
+
+    // Update the save nutrition goals button handler
+    document.getElementById('save-nutrition-goals').addEventListener('click', function() {
+        const calorieGoal = parseInt(document.getElementById('calorie-goal').value) || 0;
+        const proteinGoal = parseInt(document.getElementById('protein-goal').value) || 0;
+        
+        if (calorieGoal > 0 && proteinGoal > 0) {
+            state.goals = {
+                ...state.goals,
+                nutrition: {
+                    calories: calorieGoal,
+                    protein: proteinGoal
+                }
+            };
+            localStorage.setItem('goals', JSON.stringify(state.goals));
+            updateGoalsProgress();
+            this.textContent = 'Edit Goals';
+            this.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+            this.classList.add('bg-gray-500', 'hover:bg-gray-600');
+        } else {
+            alert('Please enter valid goals for both calories and protein');
+        }
     });
 });
 </script>
