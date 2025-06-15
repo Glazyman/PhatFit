@@ -847,40 +847,72 @@
                     <div id="workout-summary-view" class="hidden card p-8">
                         <h3 class="text-2xl font-semibold mb-6 text-gray-900">Workout Summary</h3>
                         <div class="space-y-6">
-                            <!-- Stats Cards -->
-                            <div class="card p-6">
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold text-blue-600" id="avg-daily-calories-burned">0</div>
-                                        <div class="text-sm text-gray-600">Avg Daily Calories Burned</div>
-                                    </div>
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold text-emerald-600" id="weekly-calories-burned">0</div>
-                                        <div class="text-sm text-gray-600">Weekly Calories Burned</div>
-                                    </div>
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold text-purple-600" id="workout-days">0</div>
-                                        <div class="text-sm text-gray-600">Workout Days</div>
-                                    </div>
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold text-orange-600" id="total-workouts">0</div>
-                                        <div class="text-sm text-gray-600">Total Workouts</div>
-                                    </div>
+                            <!-- Quick Stats -->
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div class="card p-4">
+                                    <div class="text-2xl font-bold text-blue-600" id="workout-streak">0</div>
+                                    <div class="text-sm text-gray-600">Day Streak</div>
+                                </div>
+                                <div class="card p-4">
+                                    <div class="text-2xl font-bold text-emerald-600" id="total-workouts">0</div>
+                                    <div class="text-sm text-gray-600">Total Workouts</div>
+                                </div>
+                                <div class="card p-4">
+                                    <div class="text-2xl font-bold text-purple-600" id="workout-days">0</div>
+                                    <div class="text-sm text-gray-600">Workout Days</div>
+                                </div>
+                                <div class="card p-4">
+                                    <div class="text-2xl font-bold text-orange-600" id="weekly-calories-burned">0</div>
+                                    <div class="text-sm text-gray-600">Calories Burned</div>
                                 </div>
                             </div>
 
-                            <!-- Weekly Workout Chart -->
+                            <!-- Weekly Activity -->
                             <div class="card p-6">
-                                <h4 class="text-lg font-medium mb-4 text-gray-900">Weekly Workout Activity</h4>
+                                <h4 class="text-lg font-medium mb-4 text-gray-900">Weekly Activity</h4>
                                 <div class="h-64">
                                     <canvas id="weekly-workout-chart"></canvas>
                                 </div>
                             </div>
 
-                            <!-- Workout Volume by Category -->
+                            <!-- Exercise Breakdown -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Most Frequent Exercises -->
+                                <div class="card p-6">
+                                    <h4 class="text-lg font-medium mb-4 text-gray-900">Most Frequent Exercises</h4>
+                                    <div id="frequent-exercises" class="space-y-3">
+                                        <!-- Will be populated dynamically -->
+                                    </div>
+                                </div>
+
+                                <!-- Recent Achievements -->
+                                <div class="card p-6">
+                                    <h4 class="text-lg font-medium mb-4 text-gray-900">Recent Achievements</h4>
+                                    <div id="recent-achievements" class="space-y-3">
+                                        <!-- Will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Category Distribution -->
                             <div class="card p-6">
-                                <h3 class="text-lg font-medium mb-4 text-gray-900">Workout Volume by Category</h3>
-                                <div id="workout-volume-progress" class="space-y-4"></div>
+                                <h4 class="text-lg font-medium mb-4 text-gray-900">Workout Distribution</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Category Volume -->
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-700 mb-3">Volume by Category</h5>
+                                        <div id="workout-volume-progress" class="space-y-4">
+                                            <!-- Will be populated dynamically -->
+                                        </div>
+                                    </div>
+                                    <!-- Category Frequency -->
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-700 mb-3">Frequency by Category</h5>
+                                        <div id="category-frequency" class="space-y-4">
+                                            <!-- Will be populated dynamically -->
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1587,50 +1619,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (viewName === 'workout'){
             workoutSummaryView.classList.remove('hidden');
             workoutDashBtn.classList.add('active');
-            // Generate workout insights only when workout view is active
-            const { startDate, endDate } = getDateRange();
-            const exerciseProgression = {};
-            const categoryVolume = {};
-            const exerciseFrequency = {};
-            const recentPRs = [];
-            
-            let currentDate = new Date(startDate);
-            while (currentDate <= endDate) {
-                const dayString = currentDate.toISOString().split('T')[0];
-                if (state.workouts && state.workouts[dayString]) {
-                    state.workouts[dayString].forEach(w => {
-                        categoryVolume[w.category] = (categoryVolume[w.category] || 0) + (Number(w.reps) * Number(w.weight));
-                        exerciseFrequency[w.name] = (exerciseFrequency[w.name] || 0) + 1;
-                        
-                        if (!exerciseProgression[w.name]) {
-                            exerciseProgression[w.name] = [];
-                        }
-                        exerciseProgression[w.name].push({
-                            date: new Date(dayString),
-                            weight: Number(w.weight),
-                            sets: Number(w.sets),
-                            reps: Number(w.reps)
-                        });
-                        
-                        if (checkForPR(w.name, w.weight)) {
-                            recentPRs.push({
-                                name: w.name,
-                                weight: w.weight,
-                                date: new Date(dayString)
-                            });
-                        }
-                    });
-                }
-                currentDate.setDate(currentDate.getDate() + 1);
-            }
-            generateWorkoutInsights(exerciseProgression, categoryVolume, exerciseFrequency, recentPRs);
+            renderWorkoutSummary();
         } else if (viewName === 'food') {
             foodSummaryView.classList.remove('hidden');
             foodDashBtn.classList.add('active');
-        } else if (viewName === 'goals') {
-            goalsSummaryView.classList.remove('hidden');
-            goalsDashBtn.classList.add('active');
-            updateGoalsProgress();
         }
         renderSummary();
     };
@@ -3499,6 +3491,253 @@ Example bad response:
 
     // Set initial active view
     navButtons[state.activeDashboardView].click();
+
+    const renderWorkoutSummary = () => {
+        const { startDate, endDate } = getDateRange();
+        let totalWorkouts = 0;
+        let workoutDays = 0;
+        let totalCaloriesBurned = 0;
+        let currentStreak = 0;
+        let maxStreak = 0;
+        let lastWorkoutDate = null;
+        
+        const exerciseFrequency = {};
+        const categoryVolume = {};
+        const categoryFrequency = {};
+        const recentPRs = [];
+        
+        // Initialize state.workouts if it doesn't exist
+        if (!state.workouts) {
+            state.workouts = {};
+        }
+        
+        let currentDate = new Date(startDate);
+        while (currentDate <= endDate) {
+            const dayString = currentDate.toISOString().split('T')[0];
+            
+            // Ensure the day's workouts array exists
+            if (!state.workouts[dayString]) {
+                state.workouts[dayString] = [];
+            }
+            
+            const dailyWorkouts = state.workouts[dayString];
+            if (dailyWorkouts.length > 0) {
+                workoutDays++;
+                totalWorkouts += dailyWorkouts.length;
+                
+                // Update streak
+                if (lastWorkoutDate) {
+                    const daysSinceLastWorkout = Math.floor((currentDate - lastWorkoutDate) / (1000 * 60 * 60 * 24));
+                    if (daysSinceLastWorkout === 1) {
+                        currentStreak++;
+                        maxStreak = Math.max(maxStreak, currentStreak);
+                    } else {
+                        currentStreak = 1;
+                    }
+                } else {
+                    currentStreak = 1;
+                }
+                lastWorkoutDate = new Date(currentDate);
+                
+                // Process each workout
+                dailyWorkouts.forEach(workout => {
+                    if (workout && typeof workout === 'object') {
+                        const caloriesBurned = calculateCaloriesBurned(workout);
+                        totalCaloriesBurned += caloriesBurned;
+                        
+                        // Track exercise frequency
+                        exerciseFrequency[workout.name] = (exerciseFrequency[workout.name] || 0) + 1;
+                        
+                        // Track category data
+                        if (!categoryVolume[workout.category]) {
+                            categoryVolume[workout.category] = 0;
+                            categoryFrequency[workout.category] = 0;
+                        }
+                        categoryVolume[workout.category] += caloriesBurned;
+                        categoryFrequency[workout.category]++;
+                        
+                        // Check for PR
+                        if (checkForPR(workout.name, workout.weight)) {
+                            recentPRs.push({
+                                name: workout.name,
+                                weight: workout.weight,
+                                date: new Date(dayString)
+                            });
+                        }
+                    }
+                });
+            }
+            
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        
+        // Update quick stats
+        getEl('workout-streak').textContent = maxStreak;
+        getEl('total-workouts').textContent = totalWorkouts;
+        getEl('workout-days').textContent = workoutDays;
+        getEl('weekly-calories-burned').textContent = Math.round(totalCaloriesBurned);
+        
+        // Update most frequent exercises
+        const frequentExercises = getEl('frequent-exercises');
+        frequentExercises.innerHTML = Object.entries(exerciseFrequency)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, 5)
+            .map(([name, count]) => `
+                <div class="flex justify-between items-center">
+                    <span class="text-sm font-medium text-gray-600">${name}</span>
+                    <span class="text-sm text-gray-500">${count} times</span>
+                </div>
+            `).join('');
+        
+        // Update recent achievements
+        const recentAchievements = getEl('recent-achievements');
+        recentAchievements.innerHTML = recentPRs
+            .sort((a, b) => b.date - a.date)
+            .slice(0, 3)
+            .map(pr => `
+                <div class="flex items-center gap-2">
+                    <span class="text-yellow-500">🏆</span>
+                    <span class="text-sm text-gray-600">${pr.name}: ${pr.weight}lb</span>
+                    <span class="text-xs text-gray-400">${pr.date.toLocaleDateString()}</span>
+                </div>
+            `).join('') || '<div class="text-sm text-gray-500">No recent achievements</div>';
+        
+        // Update category distribution
+        const workoutVolumeProgress = getEl('workout-volume-progress');
+        const categoryFrequencyEl = getEl('category-frequency');
+        
+        const maxVolume = Math.max(...Object.values(categoryVolume));
+        const maxFrequency = Math.max(...Object.values(categoryFrequency));
+        
+        workoutVolumeProgress.innerHTML = Object.entries(categoryVolume)
+            .sort(([, a], [, b]) => b - a)
+            .map(([category, volume]) => `
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium text-gray-600">${category}</span>
+                        <span class="text-sm text-gray-500">${Math.round(volume)} cal</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" style="width: ${(volume / maxVolume) * 100}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        
+        categoryFrequencyEl.innerHTML = Object.entries(categoryFrequency)
+            .sort(([, a], [, b]) => b - a)
+            .map(([category, frequency]) => `
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium text-gray-600">${category}</span>
+                        <span class="text-sm text-gray-500">${frequency} workouts</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" style="width: ${(frequency / maxFrequency) * 100}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        
+        // Update weekly chart
+        updateWeeklyWorkoutChart(startDate, endDate);
+    };
+
+    const updateWeeklyWorkoutChart = (startDate, endDate) => {
+        const workoutData = {
+            labels: [],
+            caloriesBurned: [],
+            workoutCount: []
+        };
+        
+        let currentDate = new Date(startDate);
+        while (currentDate <= endDate) {
+            const dayString = currentDate.toISOString().split('T')[0];
+            const dayLabel = currentDate.toLocaleDateString('en-US', { weekday: 'short' });
+            workoutData.labels.push(dayLabel);
+            
+            let dailyCaloriesBurned = 0;
+            let dailyWorkouts = 0;
+            
+            if (state.workouts && state.workouts[dayString]) {
+                state.workouts[dayString].forEach(w => {
+                    if (w && typeof w === 'object') {
+                        dailyCaloriesBurned += calculateCaloriesBurned(w);
+                        dailyWorkouts++;
+                    }
+                });
+            }
+            
+            workoutData.caloriesBurned.push(Math.round(dailyCaloriesBurned));
+            workoutData.workoutCount.push(dailyWorkouts);
+            
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        
+        const ctx = document.getElementById('weekly-workout-chart').getContext('2d');
+        if (window.weeklyWorkoutChart) {
+            window.weeklyWorkoutChart.destroy();
+        }
+        
+        window.weeklyWorkoutChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: workoutData.labels,
+                datasets: [
+                    {
+                        label: 'Calories Burned',
+                        data: workoutData.caloriesBurned,
+                        backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                        borderColor: 'rgb(59, 130, 246)',
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Workouts',
+                        data: workoutData.workoutCount,
+                        type: 'line',
+                        borderColor: 'rgb(16, 185, 129)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgb(16, 185, 129)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Calories Burned'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Number of Workouts'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+    };
 });
 </script>
 
