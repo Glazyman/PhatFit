@@ -2242,6 +2242,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // AI Helper Modal Logic
     aiHelperMenuBtn.addEventListener('click', () => {
+        // Clear all messages except the welcome message
+        const messages = aiHelperModalMessages.children;
+        while (messages.length > 1) {
+            aiHelperModalMessages.removeChild(messages[1]);
+        }
+        // Show welcome message if it's hidden
+        aiHelperWelcome.style.display = 'flex';
+        // Clear input
+        aiHelperModalInput.value = '';
+        
+        // Show modal
         aiHelperModal.classList.add('active');
         aiHelperModal.style.display = 'flex';
         setTimeout(() => aiHelperModalInput.focus(), 200);
