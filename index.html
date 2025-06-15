@@ -2427,13 +2427,13 @@ document.addEventListener('DOMContentLoaded', () => {
             currentDate: new Date().toISOString().split('T')[0],
             workouts: JSON.parse(localStorage.getItem('workouts')) || {},
             food: JSON.parse(localStorage.getItem('food')) || {},
-            favorites: JSON.parse(localStorage.getItem('favorites')) || { exercises: [], foods: [] },
+            favorites: JSON.parse(localStorage.getItem('favorites')) || {},
             goals: JSON.parse(localStorage.getItem('goals')) || {
                 nutrition: { calorieGoal: 2000, proteinGoal: 150 }
             },
+            activeDashboardView: 'overall',
             dashboardWeekOffset: 0,
-            customDateRange: false,
-            activeDashboardView: 'overall'
+            customDateRange: false
         };
 
         // Initialize settings goals form
@@ -3506,17 +3506,18 @@ Example bad response:
         const categoryFrequency = {};
         const recentPRs = [];
         
-        // Initialize state.workouts if it doesn't exist
-        if (!state.workouts) {
+        // Ensure workouts data is properly initialized
+        if (!state.workouts || typeof state.workouts !== 'object') {
             state.workouts = {};
+            saveData();
         }
         
         let currentDate = new Date(startDate);
         while (currentDate <= endDate) {
             const dayString = currentDate.toISOString().split('T')[0];
             
-            // Ensure the day's workouts array exists
-            if (!state.workouts[dayString]) {
+            // Ensure the day's workouts array exists and is valid
+            if (!Array.isArray(state.workouts[dayString])) {
                 state.workouts[dayString] = [];
             }
             
@@ -3541,7 +3542,7 @@ Example bad response:
                 
                 // Process each workout
                 dailyWorkouts.forEach(workout => {
-                    if (workout && typeof workout === 'object') {
+                    if (workout && typeof workout === 'object' && workout.name && workout.category) {
                         const caloriesBurned = calculateCaloriesBurned(workout);
                         totalCaloriesBurned += caloriesBurned;
                         
@@ -3606,8 +3607,8 @@ Example bad response:
         const workoutVolumeProgress = getEl('workout-volume-progress');
         const categoryFrequencyEl = getEl('category-frequency');
         
-        const maxVolume = Math.max(...Object.values(categoryVolume));
-        const maxFrequency = Math.max(...Object.values(categoryFrequency));
+        const maxVolume = Math.max(...Object.values(categoryVolume), 0);
+        const maxFrequency = Math.max(...Object.values(categoryFrequency), 0);
         
         workoutVolumeProgress.innerHTML = Object.entries(categoryVolume)
             .sort(([, a], [, b]) => b - a)
@@ -3618,7 +3619,7 @@ Example bad response:
                         <span class="text-sm text-gray-500">${Math.round(volume)} cal</span>
                     </div>
                     <div class="progress-bar">
-                        <div class="progress-bar-fill" style="width: ${(volume / maxVolume) * 100}%"></div>
+                        <div class="progress-bar-fill" style="width: ${maxVolume > 0 ? (volume / maxVolume) * 100 : 0}%"></div>
                     </div>
                 </div>
             `).join('');
