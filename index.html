@@ -512,6 +512,7 @@
                     <button id="food-nav-btn" class="nav-btn">Food</button>
                     <button id="dashboard-nav-btn" class="nav-btn"><i class="fas fa-chart-line mr-1"></i>Stats</button>
                     <button id="ai-helper-menu-btn" class="nav-btn flex items-center gap-2"><i class="fas fa-robot"></i><span class="hidden sm:inline">AI Helper</span></button>
+                    <button id="settings-nav-btn" class="nav-btn flex items-center gap-2"><i class="fas fa-cog"></i><span class="hidden sm:inline">Settings</span></button>
                 </div>
             </div>
         </header>
@@ -1871,6 +1872,25 @@ document.addEventListener('DOMContentLoaded', () => {
             foodNameInput.focus();
         });
         
+        // Initialize goals form values and button state
+        const savedGoals = localStorage.getItem('goals');
+        if (savedGoals) {
+            const goals = JSON.parse(savedGoals);
+            if (goals.nutrition) {
+                getEl('calorie-goal').value = goals.nutrition.calories || '';
+                getEl('protein-goal').value = goals.nutrition.protein || '';
+                const saveBtn = getEl('save-nutrition-goals');
+                const editBtn = getEl('edit-nutrition-goals');
+                saveBtn.textContent = 'Saved';
+                saveBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                saveBtn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+                editBtn.classList.remove('hidden');
+                // Disable inputs by default
+                getEl('calorie-goal').disabled = true;
+                getEl('protein-goal').disabled = true;
+            }
+        }
+        
         setupAutocomplete(exerciseNameInput, () => {
             const currentCategory = categoryInput.value;
             const userExercises = Object.values(state.workouts).flat()
@@ -2485,15 +2505,17 @@ Example bad response:
     });
 
     // Add edit button functionality
-    getEl('edit-nutrition-goals').addEventListener('click', () => {
+    getEl('edit-nutrition-goals').addEventListener('click', function() {
+        const inputs = [getEl('calorie-goal'), getEl('protein-goal')];
         const saveBtn = getEl('save-nutrition-goals');
         const editBtn = getEl('edit-nutrition-goals');
-        const inputs = [getEl('calorie-goal'), getEl('protein-goal')];
-
-        // Enable inputs and hide edit button
+        
+        // Enable inputs
         inputs.forEach(input => input.disabled = false);
+        
+        // Update button states
         saveBtn.textContent = 'Save Nutrition Goals';
-        saveBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+        saveBtn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
         saveBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
         editBtn.classList.add('hidden');
     });
@@ -2583,13 +2605,28 @@ Example bad response:
             };
             localStorage.setItem('goals', JSON.stringify(state.goals));
             updateGoalsProgress();
-            this.textContent = 'Edit Goals';
-            this.classList.remove('bg-blue-500', 'hover:bg-blue-600');
-            this.classList.add('bg-gray-500', 'hover:bg-gray-600');
+            
+            // Disable inputs after saving
+            getEl('calorie-goal').disabled = true;
+            getEl('protein-goal').disabled = true;
+            
+            // Update button states
+            this.textContent = 'Saved';
+            this.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            this.classList.add('bg-gray-600', 'hover:bg-gray-700');
+            getEl('edit-nutrition-goals').classList.remove('hidden');
         } else {
             alert('Please enter valid goals for both calories and protein');
         }
     });
+
+    // Check saved state on page load
+    if (localStorage.getItem('goalsSaved') === 'true') {
+        const saveBtn = document.getElementById('save-nutrition-goals');
+        saveBtn.textContent = 'Saved';
+        saveBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+        saveBtn.classList.add('bg-gray-500', 'hover:bg-gray-600');
+    }
 });
 </script>
 
