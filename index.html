@@ -1872,7 +1872,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update workout summary elements if workout view is active
         if (state.activeDashboardView === 'workout') {
-            getEl('daily-calories-burned').textContent = Math.round(dailyCaloriesBurned);
+            getEl('daily-calories-burned').textContent = workoutDays > 0 ? Math.round(weeklyCaloriesBurned / workoutDays) : 0;
             getEl('weekly-calories-burned').textContent = Math.round(weeklyCaloriesBurned);
             getEl('workout-days-count').textContent = `${workoutDays}/7`;
             getEl('workout-streak').textContent = maxStreak;
