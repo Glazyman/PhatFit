@@ -1860,16 +1860,39 @@ document.addEventListener('DOMContentLoaded', () => {
         const avgProtein = Math.round(totalProtein / daysInRange);
         const avgCaloriesBurned = Math.round(totalCaloriesBurned / daysInRange);
 
+        // Update food summary stats
+        if (state.activeDashboardView === 'food') {
+            getEl('avg-daily-calories').textContent = avgCalories;
+            getEl('avg-daily-protein').textContent = avgProtein;
+            getEl('total-calories').textContent = totalCalories;
+
+            // Update weekly progress
+            const weeklyCalorieGoal = state.goals.nutrition.calorieGoal * 7;
+            const weeklyProteinGoal = state.goals.nutrition.proteinGoal * 7;
+            
+            getEl('weekly-calorie-progress-text').textContent = `${totalCalories}/${weeklyCalorieGoal} cal`;
+            getEl('weekly-protein-progress-text').textContent = `${totalProtein}/${weeklyProteinGoal} g`;
+            
+            getEl('weekly-calorie-progress-bar').style.width = `${Math.min((totalCalories / weeklyCalorieGoal) * 100, 100)}%`;
+            getEl('weekly-protein-progress-bar').style.width = `${Math.min((totalProtein / weeklyProteinGoal) * 100, 100)}%`;
+
+            // Update common foods
+            const commonFoodsList = getEl('common-foods-list');
+            commonFoodsList.innerHTML = '';
+            Object.entries(commonFoods)
+                .sort((a, b) => b[1].frequency - a[1].frequency)
+                .slice(0, 5)
+                .forEach(([name, data]) => {
+                    commonFoodsList.innerHTML += `
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-600">${name}</span>
+                            <span class="text-sm text-gray-500">${data.frequency}x</span>
+                        </div>`;
+                });
+        }
+
         // Update workout summary stats
         if (state.activeDashboardView === 'workout') {
-            console.log('Updating workout summary with:', {
-                avgCaloriesBurned,
-                totalCaloriesBurned,
-                workoutDays,
-                totalWorkouts,
-                workoutData
-            });
-
             getEl('avg-daily-calories-burned').textContent = avgCaloriesBurned;
             getEl('weekly-calories-burned').textContent = totalCaloriesBurned;
             getEl('workout-days').textContent = workoutDays;
