@@ -2306,11 +2306,14 @@ Be specific and reference their actual logs when possible.`
             });
 
             if (!response.ok) {
-                throw new Error(`API request failed with status ${response.status}`);
+                const errorText = await response.text();
+                console.error('API Error Response:', errorText);
+                throw new Error(`API request failed with status ${response.status}: ${errorText}`);
             }
 
             const data = await response.json();
             if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                console.error('Invalid API Response:', data);
                 throw new Error('Invalid response format from API');
             }
 
@@ -2319,7 +2322,7 @@ Be specific and reference their actual logs when possible.`
         } catch (error) {
             console.error('AI Helper Error:', error);
             loadingDiv.remove();
-            addModalMessage('ai', 'I apologize, but I encountered an error while processing your request. Please try again in a moment.');
+            addModalMessage('ai', `I apologize, but I encountered an error while processing your request: ${error.message}. Please try again in a moment.`);
         }
     });
     aiHelperModalInput.addEventListener('keypress', (e) => {
