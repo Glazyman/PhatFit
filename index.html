@@ -489,6 +489,120 @@
         #ai-helper-modal input:focus {
             outline: none;
         }
+
+        /* Improve form elements on mobile */
+        @media (max-width: 768px) {
+            input[type="checkbox"] {
+                min-height: 24px;
+                min-width: 24px;
+            }
+        }
+
+        /* Toggle checkbox styles */
+        .toggle-checkbox {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            appearance: none;
+            background-color: #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .toggle-checkbox:checked {
+            background-color: #3b82f6;
+        }
+
+        .toggle-checkbox::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            background-color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-checkbox:checked::before {
+            transform: translateX(20px);
+        }
+
+        /* Theme option styles */
+        .theme-option {
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .theme-option:hover {
+            transform: translateY(-2px);
+        }
+
+        .theme-option.ring-2 {
+            border-color: #3b82f6;
+        }
+
+        /* Dark theme styles */
+        .dark {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .dark .card,
+        .dark header,
+        .dark .stats-card,
+        .dark input,
+        .dark select,
+        .dark textarea {
+            background-color: rgba(31, 31, 31, 0.8);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        .dark .nav-btn:not(.active),
+        .dark .dash-nav-btn:not(.active) {
+            color: #9ca3af;
+        }
+
+        .dark .nav-btn.active,
+        .dark .dash-nav-btn.active {
+            background-color: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .dark input:focus,
+        .dark select:focus,
+        .dark textarea:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .dark .text-gray-900 {
+            color: #ffffff;
+        }
+
+        .dark .text-gray-600 {
+            color: #9ca3af;
+        }
+
+        .dark .text-gray-500 {
+            color: #6b7280;
+        }
+
+        .dark .bg-white\/80 {
+            background-color: rgba(31, 31, 31, 0.8);
+        }
+
+        .dark .border-gray-200\/50 {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .dark .hover\:bg-gray-50:hover {
+            background-color: rgba(31, 31, 31, 0.9);
+        }
     </style>
 </head>
 <body class="text-gray-900">
@@ -944,6 +1058,82 @@
         </div>
     </div>
 
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden">
+        <div class="relative w-full max-w-2xl mx-auto bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl flex flex-col border border-gray-200/50">
+            <!-- Header -->
+            <div class="flex items-center justify-between p-6 border-b border-gray-200/50 rounded-t-3xl bg-white/80 backdrop-blur-sm">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center shadow-lg border border-gray-200/50">
+                        <i class="fas fa-cog text-gray-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-xl text-gray-900">Settings</div>
+                        <div class="text-sm text-gray-500">Customize your nutrition goals</div>
+                    </div>
+                </div>
+                <button id="close-settings-modal" class="text-gray-400 hover:text-gray-600 text-xl p-2 rounded-xl hover:bg-gray-100/80 transition-all duration-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Settings Content -->
+            <div class="flex-1 overflow-y-auto p-6">
+                <div class="space-y-6">
+                    <!-- Nutrition Goals -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Daily Nutrition Goals</h3>
+                        <form id="settings-nutrition-goals" class="space-y-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-gray-600">Daily Calorie Goal</label>
+                                <div class="flex items-center gap-2">
+                                    <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-l-2xl hover:bg-gray-200 transition-colors" data-input="settings-calorie-goal" data-action="decrement">-</button>
+                                    <input type="number" id="settings-calorie-goal" value="2000" class="w-full p-4 text-center border-t border-b border-gray-200 bg-white/80 backdrop-blur-xl" min="0" disabled>
+                                    <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-r-2xl hover:bg-gray-200 transition-colors" data-input="settings-calorie-goal" data-action="increment">+</button>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-gray-600">Daily Protein Goal (g)</label>
+                                <div class="flex items-center gap-2">
+                                    <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-l-2xl hover:bg-gray-200 transition-colors" data-input="settings-protein-goal" data-action="decrement">-</button>
+                                    <input type="number" id="settings-protein-goal" value="150" class="w-full p-4 text-center border-t border-b border-gray-200 bg-white/80 backdrop-blur-xl" min="0" disabled>
+                                    <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-r-2xl hover:bg-gray-200 transition-colors" data-input="settings-protein-goal" data-action="increment">+</button>
+                                </div>
+                            </div>
+                            <div class="flex gap-2 pt-4">
+                                <button type="submit" id="save-settings-goals" class="flex-1 bg-blue-600 text-white font-medium py-3 rounded-xl hover:bg-blue-700 transition-colors">
+                                    Save Goals
+                                </button>
+                                <button type="button" id="edit-settings-goals" class="hidden bg-gray-600 text-white font-medium py-3 px-4 rounded-xl hover:bg-gray-700 transition-colors">
+                                    Edit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Data Management -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Data Management</h3>
+                        <div class="space-y-3">
+                            <button id="export-data" class="w-full p-4 rounded-2xl border border-gray-200/50 bg-white hover:bg-gray-50 transition-all duration-200 flex items-center gap-3">
+                                <i class="fas fa-download text-gray-600"></i>
+                                <span>Export Data</span>
+                            </button>
+                            <button id="import-data" class="w-full p-4 rounded-2xl border border-gray-200/50 bg-white hover:bg-gray-50 transition-all duration-200 flex items-center gap-3">
+                                <i class="fas fa-upload text-gray-600"></i>
+                                <span>Import Data</span>
+                            </button>
+                            <button id="clear-data" class="w-full p-4 rounded-2xl border border-red-200/50 bg-white hover:bg-red-50 transition-all duration-200 flex items-center gap-3 text-red-600">
+                                <i class="fas fa-trash-alt"></i>
+                                <span>Clear All Data</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -968,6 +1158,163 @@ document.addEventListener('DOMContentLoaded', () => {
     const aiHelperModalSend = getEl('ai-helper-modal-send');
     const aiHelperModalMessages = getEl('ai-helper-modal-messages');
     const aiHelperWelcome = getEl('ai-helper-welcome');
+    const settingsNavBtn = getEl('settings-nav-btn');
+    const settingsModal = getEl('settings-modal');
+    const closeSettingsModal = getEl('close-settings-modal');
+    const themeOptions = document.querySelectorAll('.theme-option');
+    const workoutReminders = getEl('workout-reminders');
+    const nutritionReminders = getEl('nutrition-reminders');
+    const exportDataBtn = getEl('export-data');
+    const importDataBtn = getEl('import-data');
+    const clearDataBtn = getEl('clear-data');
+    const settingsNutritionGoalsForm = getEl('settings-nutrition-goals');
+    const settingsCalorieGoal = getEl('settings-calorie-goal');
+    const settingsProteinGoal = getEl('settings-protein-goal');
+    const saveSettingsGoalsBtn = getEl('save-settings-goals');
+    const editSettingsGoalsBtn = getEl('edit-settings-goals');
+
+    // Initialize Settings Modal
+    if (settingsNavBtn && settingsModal && closeSettingsModal) {
+        settingsNavBtn.addEventListener('click', () => {
+            // Load current goals into settings form
+            settingsCalorieGoal.value = state.goals.nutrition.calorieGoal || 2000;
+            settingsProteinGoal.value = state.goals.nutrition.proteinGoal || 150;
+            
+            // Check if goals are saved
+            const goalsSaved = localStorage.getItem('goalsSaved') === 'true';
+            if (goalsSaved) {
+                // Disable inputs and show edit button
+                settingsCalorieGoal.disabled = true;
+                settingsProteinGoal.disabled = true;
+                saveSettingsGoalsBtn.textContent = 'Saved';
+                saveSettingsGoalsBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                saveSettingsGoalsBtn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+                editSettingsGoalsBtn.classList.remove('hidden');
+                
+                // Disable number control buttons
+                const numberControlBtns = settingsModal.querySelectorAll('.number-control-btn');
+                numberControlBtns.forEach(btn => {
+                    btn.disabled = true;
+                    btn.classList.add('opacity-50', 'cursor-not-allowed');
+                });
+            } else {
+                // Enable inputs and show save button
+                settingsCalorieGoal.disabled = false;
+                settingsProteinGoal.disabled = false;
+                saveSettingsGoalsBtn.textContent = 'Save Goals';
+                saveSettingsGoalsBtn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+                saveSettingsGoalsBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                editSettingsGoalsBtn.classList.add('hidden');
+                
+                // Enable number control buttons
+                const numberControlBtns = settingsModal.querySelectorAll('.number-control-btn');
+                numberControlBtns.forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                });
+            }
+            
+            settingsModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeSettingsModal.addEventListener('click', () => {
+            settingsModal.classList.add('hidden');
+            document.body.style.overflow = '';
+        });
+
+        // Close modal when clicking outside
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Close modal when pressing Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !settingsModal.classList.contains('hidden')) {
+                settingsModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Handle settings nutrition goals form submission
+        settingsNutritionGoalsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const calorieGoal = parseInt(settingsCalorieGoal.value) || 2000;
+            const proteinGoal = parseInt(settingsProteinGoal.value) || 150;
+            
+            state.goals.nutrition = {
+                calorieGoal,
+                proteinGoal
+            };
+            
+            saveData();
+            updateGoalsProgress();
+            localStorage.setItem('goalsSaved', 'true');
+            
+            // Update main goals form if it exists
+            const mainCalorieGoal = getEl('calorie-goal');
+            const mainProteinGoal = getEl('protein-goal');
+            if (mainCalorieGoal) mainCalorieGoal.value = calorieGoal;
+            if (mainProteinGoal) mainProteinGoal.value = proteinGoal;
+            
+            // Disable inputs and show edit button
+            settingsCalorieGoal.disabled = true;
+            settingsProteinGoal.disabled = true;
+            saveSettingsGoalsBtn.textContent = 'Saved';
+            saveSettingsGoalsBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            saveSettingsGoalsBtn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+            editSettingsGoalsBtn.classList.remove('hidden');
+            
+            // Disable number control buttons
+            const numberControlBtns = settingsModal.querySelectorAll('.number-control-btn');
+            numberControlBtns.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            });
+        });
+
+        // Handle edit button click
+        editSettingsGoalsBtn.addEventListener('click', () => {
+            // Enable inputs
+            settingsCalorieGoal.disabled = false;
+            settingsProteinGoal.disabled = false;
+            
+            // Update button states
+            saveSettingsGoalsBtn.textContent = 'Save Goals';
+            saveSettingsGoalsBtn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+            saveSettingsGoalsBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            editSettingsGoalsBtn.classList.add('hidden');
+            
+            // Enable number control buttons
+            const numberControlBtns = settingsModal.querySelectorAll('.number-control-btn');
+            numberControlBtns.forEach(btn => {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            });
+        });
+
+        // Handle number control buttons for settings form
+        const numberControlBtns = settingsModal.querySelectorAll('.number-control-btn');
+        numberControlBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const input = getEl(btn.dataset.input);
+                if (input.disabled || btn.disabled) return; // Don't change value if input or button is disabled
+                
+                const action = btn.dataset.action;
+                const currentValue = parseInt(input.value) || 0;
+                const step = input.id === 'settings-calorie-goal' ? 50 : 5; // Step size for calories/protein
+                
+                if (action === 'increment') {
+                    input.value = currentValue + step;
+                } else if (action === 'decrement') {
+                    input.value = Math.max(0, currentValue - step);
+                }
+            });
+        });
+    }
 
     // --- DATA KNOWLEDGE BASE ---
     const commonWorkouts = {
@@ -2638,6 +2985,157 @@ Example bad response:
         saveBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
         saveBtn.classList.add('bg-gray-500', 'hover:bg-gray-600');
     }
+
+    // Theme switching
+    themeOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            const theme = option.dataset.theme;
+            document.documentElement.classList.remove('light', 'dark');
+            document.documentElement.classList.add(theme);
+            localStorage.setItem('theme', theme);
+            
+            // Update active state
+            themeOptions.forEach(opt => opt.classList.remove('ring-2', 'ring-blue-500'));
+            option.classList.add('ring-2', 'ring-blue-500');
+        });
+    });
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.classList.add(savedTheme);
+    const activeThemeOption = document.querySelector(`.theme-option[data-theme="${savedTheme}"]`);
+    if (activeThemeOption) {
+        activeThemeOption.classList.add('ring-2', 'ring-blue-500');
+    }
+
+    // Load saved notification preferences
+    const savedPreferences = JSON.parse(localStorage.getItem('notificationPreferences') || '{}');
+    workoutReminders.checked = savedPreferences.workoutReminders || false;
+    nutritionReminders.checked = savedPreferences.nutritionReminders || false;
+
+    // Save notification preferences
+    workoutReminders.addEventListener('change', () => {
+        const preferences = JSON.parse(localStorage.getItem('notificationPreferences') || '{}');
+        preferences.workoutReminders = workoutReminders.checked;
+        localStorage.setItem('notificationPreferences', JSON.stringify(preferences));
+    });
+
+    nutritionReminders.addEventListener('change', () => {
+        const preferences = JSON.parse(localStorage.getItem('notificationPreferences') || '{}');
+        preferences.nutritionReminders = nutritionReminders.checked;
+        localStorage.setItem('notificationPreferences', JSON.stringify(preferences));
+    });
+
+    // Data management
+    exportDataBtn.addEventListener('click', () => {
+        const data = {
+            workouts: state.workouts,
+            food: state.food,
+            favorites: state.favorites,
+            goals: state.goals,
+            settings: {
+                theme: localStorage.getItem('theme'),
+                notificationPreferences: JSON.parse(localStorage.getItem('notificationPreferences') || '{}')
+            }
+        };
+        
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `phat-and-fit-backup-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    importDataBtn.addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        
+                        // Validate data structure
+                        if (!data.workouts || !data.food || !data.favorites || !data.goals) {
+                            throw new Error('Invalid backup file format');
+                        }
+                        
+                        // Restore data
+                        state.workouts = data.workouts;
+                        state.food = data.food;
+                        state.favorites = data.favorites;
+                        state.goals = data.goals;
+                        
+                        // Restore settings
+                        if (data.settings) {
+                            if (data.settings.theme) {
+                                localStorage.setItem('theme', data.settings.theme);
+                                document.documentElement.classList.remove('light', 'dark');
+                                document.documentElement.classList.add(data.settings.theme);
+                            }
+                            if (data.settings.notificationPreferences) {
+                                localStorage.setItem('notificationPreferences', JSON.stringify(data.settings.notificationPreferences));
+                                workoutReminders.checked = data.settings.notificationPreferences.workoutReminders || false;
+                                nutritionReminders.checked = data.settings.notificationPreferences.nutritionReminders || false;
+                            }
+                        }
+                        
+                        saveData();
+                        renderAll();
+                        alert('Data imported successfully!');
+                    } catch (error) {
+                        alert('Error importing data: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            }
+        };
+        
+        input.click();
+    });
+
+    clearDataBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+            // Clear all data
+            state.workouts = {};
+            state.food = {};
+            state.favorites = {};
+            state.goals = {
+                nutrition: {
+                    calorieGoal: 2000,
+                    proteinGoal: 150
+                }
+            };
+            
+            // Clear localStorage
+            localStorage.clear();
+            
+            // Reset settings
+            document.documentElement.classList.remove('light', 'dark');
+            document.documentElement.classList.add('light');
+            localStorage.setItem('theme', 'light');
+            
+            // Reset notification preferences
+            workoutReminders.checked = false;
+            nutritionReminders.checked = false;
+            localStorage.setItem('notificationPreferences', JSON.stringify({
+                workoutReminders: false,
+                nutritionReminders: false
+            }));
+            
+            saveData();
+            renderAll();
+            alert('All data has been cleared.');
+        }
+    });
 });
 </script>
 
