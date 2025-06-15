@@ -831,7 +831,32 @@
 
                     <div id="overall-summary-view" class="card p-8">
                         <h3 class="text-2xl font-semibold mb-6 text-gray-900">Overall Summary</h3>
-                        <div id="summary-stats" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8"></div>
+                        <div id="summary-stats" class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+                            <div class="stats-card">
+                                <p class="text-sm text-gray-500">Avg Daily Calories</p>
+                                <p class="text-2xl font-semibold text-blue-600 mt-1" id="avg-daily-calories">0</p>
+                            </div>
+                            <div class="stats-card">
+                                <p class="text-sm text-gray-500">Avg Daily Protein</p>
+                                <p class="text-2xl font-semibold text-blue-600 mt-1" id="avg-daily-protein">0</p>
+                            </div>
+                            <div class="stats-card">
+                                <p class="text-sm text-gray-500">Total Calories</p>
+                                <p class="text-2xl font-semibold text-blue-600 mt-1" id="total-calories">0</p>
+                            </div>
+                            <div class="stats-card">
+                                <p class="text-sm text-gray-500">Total Protein</p>
+                                <p class="text-2xl font-semibold text-blue-600 mt-1" id="total-protein">0</p>
+                            </div>
+                            <div class="stats-card">
+                                <p class="text-sm text-gray-500">Weekly Calories Burned</p>
+                                <p class="text-2xl font-semibold text-blue-600 mt-1" id="overall-weekly-calories-burned">0</p>
+                            </div>
+                            <div class="stats-card">
+                                <p class="text-sm text-gray-500">Avg Daily Calories Burned</p>
+                                <p class="text-2xl font-semibold text-blue-600 mt-1" id="overall-avg-daily-calories-burned">0</p>
+                            </div>
+                        </div>
                         <div class="space-y-6">
                             <div class="card p-6">
                                 <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Nutrition Progress</h3>
@@ -1956,24 +1981,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update overall summary stats
         if (state.activeDashboardView === 'overall') {
-            getEl('summary-stats').innerHTML = `
-                <div class="stats-card">
-                    <p class="text-sm text-gray-500">Avg Daily Calories</p>
-                    <p class="text-2xl font-semibold text-blue-600 mt-1">${avgCalories}</p>
-                </div>
-                <div class="stats-card">
-                    <p class="text-sm text-gray-500">Avg Daily Protein</p>
-                    <p class="text-2xl font-semibold text-blue-600 mt-1">${avgProtein}g</p>
-                </div>
-                <div class="stats-card">
-                    <p class="text-sm text-gray-500">Total Calories</p>
-                    <p class="text-2xl font-semibold text-blue-600 mt-1">${totalCalories}</p>
-                </div>
-                <div class="stats-card">
-                    <p class="text-sm text-gray-500">Total Protein</p>
-                    <p class="text-2xl font-semibold text-blue-600 mt-1">${totalProtein}g</p>
-                </div>
-            `;
+            getEl('avg-daily-calories').textContent = avgCalories;
+            getEl('avg-daily-protein').textContent = `${avgProtein}g`;
+            getEl('total-calories').textContent = totalCalories;
+            getEl('total-protein').textContent = `${totalProtein}g`;
+            getEl('overall-weekly-calories-burned').textContent = Math.round(weeklyCaloriesBurned);
+            getEl('overall-avg-daily-calories-burned').textContent = Math.round(weeklyCaloriesBurned / 7);
 
             // Update nutrition progress
             const nutritionProgress = getEl('nutrition-progress');
