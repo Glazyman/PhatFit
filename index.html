@@ -624,405 +624,422 @@
 </head>
 <body class="text-gray-900">
 
-    <div id="app-container" class="container mx-auto p-4 max-w-6xl">
-
-        <!-- Header Section -->
-        <header class="flex flex-col lg:flex-row lg:justify-between items-center gap-6 relative">
-            <h1 class="text-4xl font-bold tracking-tight bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">PHAT & FIT</h1>
-            <div class="flex flex-col md:flex-row items-center gap-4">
-                <div class="flex items-center bg-white/80 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-sm">
-                    <button id="prev-day-btn" class="p-3 text-gray-400 hover:text-gray-800 transition-colors"><i class="fas fa-chevron-left fa-fw"></i></button>
-                    <label for="manual-date-input" class="relative">
-                        <span id="date-display" class="block px-4 py-2 text-sm font-medium text-center w-40 cursor-pointer" title="Click to select a date"></span>
-                        <input type="date" id="manual-date-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                    </label>
-                    <button id="next-day-btn" class="p-3 text-gray-400 hover:text-gray-800 transition-colors"><i class="fas fa-chevron-right fa-fw"></i></button>
-                </div>
-                <div class="bg-white/80 backdrop-blur-xl p-1 rounded-2xl border border-gray-200/50 flex items-center gap-2 hidden sm:flex">
-                    <button id="workout-nav-btn" class="nav-btn active">Workout</button>
-                    <button id="food-nav-btn" class="nav-btn">Food</button>
-                    <button id="dashboard-nav-btn" class="nav-btn"><i class="fas fa-chart-line mr-1"></i>Stats</button>
-                    <button id="ai-helper-menu-btn" class="nav-btn flex items-center gap-2"><i class="fas fa-robot"></i><span class="hidden sm:inline">AI Helper</span></button>
-                    <button id="settings-nav-btn" class="nav-btn flex items-center gap-2"><i class="fas fa-cog"></i><span class="hidden sm:inline">Settings</span></button>
-                </div>
-                <div class="announcement-bar sm:hidden">
-                    <div class="flex items-center justify-between">
-                        <button id="ai-helper-menu-btn-mobile" class="nav-btn">
-                            <i class="fas fa-robot"></i>
-                            <span>AI Helper</span>
-                        </button>
-                        <button id="settings-nav-btn-mobile" class="nav-btn">
-                            <i class="fas fa-cog"></i>
-                            <span>Settings</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="mobile-nav-container sm:hidden">
-                    <div class="flex items-center justify-between">
-                        <button id="workout-nav-btn-mobile" class="nav-btn active">Workout</button>
-                        <button id="food-nav-btn-mobile" class="nav-btn">Food</button>
-                        <button id="dashboard-nav-btn-mobile" class="nav-btn">Stats</button>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <main>
-            <!-- Workout Page Content -->
-            <div id="workout-page" class="fade-in">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="card p-8">
-                        <h2 class="text-2xl font-semibold mb-6 text-gray-900">Log Workout</h2>
-                        <form id="workout-form" class="space-y-6">
-                            <input type="hidden" id="edit-workout-id">
-                            <select id="workout-category" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500"></select>
-                            <div class="relative autocomplete">
-                                <input type="text" id="exercise-name" placeholder="Exercise Name" class="w-full p-4 pr-12 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" required autocomplete="off">
-                                <button type="button" id="clear-exercise" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden pointer-events-none">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="text-sm font-medium text-gray-600 mb-2 block">Sets</label>
-                                    <div class="flex items-center">
-                                        <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-l-2xl hover:bg-gray-200 transition-colors" data-input="sets" data-action="decrement">-</button>
-                                        <input type="number" id="sets" value="3" class="w-full p-4 text-center border-t border-b border-gray-200 bg-white/80 backdrop-blur-xl" min="1">
-                                        <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-r-2xl hover:bg-gray-200 transition-colors" data-input="sets" data-action="increment">+</button>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="text-sm font-medium text-gray-600 mb-2 block">Reps</label>
-                                    <div class="flex items-center">
-                                        <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-l-2xl hover:bg-gray-200 transition-colors" data-input="reps" data-action="decrement">-</button>
-                                        <input type="number" id="reps" value="10" class="w-full p-4 text-center border-t border-b border-gray-200 bg-white/80 backdrop-blur-xl" min="1">
-                                        <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-r-2xl hover:bg-gray-200 transition-colors" data-input="reps" data-action="increment">+</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <input type="number" step="0.01" id="weight" placeholder="Weight (lb)" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" inputmode="decimal" pattern="[0-9]*">
-                            <textarea id="notes" placeholder="Notes..." class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 h-24"></textarea>
-                            <button type="submit" id="submit-workout-btn" class="w-full bg-gray-900 text-white font-medium py-4 rounded-2xl hover:bg-gray-800 transition-colors">Add Exercise</button>
-                        </form>
-                    </div>
-                    <div class="card p-8">
-                        <h2 class="text-2xl font-semibold mb-6 text-gray-900">Today's Workouts</h2>
-                        <div id="workout-list" class="space-y-4 max-h-[42rem] overflow-y-auto pr-2"></div>
-                        <div id="daily-calories-burned-summary" class="mt-6 pt-6 border-t border-gray-200 text-center"></div>
-                    </div>
+    <div id="app-container" class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Announcement Bar -->
+            <div class="announcement-bar sm:hidden mb-4">
+                <div class="flex items-center justify-between">
+                    <button id="ai-helper-menu-btn-mobile" class="nav-btn">
+                        <i class="fas fa-robot"></i>
+                        <span>AI Helper</span>
+                    </button>
+                    <button id="settings-nav-btn-mobile" class="nav-btn">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- Food Page Content -->
-            <div id="food-page" class="hidden fade-in">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="card p-8">
-                        <h2 class="text-2xl font-semibold mb-6 text-gray-900">Log Food</h2>
-                        
-                        <!-- AI Helper Section -->
-                        <div class="mb-8 p-6 bg-gray-50 rounded-2xl border border-gray-200">
-                            <h3 class="text-lg font-medium mb-4 text-gray-900">AI Food Helper</h3>
-                            <div class="space-y-4">
-                                <div class="relative flex flex-col gap-2">
-                                    <div class="relative">
-                                        <input type="text" id="ai-food-input" placeholder="Describe your food (e.g., 'a medium apple' or '2 slices of whole wheat bread with peanut butter')" class="w-full p-4 pr-12 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500">
-                                        <button type="button" id="clear-ai-food" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden pointer-events-none">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </div>
-                                    <button type="button" id="analyze-food-btn" class="w-full bg-gray-900 text-white font-medium py-4 rounded-2xl hover:bg-gray-800 transition-colors">
-                                        Analyze
-                                    </button>
-                                </div>
-                                <div id="ai-result" class="hidden p-4 bg-white rounded-xl border border-gray-200">
-                                    <h4 class="font-medium text-gray-900 mb-2">Analysis Result</h4>
-                                    <div id="ai-result-content" class="text-sm text-gray-600 mb-4"></div>
-                                    <button type="button" id="use-result-btn" class="inline-block px-6 py-2 rounded-full bg-blue-100 text-blue-700 font-semibold text-sm shadow-sm hover:bg-blue-200 transition-colors">
-                                        Use This
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <form id="food-form" class="space-y-6">
-                            <input type="hidden" id="edit-food-id">
-                            <div class="relative autocomplete">
-                                <input type="text" id="food-name" placeholder="Food Item (e.g., Apple)" class="w-full p-4 pr-12 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" required autocomplete="off">
-                                <button type="button" id="clear-food" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden pointer-events-none">
-                                    <i class="fas fa-times"></i>
-                                </button>
+            <!-- Header -->
+            <header class="bg-white/80 backdrop-blur-xl rounded-3xl shadow-lg border border-gray-200/50 mb-8">
+                <div class="p-6">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center shadow-lg border border-blue-200/50">
+                                <i class="fas fa-dumbbell text-blue-600 text-xl"></i>
                             </div>
                             <div>
-                                <label class="text-sm font-medium text-gray-600 mb-2 block">Quantity</label>
-                                <div class="flex items-center">
-                                    <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-l-2xl hover:bg-gray-200 transition-colors" data-input="quantity" data-action="decrement">-</button>
-                                    <input type="number" id="quantity" value="1" class="w-full p-4 text-center border-t border-b border-gray-200 bg-white/80 backdrop-blur-xl" min="1">
-                                    <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-r-2xl hover:bg-gray-200 transition-colors" data-input="quantity" data-action="increment">+</button>
+                                <h1 class="text-3xl font-bold text-gray-900">Phat & Fit</h1>
+                                <p class="text-gray-500">Track your fitness journey</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-2 bg-white/80 backdrop-blur-xl border border-gray-200/50 p-1 rounded-2xl">
+                                <button id="prev-day-btn" class="p-3 text-gray-400 hover:text-gray-800 transition-colors"><i class="fas fa-chevron-left fa-fw"></i></button>
+                                <div class="flex items-center gap-2 px-2">
+                                    <span id="date-display" class="text-gray-900 font-medium"></span>
+                                    <input type="date" id="manual-date-input" class="hidden">
                                 </div>
+                                <button id="next-day-btn" class="p-3 text-gray-400 hover:text-gray-800 transition-colors"><i class="fas fa-chevron-right fa-fw"></i></button>
                             </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <input type="number" id="calories" placeholder="Calories" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" required inputmode="numeric" pattern="[0-9]*">
-                                <input type="number" id="protein" placeholder="Protein (g)" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" required inputmode="numeric" pattern="[0-9]*">
-                            </div>
-                            <button type="submit" id="submit-food-btn" class="w-full bg-gray-900 text-white font-medium py-4 rounded-2xl hover:bg-gray-800 transition-colors">Add Food</button>
-                        </form>
+                        </div>
                     </div>
-                    <div class="card p-8">
-                        <h2 class="text-2xl font-semibold mb-6 text-gray-900">Today's Food</h2>
-                        <div id="food-list" class="space-y-4 max-h-[42rem] overflow-y-auto pr-2"></div>
-                        <div id="daily-nutrition-summary" class="mt-6 pt-6 border-t border-gray-200"></div>
-                        
-                        <!-- Daily Progress -->
-                        <div class="card p-6 mt-6">
-                            <h4 class="text-lg font-medium mb-4 text-gray-900">Today's Progress</h4>
-                            <div class="space-y-4">
-                                <div>
-                                    <div class="flex justify-between items-center mb-2">
-                                        <span class="text-sm font-medium text-gray-700">Calorie Goal</span>
-                                        <span class="text-sm text-gray-500" id="daily-calorie-progress-text">0/0 cal</span>
-                                    </div>
-                                    <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                        <div class="h-full bg-blue-500 rounded-full" id="daily-calorie-progress-bar" style="width: 0%"></div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="flex justify-between items-center mb-2">
-                                        <span class="text-sm font-medium text-gray-700">Protein Goal</span>
-                                        <span class="text-sm text-gray-500" id="daily-protein-progress-text">0/0g</span>
-                                    </div>
-                                    <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                        <div class="h-full bg-emerald-500 rounded-full" id="daily-protein-progress-bar" style="width: 0%"></div>
-                                    </div>
-                                </div>
+                    <div class="mt-6">
+                        <div class="bg-white/80 backdrop-blur-xl p-1 rounded-2xl border border-gray-200/50 flex items-center gap-2 hidden sm:flex">
+                            <button id="workout-nav-btn" class="nav-btn active">Workout</button>
+                            <button id="food-nav-btn" class="nav-btn">Food</button>
+                            <button id="dashboard-nav-btn" class="nav-btn"><i class="fas fa-chart-line mr-1"></i>Stats</button>
+                            <button id="ai-helper-menu-btn" class="nav-btn flex items-center gap-2"><i class="fas fa-robot"></i><span class="hidden sm:inline">AI Helper</span></button>
+                            <button id="settings-nav-btn" class="nav-btn flex items-center gap-2"><i class="fas fa-cog"></i><span class="hidden sm:inline">Settings</span></button>
+                        </div>
+                        <div class="mobile-nav-container sm:hidden">
+                            <div class="flex items-center justify-between">
+                                <button id="workout-nav-btn-mobile" class="nav-btn active">Workout</button>
+                                <button id="food-nav-btn-mobile" class="nav-btn">Food</button>
+                                <button id="dashboard-nav-btn-mobile" class="nav-btn">Stats</button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </header>
 
-            <!-- Dashboard Page Content -->
-            <div id="dashboard-page" class="hidden fade-in space-y-8">
-                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                    <h2 class="text-3xl font-bold text-gray-900">Dashboard</h2>
-                    <div class="flex items-center space-x-2 text-sm bg-white/80 backdrop-blur-xl border border-gray-200/50 p-1 rounded-2xl">
-                        <button id="prev-week-btn" class="p-2 rounded-xl hover:bg-gray-100 transition-colors"><i class="fas fa-chevron-left"></i></button>
-                        <div class="flex items-center gap-2 px-2">
-                            <input type="date" id="start-date" class="bg-transparent border-none focus:ring-0 p-0 text-center w-32 cursor-pointer" title="Click to select start date">
-                            <span class="text-gray-400">to</span>
-                            <input type="date" id="end-date" class="bg-transparent border-none focus:ring-0 p-0 text-center w-32 cursor-pointer" title="Click to select end date">
-                        </div>
-                        <button id="next-week-btn" class="p-2 rounded-xl hover:bg-gray-100 transition-colors"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                </div>
-                
-                <div class="bg-white/80 backdrop-blur-xl p-1 rounded-2xl border border-gray-200/50 flex justify-center">
-                    <button id="overall-dash-btn" class="dash-nav-btn active">Overall</button>
-                    <button id="workout-dash-btn" class="dash-nav-btn">Workout</button>
-                    <button id="food-dash-btn" class="dash-nav-btn">Food</button>
-                </div>
-
-                <div id="overall-summary-view" class="card p-8">
-                    <h3 class="text-2xl font-semibold mb-6 text-gray-900">Overall Summary</h3>
-                    <div id="summary-stats" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8"></div>
-                    <div class="space-y-6">
-                        <div class="card p-6">
-                            <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Nutrition Progress</h3>
-                            <div id="nutrition-progress" class="space-y-4"></div>
-                        </div>
-                        <div class="card p-6">
-                            <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Workout Progress</h3>
-                            <div id="workout-progress" class="space-y-4"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="workout-summary-view" class="hidden card p-8">
-                    <h3 class="text-2xl font-semibold mb-6 text-gray-900">Workout Summary</h3>
-                    <div id="workout-summary-stats" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8"></div>
-                    <div class="space-y-6">
-                        <div class="card p-6">
-                            <h3 class="text-lg font-medium mb-4 text-gray-900">Workout Volume by Category</h3>
-                            <div id="workout-volume-progress" class="space-y-4"></div>
-                        </div>
-                        <div class="card p-6">
-                            <h3 class="text-lg font-medium mb-4 text-gray-900">Workout Insights</h3>
-                            <div id="workout-insights" class="space-y-4">
-                                <div class="insight-card">
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <i class="fas fa-chart-line text-blue-600"></i>
-                                        <h4 class="text-sm font-medium text-gray-900">Progression Trends</h4>
-                                    </div>
-                                    <div id="progression-trends" class="text-sm text-gray-600"></div>
-                                </div>
-                                <div class="insight-card">
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <i class="fas fa-balance-scale text-yellow-600"></i>
-                                        <h4 class="text-sm font-medium text-gray-900">Muscle Balance</h4>
-                                    </div>
-                                    <div id="muscle-balance" class="text-sm text-gray-600"></div>
-                                </div>
-                                <div class="insight-card">
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <i class="fas fa-lightbulb text-green-600"></i>
-                                        <h4 class="text-sm font-medium text-gray-900">Workout Variety</h4>
-                                    </div>
-                                    <div id="workout-variety" class="text-sm text-gray-600"></div>
-                                </div>
-                                <div class="insight-card">
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <i class="fas fa-trophy text-purple-600"></i>
-                                        <h4 class="text-sm font-medium text-gray-900">Recent Achievements</h4>
-                                    </div>
-                                    <div id="recent-achievements" class="text-sm text-gray-600"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="food-summary-view" class="hidden card p-8">
-                    <h3 class="text-2xl font-semibold mb-6 text-gray-900">Food Summary</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Stats Cards -->
-                        <div class="card p-6">
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-blue-600" id="avg-daily-calories">0</div>
-                                    <div class="text-sm text-gray-600">Avg Daily Calories</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-emerald-600" id="avg-daily-protein">0</div>
-                                    <div class="text-sm text-gray-600">Avg Daily Protein</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-purple-600" id="days-tracked">0</div>
-                                    <div class="text-sm text-gray-600">Days Tracked</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-orange-600" id="total-calories">0</div>
-                                    <div class="text-sm text-gray-600">Total Calories</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Weekly Progress -->
-                        <div class="card p-6">
-                            <h4 class="text-lg font-medium mb-4 text-gray-900">Weekly Progress</h4>
-                            <div class="space-y-4">
-                                <div>
-                                    <div class="flex justify-between items-center mb-2">
-                                        <span class="text-sm font-medium text-gray-700">Weekly Calorie Goal</span>
-                                        <span class="text-sm text-gray-500" id="weekly-calorie-progress-text">0/0 cal</span>
-                                    </div>
-                                    <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                        <div class="h-full bg-blue-500 rounded-full" id="weekly-calorie-progress-bar" style="width: 0%"></div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="flex justify-between items-center mb-2">
-                                        <span class="text-sm font-medium text-gray-700">Weekly Protein Goal</span>
-                                        <span class="text-sm text-gray-500" id="weekly-protein-progress-text">0/0g</span>
-                                    </div>
-                                    <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                        <div class="h-full bg-emerald-500 rounded-full" id="weekly-protein-progress-bar" style="width: 0%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="goals-summary-view" class="hidden card p-8">
-                    <h3 class="text-2xl font-semibold mb-6 text-gray-900">Fitness Goals</h3>
-                    <div class="grid grid-cols-1 gap-6">
-                        <!-- Nutrition Goals -->
-                        <div class="card p-6">
-                            <h4 class="text-lg font-medium mb-4 text-gray-900">Nutrition Goals</h4>
-                            <form id="nutrition-goals-form" class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Daily Calorie Target</label>
-                                    <div class="flex items-center gap-2">
-                                        <input type="number" id="calorie-goal" class="flex-1 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500" placeholder="e.g., 2000">
-                                        <span class="text-gray-500">calories</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Daily Protein Target</label>
-                                    <div class="flex items-center gap-2">
-                                        <input type="number" id="protein-goal" class="flex-1 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500" placeholder="e.g., 150">
-                                        <span class="text-gray-500">grams</span>
-                                    </div>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button type="submit" id="save-nutrition-goals" class="flex-1 bg-blue-600 text-white font-medium py-3 rounded-xl hover:bg-blue-700 transition-colors">
-                                        Save Nutrition Goals
-                                    </button>
-                                    <button type="button" id="edit-nutrition-goals" class="hidden bg-gray-600 text-white font-medium py-3 px-4 rounded-xl hover:bg-gray-700 transition-colors">
-                                        Edit
+            <main>
+                <!-- Workout Page Content -->
+                <div id="workout-page" class="fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="card p-8">
+                            <h2 class="text-2xl font-semibold mb-6 text-gray-900">Log Workout</h2>
+                            <form id="workout-form" class="space-y-6">
+                                <input type="hidden" id="edit-workout-id">
+                                <select id="workout-category" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500"></select>
+                                <div class="relative autocomplete">
+                                    <input type="text" id="exercise-name" placeholder="Exercise Name" class="w-full p-4 pr-12 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" required autocomplete="off">
+                                    <button type="button" id="clear-exercise" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden pointer-events-none">
+                                        <i class="fas fa-times"></i>
                                     </button>
                                 </div>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="text-sm font-medium text-gray-600 mb-2 block">Sets</label>
+                                        <div class="flex items-center">
+                                            <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-l-2xl hover:bg-gray-200 transition-colors" data-input="sets" data-action="decrement">-</button>
+                                            <input type="number" id="sets" value="3" class="w-full p-4 text-center border-t border-b border-gray-200 bg-white/80 backdrop-blur-xl" min="1">
+                                            <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-r-2xl hover:bg-gray-200 transition-colors" data-input="sets" data-action="increment">+</button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="text-sm font-medium text-gray-600 mb-2 block">Reps</label>
+                                        <div class="flex items-center">
+                                            <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-l-2xl hover:bg-gray-200 transition-colors" data-input="reps" data-action="decrement">-</button>
+                                            <input type="number" id="reps" value="10" class="w-full p-4 text-center border-t border-b border-gray-200 bg-white/80 backdrop-blur-xl" min="1">
+                                            <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-r-2xl hover:bg-gray-200 transition-colors" data-input="reps" data-action="increment">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="number" step="0.01" id="weight" placeholder="Weight (lb)" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" inputmode="decimal" pattern="[0-9]*">
+                                <textarea id="notes" placeholder="Notes..." class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 h-24"></textarea>
+                                <button type="submit" id="submit-workout-btn" class="w-full bg-gray-900 text-white font-medium py-4 rounded-2xl hover:bg-gray-800 transition-colors">Add Exercise</button>
                             </form>
                         </div>
+                        <div class="card p-8">
+                            <h2 class="text-2xl font-semibold mb-6 text-gray-900">Today's Workouts</h2>
+                            <div id="workout-list" class="space-y-4 max-h-[42rem] overflow-y-auto pr-2"></div>
+                            <div id="daily-calories-burned-summary" class="mt-6 pt-6 border-t border-gray-200 text-center"></div>
+                        </div>
                     </div>
                 </div>
 
-                <div id="ai-helper-view" class="hidden card p-8">
-                    <h3 class="text-2xl font-semibold mb-6 text-gray-900">AI Helper</h3>
-                    <div class="space-y-6">
-                        <div class="card p-4 sm:p-6">
-                            <div class="flex flex-col space-y-4">
-                                <div class="flex items-center gap-2 mb-4">
-                                    <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
-                                        <i class="fas fa-robot text-white"></i>
-                                    </div>
-                                    <h4 class="text-lg font-medium text-gray-900">Your AI Fitness Assistant</h4>
-                                </div>
-                                
-                                <!-- Chat Messages Container -->
-                                <div id="chat-messages" class="flex-1 space-y-4 max-h-[500px] overflow-y-auto p-4 bg-gray-50/50 backdrop-blur-sm rounded-xl">
-                                    <!-- Welcome Message -->
-                                    <div class="chat-message ai-message">
-                                        <div class="message-content">
-                                            Hi! I'm your AI fitness assistant. I can help you analyze your workout and nutrition data, provide insights, and answer any fitness-related questions. How can I help you today?
+                <!-- Food Page Content -->
+                <div id="food-page" class="hidden fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="card p-8">
+                            <h2 class="text-2xl font-semibold mb-6 text-gray-900">Log Food</h2>
+                            
+                            <!-- AI Helper Section -->
+                            <div class="mb-8 p-6 bg-gray-50 rounded-2xl border border-gray-200">
+                                <h3 class="text-lg font-medium mb-4 text-gray-900">AI Food Helper</h3>
+                                <div class="space-y-4">
+                                    <div class="relative flex flex-col gap-2">
+                                        <div class="relative">
+                                            <input type="text" id="ai-food-input" placeholder="Describe your food (e.g., 'a medium apple' or '2 slices of whole wheat bread with peanut butter')" class="w-full p-4 pr-12 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500">
+                                            <button type="button" id="clear-ai-food" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden pointer-events-none">
+                                                <i class="fas fa-times"></i>
+                                            </button>
                                         </div>
-                                        <div class="message-time">Just now</div>
-                                    </div>
-                                </div>
-
-                                <!-- Quick Question Buttons -->
-                                <div class="flex flex-wrap gap-2 p-2">
-                                    <button class="quick-question-btn" data-question="How have I grown in the past week?">
-                                        <i class="fas fa-chart-line mr-2"></i>Past Week Progress
-                                    </button>
-                                    <button class="quick-question-btn" data-question="What's my recommended calorie intake?">
-                                        <i class="fas fa-fire mr-2"></i>Calorie Needs
-                                    </button>
-                                    <button class="quick-question-btn" data-question="How can I improve my workout routine?">
-                                        <i class="fas fa-dumbbell mr-2"></i>Workout Tips
-                                    </button>
-                                    <button class="quick-question-btn" data-question="What's my muscle balance like?">
-                                        <i class="fas fa-balance-scale mr-2"></i>Muscle Balance
-                                    </button>
-                                </div>
-
-                                <!-- Input Area -->
-                                <div class="flex items-center gap-2 mt-4">
-                                    <div class="flex-1 relative">
-                                        <input type="text" id="ai-question" placeholder="Ask me anything about your fitness journey..." class="w-full p-4 pr-12 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500">
-                                        <button id="clear-ai-input" class="absolute right-12 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                                            <i class="fas fa-times"></i>
+                                        <button type="button" id="analyze-food-btn" class="w-full bg-gray-900 text-white font-medium py-4 rounded-2xl hover:bg-gray-800 transition-colors">
+                                            Analyze
                                         </button>
                                     </div>
-                                    <button id="ask-ai-btn" class="bg-blue-600 text-white px-6 py-4 rounded-xl hover:bg-blue-700 transition-colors">
-                                        <i class="fas fa-paper-plane"></i>
+                                    <div id="ai-result" class="hidden p-4 bg-white rounded-xl border border-gray-200">
+                                        <h4 class="font-medium text-gray-900 mb-2">Analysis Result</h4>
+                                        <div id="ai-result-content" class="text-sm text-gray-600 mb-4"></div>
+                                        <button type="button" id="use-result-btn" class="inline-block px-6 py-2 rounded-full bg-blue-100 text-blue-700 font-semibold text-sm shadow-sm hover:bg-blue-200 transition-colors">
+                                            Use This
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <form id="food-form" class="space-y-6">
+                                <input type="hidden" id="edit-food-id">
+                                <div class="relative autocomplete">
+                                    <input type="text" id="food-name" placeholder="Food Item (e.g., Apple)" class="w-full p-4 pr-12 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" required autocomplete="off">
+                                    <button type="button" id="clear-food" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden pointer-events-none">
+                                        <i class="fas fa-times"></i>
                                     </button>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600 mb-2 block">Quantity</label>
+                                    <div class="flex items-center">
+                                        <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-l-2xl hover:bg-gray-200 transition-colors" data-input="quantity" data-action="decrement">-</button>
+                                        <input type="number" id="quantity" value="1" class="w-full p-4 text-center border-t border-b border-gray-200 bg-white/80 backdrop-blur-xl" min="1">
+                                        <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-r-2xl hover:bg-gray-200 transition-colors" data-input="quantity" data-action="increment">+</button>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <input type="number" id="calories" placeholder="Calories" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" required inputmode="numeric" pattern="[0-9]*">
+                                    <input type="number" id="protein" placeholder="Protein (g)" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" required inputmode="numeric" pattern="[0-9]*">
+                                </div>
+                                <button type="submit" id="submit-food-btn" class="w-full bg-gray-900 text-white font-medium py-4 rounded-2xl hover:bg-gray-800 transition-colors">Add Food</button>
+                            </form>
+                        </div>
+                        <div class="card p-8">
+                            <h2 class="text-2xl font-semibold mb-6 text-gray-900">Today's Food</h2>
+                            <div id="food-list" class="space-y-4 max-h-[42rem] overflow-y-auto pr-2"></div>
+                            <div id="daily-nutrition-summary" class="mt-6 pt-6 border-t border-gray-200"></div>
+                            
+                            <!-- Daily Progress -->
+                            <div class="card p-6 mt-6">
+                                <h4 class="text-lg font-medium mb-4 text-gray-900">Today's Progress</h4>
+                                <div class="space-y-4">
+                                    <div>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-sm font-medium text-gray-700">Calorie Goal</span>
+                                            <span class="text-sm text-gray-500" id="daily-calorie-progress-text">0/0 cal</span>
+                                        </div>
+                                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                            <div class="h-full bg-blue-500 rounded-full" id="daily-calorie-progress-bar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-sm font-medium text-gray-700">Protein Goal</span>
+                                            <span class="text-sm text-gray-500" id="daily-protein-progress-text">0/0g</span>
+                                        </div>
+                                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                            <div class="h-full bg-emerald-500 rounded-full" id="daily-protein-progress-bar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </main>
+
+                <!-- Dashboard Page Content -->
+                <div id="dashboard-page" class="hidden fade-in space-y-8">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <h2 class="text-3xl font-bold text-gray-900">Dashboard</h2>
+                        <div class="flex items-center space-x-2 text-sm bg-white/80 backdrop-blur-xl border border-gray-200/50 p-1 rounded-2xl">
+                            <button id="prev-week-btn" class="p-2 rounded-xl hover:bg-gray-100 transition-colors"><i class="fas fa-chevron-left"></i></button>
+                            <div class="flex items-center gap-2 px-2">
+                                <input type="date" id="start-date" class="bg-transparent border-none focus:ring-0 p-0 text-center w-32 cursor-pointer" title="Click to select start date">
+                                <span class="text-gray-400">to</span>
+                                <input type="date" id="end-date" class="bg-transparent border-none focus:ring-0 p-0 text-center w-32 cursor-pointer" title="Click to select end date">
+                            </div>
+                            <button id="next-week-btn" class="p-2 rounded-xl hover:bg-gray-100 transition-colors"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white/80 backdrop-blur-xl p-1 rounded-2xl border border-gray-200/50 flex justify-center">
+                        <button id="overall-dash-btn" class="dash-nav-btn active">Overall</button>
+                        <button id="workout-dash-btn" class="dash-nav-btn">Workout</button>
+                        <button id="food-dash-btn" class="dash-nav-btn">Food</button>
+                    </div>
+
+                    <div id="overall-summary-view" class="card p-8">
+                        <h3 class="text-2xl font-semibold mb-6 text-gray-900">Overall Summary</h3>
+                        <div id="summary-stats" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8"></div>
+                        <div class="space-y-6">
+                            <div class="card p-6">
+                                <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Nutrition Progress</h3>
+                                <div id="nutrition-progress" class="space-y-4"></div>
+                            </div>
+                            <div class="card p-6">
+                                <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Workout Progress</h3>
+                                <div id="workout-progress" class="space-y-4"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="workout-summary-view" class="hidden card p-8">
+                        <h3 class="text-2xl font-semibold mb-6 text-gray-900">Workout Summary</h3>
+                        <div id="workout-summary-stats" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8"></div>
+                        <div class="space-y-6">
+                            <div class="card p-6">
+                                <h3 class="text-lg font-medium mb-4 text-gray-900">Workout Volume by Category</h3>
+                                <div id="workout-volume-progress" class="space-y-4"></div>
+                            </div>
+                            <div class="card p-6">
+                                <h3 class="text-lg font-medium mb-4 text-gray-900">Workout Insights</h3>
+                                <div id="workout-insights" class="space-y-4">
+                                    <div class="insight-card">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <i class="fas fa-chart-line text-blue-600"></i>
+                                            <h4 class="text-sm font-medium text-gray-900">Progression Trends</h4>
+                                        </div>
+                                        <div id="progression-trends" class="text-sm text-gray-600"></div>
+                                    </div>
+                                    <div class="insight-card">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <i class="fas fa-balance-scale text-yellow-600"></i>
+                                            <h4 class="text-sm font-medium text-gray-900">Muscle Balance</h4>
+                                        </div>
+                                        <div id="muscle-balance" class="text-sm text-gray-600"></div>
+                                    </div>
+                                    <div class="insight-card">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <i class="fas fa-lightbulb text-green-600"></i>
+                                            <h4 class="text-sm font-medium text-gray-900">Workout Variety</h4>
+                                        </div>
+                                        <div id="workout-variety" class="text-sm text-gray-600"></div>
+                                    </div>
+                                    <div class="insight-card">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <i class="fas fa-trophy text-purple-600"></i>
+                                            <h4 class="text-sm font-medium text-gray-900">Recent Achievements</h4>
+                                        </div>
+                                        <div id="recent-achievements" class="text-sm text-gray-600"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="food-summary-view" class="hidden card p-8">
+                        <h3 class="text-2xl font-semibold mb-6 text-gray-900">Food Summary</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Stats Cards -->
+                            <div class="card p-6">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-blue-600" id="avg-daily-calories">0</div>
+                                        <div class="text-sm text-gray-600">Avg Daily Calories</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-emerald-600" id="avg-daily-protein">0</div>
+                                        <div class="text-sm text-gray-600">Avg Daily Protein</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-purple-600" id="days-tracked">0</div>
+                                        <div class="text-sm text-gray-600">Days Tracked</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-orange-600" id="total-calories">0</div>
+                                        <div class="text-sm text-gray-600">Total Calories</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Weekly Progress -->
+                            <div class="card p-6">
+                                <h4 class="text-lg font-medium mb-4 text-gray-900">Weekly Progress</h4>
+                                <div class="space-y-4">
+                                    <div>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-sm font-medium text-gray-700">Weekly Calorie Goal</span>
+                                            <span class="text-sm text-gray-500" id="weekly-calorie-progress-text">0/0 cal</span>
+                                        </div>
+                                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                            <div class="h-full bg-blue-500 rounded-full" id="weekly-calorie-progress-bar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-sm font-medium text-gray-700">Weekly Protein Goal</span>
+                                            <span class="text-sm text-gray-500" id="weekly-protein-progress-text">0/0g</span>
+                                        </div>
+                                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                            <div class="h-full bg-emerald-500 rounded-full" id="weekly-protein-progress-bar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="goals-summary-view" class="hidden card p-8">
+                        <h3 class="text-2xl font-semibold mb-6 text-gray-900">Fitness Goals</h3>
+                        <div class="grid grid-cols-1 gap-6">
+                            <!-- Nutrition Goals -->
+                            <div class="card p-6">
+                                <h4 class="text-lg font-medium mb-4 text-gray-900">Nutrition Goals</h4>
+                                <form id="nutrition-goals-form" class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Daily Calorie Target</label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="number" id="calorie-goal" class="flex-1 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500" placeholder="e.g., 2000">
+                                            <span class="text-gray-500">calories</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Daily Protein Target</label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="number" id="protein-goal" class="flex-1 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500" placeholder="e.g., 150">
+                                            <span class="text-gray-500">grams</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button type="submit" id="save-nutrition-goals" class="flex-1 bg-blue-600 text-white font-medium py-3 rounded-xl hover:bg-blue-700 transition-colors">
+                                            Save Nutrition Goals
+                                        </button>
+                                        <button type="button" id="edit-nutrition-goals" class="hidden bg-gray-600 text-white font-medium py-3 px-4 rounded-xl hover:bg-gray-700 transition-colors">
+                                            Edit
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="ai-helper-view" class="hidden card p-8">
+                        <h3 class="text-2xl font-semibold mb-6 text-gray-900">AI Helper</h3>
+                        <div class="space-y-6">
+                            <div class="card p-4 sm:p-6">
+                                <div class="flex flex-col space-y-4">
+                                    <div class="flex items-center gap-2 mb-4">
+                                        <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
+                                            <i class="fas fa-robot text-white"></i>
+                                        </div>
+                                        <h4 class="text-lg font-medium text-gray-900">Your AI Fitness Assistant</h4>
+                                    </div>
+                                    
+                                    <!-- Chat Messages Container -->
+                                    <div id="chat-messages" class="flex-1 space-y-4 max-h-[500px] overflow-y-auto p-4 bg-gray-50/50 backdrop-blur-sm rounded-xl">
+                                        <!-- Welcome Message -->
+                                        <div class="chat-message ai-message">
+                                            <div class="message-content">
+                                                Hi! I'm your AI fitness assistant. I can help you analyze your workout and nutrition data, provide insights, and answer any fitness-related questions. How can I help you today?
+                                            </div>
+                                            <div class="message-time">Just now</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Quick Question Buttons -->
+                                    <div class="flex flex-wrap gap-2 p-2">
+                                        <button class="quick-question-btn" data-question="How have I grown in the past week?">
+                                            <i class="fas fa-chart-line mr-2"></i>Past Week Progress
+                                        </button>
+                                        <button class="quick-question-btn" data-question="What's my recommended calorie intake?">
+                                            <i class="fas fa-fire mr-2"></i>Calorie Needs
+                                        </button>
+                                        <button class="quick-question-btn" data-question="How can I improve my workout routine?">
+                                            <i class="fas fa-dumbbell mr-2"></i>Workout Tips
+                                        </button>
+                                        <button class="quick-question-btn" data-question="What's my muscle balance like?">
+                                            <i class="fas fa-balance-scale mr-2"></i>Muscle Balance
+                                        </button>
+                                    </div>
+
+                                    <!-- Input Area -->
+                                    <div class="flex items-center gap-2 mt-4">
+                                        <div class="flex-1 relative">
+                                            <input type="text" id="ai-question" placeholder="Ask me anything about your fitness journey..." class="w-full p-4 pr-12 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500">
+                                            <button id="clear-ai-input" class="absolute right-12 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <button id="ask-ai-btn" class="bg-blue-600 text-white px-6 py-4 rounded-xl hover:bg-blue-700 transition-colors">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
     
     <!-- Confirmation Modal -->
