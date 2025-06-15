@@ -549,8 +549,37 @@
                             <div id="workout-volume-progress" class="space-y-4"></div>
                         </div>
                         <div class="card p-6">
-                            <h3 class="text-lg font-medium mb-4 text-gray-900">Most Frequent Exercises</h3>
-                            <div id="frequent-exercises" class="space-y-4"></div>
+                            <h3 class="text-lg font-medium mb-4 text-gray-900">Workout Insights</h3>
+                            <div id="workout-insights" class="space-y-4">
+                                <div class="insight-card">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fas fa-chart-line text-blue-600"></i>
+                                        <h4 class="text-sm font-medium text-gray-900">Progression Trends</h4>
+                                    </div>
+                                    <div id="progression-trends" class="text-sm text-gray-600"></div>
+                                </div>
+                                <div class="insight-card">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fas fa-balance-scale text-yellow-600"></i>
+                                        <h4 class="text-sm font-medium text-gray-900">Muscle Balance</h4>
+                                    </div>
+                                    <div id="muscle-balance" class="text-sm text-gray-600"></div>
+                                </div>
+                                <div class="insight-card">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fas fa-lightbulb text-green-600"></i>
+                                        <h4 class="text-sm font-medium text-gray-900">Workout Variety</h4>
+                                    </div>
+                                    <div id="workout-variety" class="text-sm text-gray-600"></div>
+                                </div>
+                                <div class="insight-card">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fas fa-trophy text-purple-600"></i>
+                                        <h4 class="text-sm font-medium text-gray-900">Recent Achievements</h4>
+                                    </div>
+                                    <div id="recent-achievements" class="text-sm text-gray-600"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -562,44 +591,6 @@
                         <div class="card p-6">
                             <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Nutrition Breakdown</h3>
                             <div id="nutrition-breakdown" class="space-y-4"></div>
-                        </div>
-                        <div class="card p-6">
-                            <h3 class="text-lg font-medium mb-4 text-gray-900">Most Common Foods</h3>
-                            <div id="common-foods" class="space-y-4"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card p-6">
-                    <h3 class="text-lg font-medium mb-4 text-gray-900">Workout Insights</h3>
-                    <div id="workout-insights" class="space-y-4">
-                        <div class="insight-card">
-                            <div class="flex items-center gap-2 mb-2">
-                                <i class="fas fa-chart-line text-blue-600"></i>
-                                <h4 class="text-sm font-medium text-gray-900">Progression Trends</h4>
-                            </div>
-                            <div id="progression-trends" class="text-sm text-gray-600"></div>
-                        </div>
-                        <div class="insight-card">
-                            <div class="flex items-center gap-2 mb-2">
-                                <i class="fas fa-balance-scale text-yellow-600"></i>
-                                <h4 class="text-sm font-medium text-gray-900">Muscle Balance</h4>
-                            </div>
-                            <div id="muscle-balance" class="text-sm text-gray-600"></div>
-                        </div>
-                        <div class="insight-card">
-                            <div class="flex items-center gap-2 mb-2">
-                                <i class="fas fa-lightbulb text-green-600"></i>
-                                <h4 class="text-sm font-medium text-gray-900">Workout Variety</h4>
-                            </div>
-                            <div id="workout-variety" class="text-sm text-gray-600"></div>
-                        </div>
-                        <div class="insight-card">
-                            <div class="flex items-center gap-2 mb-2">
-                                <i class="fas fa-trophy text-purple-600"></i>
-                                <h4 class="text-sm font-medium text-gray-900">Recent Achievements</h4>
-                            </div>
-                            <div id="recent-achievements" class="text-sm text-gray-600"></div>
                         </div>
                     </div>
                 </div>
@@ -849,6 +840,43 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (viewName === 'workout'){
             workoutSummaryView.classList.remove('hidden');
             workoutDashBtn.classList.add('active');
+            // Generate workout insights only when workout view is active
+            const { startDate, endDate } = getDateRange();
+            const exerciseProgression = {};
+            const categoryVolume = {};
+            const exerciseFrequency = {};
+            const recentPRs = [];
+            
+            let currentDate = new Date(startDate);
+            while (currentDate <= endDate) {
+                const dayString = currentDate.toISOString().split('T')[0];
+                if (state.workouts && state.workouts[dayString]) {
+                    state.workouts[dayString].forEach(w => {
+                        categoryVolume[w.category] = (categoryVolume[w.category] || 0) + (Number(w.reps) * Number(w.weight));
+                        exerciseFrequency[w.name] = (exerciseFrequency[w.name] || 0) + 1;
+                        
+                        if (!exerciseProgression[w.name]) {
+                            exerciseProgression[w.name] = [];
+                        }
+                        exerciseProgression[w.name].push({
+                            date: new Date(dayString),
+                            weight: Number(w.weight),
+                            sets: Number(w.sets),
+                            reps: Number(w.reps)
+                        });
+                        
+                        if (checkForPR(w.name, w.weight)) {
+                            recentPRs.push({
+                                name: w.name,
+                                weight: w.weight,
+                                date: new Date(dayString)
+                            });
+                        }
+                    });
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            generateWorkoutInsights(exerciseProgression, categoryVolume, exerciseFrequency, recentPRs);
         } else {
             foodSummaryView.classList.remove('hidden');
             foodDashBtn.classList.add('active');
@@ -1020,8 +1048,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const exerciseFrequency = {};
         const categoryVolume = {};
-        const exerciseProgression = {};
-        const recentPRs = [];
         
         let currentDate = new Date(startDate);
         while (currentDate <= endDate) {
@@ -1038,26 +1064,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     exerciseFrequency[w.name] = (exerciseFrequency[w.name] || 0) + 1;
                     categoryVolume[w.category] = (categoryVolume[w.category] || 0) + (Number(w.reps) * Number(w.weight));
-                    
-                    // Track progression
-                    if (!exerciseProgression[w.name]) {
-                        exerciseProgression[w.name] = [];
-                    }
-                    exerciseProgression[w.name].push({
-                        date: new Date(dayString),
-                        weight: Number(w.weight),
-                        sets: Number(w.sets),
-                        reps: Number(w.reps)
-                    });
-                    
-                    // Check for PRs
-                    if (checkForPR(w.name, w.weight)) {
-                        recentPRs.push({
-                            name: w.name,
-                            weight: w.weight,
-                            date: new Date(dayString)
-                        });
-                    }
                 });
             }
             dailySetsData.push(dailySets);
@@ -1163,23 +1169,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>`;
         });
 
-        // Render most frequent exercises
-        const frequentExercises = getEl('frequent-exercises');
-        frequentExercises.innerHTML = '';
-        const sortedExercises = Object.entries(exerciseFrequency)
-            .sort(([,a], [,b]) => b - a)
-            .slice(0, 5);
-        
-        sortedExercises.forEach(([exercise, count]) => {
-            frequentExercises.innerHTML += `
-                <div class="list-item">
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm font-medium text-gray-600">${exercise}</span>
-                        <span class="text-sm text-gray-500">${count} times</span>
-                    </div>
-                </div>`;
-        });
-
         // Render nutrition breakdown
         const nutritionBreakdown = getEl('nutrition-breakdown');
         nutritionBreakdown.innerHTML = '';
@@ -1202,31 +1191,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>`;
         }
-
-        // Render common foods
-        const commonFoods = getEl('common-foods');
-        const foodFrequency = {};
-        Object.values(state.food).flat().forEach(food => {
-            foodFrequency[food.name] = (foodFrequency[food.name] || 0) + food.quantity;
-        });
-        
-        commonFoods.innerHTML = '';
-        const sortedFoods = Object.entries(foodFrequency)
-            .sort(([,a], [,b]) => b - a)
-            .slice(0, 5);
-        
-        sortedFoods.forEach(([food, count]) => {
-            commonFoods.innerHTML += `
-                <div class="list-item">
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm font-medium text-gray-600">${food}</span>
-                        <span class="text-sm text-gray-500">${count} times</span>
-                    </div>
-                </div>`;
-        });
-
-        // Generate Workout Insights
-        generateWorkoutInsights(exerciseProgression, categoryVolume, exerciseFrequency, recentPRs);
     };
 
     const generateWorkoutInsights = (progression, categoryVolume, frequency, recentPRs) => {
