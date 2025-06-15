@@ -645,10 +645,10 @@
                 <div class="flex items-center justify-center">
                     <div class="flex items-center gap-2 bg-white/80 backdrop-blur-xl border border-gray-200/50 p-1 rounded-2xl">
                         <button id="prev-day-btn" class="p-3 text-gray-400 hover:text-gray-800 transition-colors"><i class="fas fa-chevron-left fa-fw"></i></button>
-                        <div class="flex items-center gap-2 px-2">
-                            <span id="date-display" class="text-gray-900 font-medium"></span>
-                            <input type="date" id="manual-date-input" class="hidden">
-                        </div>
+                        <label for="manual-date-input" class="relative">
+                            <span id="date-display" class="block px-4 py-2 text-sm font-medium text-center w-40 cursor-pointer" title="Click to select a date"></span>
+                            <input type="date" id="manual-date-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                        </label>
                         <button id="next-day-btn" class="p-3 text-gray-400 hover:text-gray-800 transition-colors"><i class="fas fa-chevron-right fa-fw"></i></button>
                     </div>
                 </div>
