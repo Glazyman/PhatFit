@@ -210,20 +210,23 @@
                 min-width: 80px;
                 text-align: center;
             }
-            input, select, textarea {
+            .announcement-bar {
+                background-color: rgba(255, 255, 255, 0.8);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-radius: 1rem;
+                border: 1px solid rgba(255, 255, 255, 0.3);
                 padding: 0.75rem;
-                font-size: 16px;
+                margin-bottom: 1rem;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             }
-            .grid {
-                gap: 1rem;
-            }
-            #app-container {
-                padding: 1rem;
-            }
-            header {
-                margin: 0 0 1.5rem 0;
-                padding: 1.25rem;
-                border-radius: 0;
+            .announcement-bar .nav-btn {
+                flex: 1;
+                margin: 0 0.25rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
             }
             .mobile-nav-container {
                 background-color: rgba(255, 255, 255, 0.8);
@@ -642,13 +645,23 @@
                     <button id="ai-helper-menu-btn" class="nav-btn flex items-center gap-2"><i class="fas fa-robot"></i><span class="hidden sm:inline">AI Helper</span></button>
                     <button id="settings-nav-btn" class="nav-btn flex items-center gap-2"><i class="fas fa-cog"></i><span class="hidden sm:inline">Settings</span></button>
                 </div>
+                <div class="announcement-bar sm:hidden">
+                    <div class="flex items-center justify-between">
+                        <button id="ai-helper-menu-btn-mobile" class="nav-btn">
+                            <i class="fas fa-robot"></i>
+                            <span>AI Helper</span>
+                        </button>
+                        <button id="settings-nav-btn-mobile" class="nav-btn">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </button>
+                    </div>
+                </div>
                 <div class="mobile-nav-container sm:hidden">
                     <div class="flex items-center justify-between">
                         <button id="workout-nav-btn-mobile" class="nav-btn active">Workout</button>
                         <button id="food-nav-btn-mobile" class="nav-btn">Food</button>
-                        <button id="dashboard-nav-btn-mobile" class="nav-btn"><i class="fas fa-chart-line"></i></button>
-                        <button id="ai-helper-menu-btn-mobile" class="nav-btn"><i class="fas fa-robot"></i></button>
-                        <button id="settings-nav-btn-mobile" class="nav-btn"><i class="fas fa-cog"></i></button>
+                        <button id="dashboard-nav-btn-mobile" class="nav-btn">Stats</button>
                     </div>
                 </div>
             </div>
