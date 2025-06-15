@@ -433,8 +433,13 @@
                             <h3 class="text-lg font-medium mb-4 text-gray-900">AI Food Helper</h3>
                             <div class="space-y-4">
                                 <div class="relative flex flex-col gap-2">
-                                    <input type="text" id="ai-food-input" placeholder="Describe your food (e.g., 'a medium apple' or '2 slices of whole wheat bread with peanut butter')" class="w-full p-4 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 mb-2">
-                                    <button type="button" id="analyze-food-btn" class="w-full bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors">
+                                    <div class="relative">
+                                        <input type="text" id="ai-food-input" placeholder="Describe your food (e.g., 'a medium apple' or '2 slices of whole wheat bread with peanut butter')" class="w-full p-4 pr-12 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500">
+                                        <button type="button" id="clear-ai-food" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden pointer-events-none">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <button type="button" id="analyze-food-btn" class="w-full bg-gray-900 text-white font-medium py-4 rounded-2xl hover:bg-gray-800 transition-colors">
                                         Analyze
                                     </button>
                                 </div>
@@ -1539,6 +1544,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (calories && protein) {
             useAIResult({ calories, protein });
         }
+    });
+
+    // Add clear button functionality for AI food input
+    const clearAIFoodBtn = document.getElementById('clear-ai-food');
+    const aiFoodInput = document.getElementById('ai-food-input');
+    aiFoodInput.addEventListener('input', () => {
+        clearAIFoodBtn.classList.toggle('hidden', !aiFoodInput.value);
+        clearAIFoodBtn.style.pointerEvents = aiFoodInput.value ? 'auto' : 'none';
+    });
+    clearAIFoodBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        aiFoodInput.value = '';
+        clearAIFoodBtn.classList.add('hidden');
+        clearAIFoodBtn.style.pointerEvents = 'none';
+        aiFoodInput.focus();
     });
 });
 </script>
