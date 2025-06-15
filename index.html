@@ -2264,20 +2264,24 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingDiv.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
         aiHelperModalMessages.appendChild(loadingDiv);
         aiHelperModalMessages.scrollTop = aiHelperModalMessages.scrollHeight;
-        // Gather user data for the last 7 days
-        const today = new Date();
-        const startDate = new Date(today);
-        startDate.setDate(today.getDate() - 6);
-        const userData = analyzeUserData(startDate, today);
-        // Call AI API with user data
-        const response = await fetch('https://ai-proxy-git-main-daniels-projects-dce54a5d.vercel.app/api/openai', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                messages: [
-                    {
-                        role: 'system',
-                        content: `You are a fitness AI assistant with expertise in both workout and nutrition analysis. Use the following comprehensive user data to provide personalized, data-driven insights and recommendations. Focus on specific details from their logs and provide actionable advice.
+        try {
+            // Gather user data for the last 7 days
+            const today = new Date();
+            const startDate = new Date(today);
+            startDate.setDate(today.getDate() - 6);
+            const userData = analyzeUserData(startDate, today);
+            
+            // Call AI API with user data
+            const response = await fetch('https://ai-proxy-git-main-daniels-projects-dce54a5d.vercel.app/api/openai', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    messages: [
+                        {
+                            role: 'system',
+                            content: `You are a fitness AI assistant with expertise in both workout and nutrition analysis. Use the following comprehensive user data to provide personalized, data-driven insights and recommendations. Focus on specific details from their logs and provide actionable advice.
 
 User Data (last 7 days):
 ${JSON.stringify(userData, null, 2)}
@@ -2295,14 +2299,28 @@ Guidelines for responses:
 10. Acknowledge their PRs and achievements
 
 Be specific and reference their actual logs when possible.`
-                    },
-                    { role: 'user', content: question }
-                ]
-            })
-        });
-        const data = await response.json();
-        loadingDiv.remove();
-        addModalMessage('ai', data.choices?.[0]?.message?.content || 'Sorry, I could not process your request.');
+                        },
+                        { role: 'user', content: question }
+                    ]
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`API request failed with status ${response.status}`);
+            }
+
+            const data = await response.json();
+            if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                throw new Error('Invalid response format from API');
+            }
+
+            loadingDiv.remove();
+            addModalMessage('ai', data.choices[0].message.content);
+        } catch (error) {
+            console.error('AI Helper Error:', error);
+            loadingDiv.remove();
+            addModalMessage('ai', 'I apologize, but I encountered an error while processing your request. Please try again in a moment.');
+        }
     });
     aiHelperModalInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') aiHelperModalSend.click();
