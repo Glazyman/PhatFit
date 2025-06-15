@@ -1104,16 +1104,16 @@
 
     <!-- Settings Modal -->
     <div id="settings-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden">
-        <div class="relative w-full max-w-2xl mx-auto bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl flex flex-col border border-gray-200/50">
+        <div class="relative w-[95%] sm:w-full max-w-2xl mx-auto bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl flex flex-col border border-gray-200/50">
             <!-- Header -->
-            <div class="flex items-center justify-between p-6 border-b border-gray-200/50 rounded-t-3xl bg-white/80 backdrop-blur-sm">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center shadow-lg border border-gray-200/50">
-                        <i class="fas fa-cog text-gray-600 text-xl"></i>
+            <div class="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200/50 rounded-t-3xl bg-white/80 backdrop-blur-sm">
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center shadow-lg border border-gray-200/50">
+                        <i class="fas fa-cog text-gray-600 text-lg sm:text-xl"></i>
                     </div>
                     <div>
-                        <div class="font-semibold text-xl text-gray-900">Settings</div>
-                        <div class="text-sm text-gray-500">Customize your nutrition goals</div>
+                        <div class="font-semibold text-lg sm:text-xl text-gray-900">Settings</div>
+                        <div class="text-xs sm:text-sm text-gray-500">Customize your nutrition goals</div>
                     </div>
                 </div>
                 <button id="close-settings-modal" class="text-gray-400 hover:text-gray-600 text-xl p-2 rounded-xl hover:bg-gray-100/80 transition-all duration-200">
@@ -1122,56 +1122,89 @@
             </div>
 
             <!-- Settings Content -->
-            <div class="flex-1 overflow-y-auto p-6">
-                <div class="space-y-6">
-                    <!-- Nutrition Goals -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-semibold text-gray-900">Daily Nutrition Goals</h3>
-                        <form id="settings-nutrition-goals" class="space-y-4">
-                            <div class="space-y-2">
-                                <label class="text-sm font-medium text-gray-600">Daily Calorie Goal</label>
-                                <div class="flex items-center gap-2">
-                                    <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-l-2xl hover:bg-gray-200 transition-colors" data-input="settings-calorie-goal" data-action="decrement">-</button>
-                                    <input type="number" id="settings-calorie-goal" value="2000" class="w-full p-4 text-center border-t border-b border-gray-200 bg-white/80 backdrop-blur-xl" min="0" disabled>
-                                    <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-r-2xl hover:bg-gray-200 transition-colors" data-input="settings-calorie-goal" data-action="increment">+</button>
+            <div class="p-4 sm:p-6 space-y-6 overflow-y-auto max-h-[80vh]">
+                <!-- Nutrition Goals Section -->
+                <div class="card p-4 sm:p-6">
+                    <h3 class="text-lg font-medium mb-4 text-gray-900">Nutrition Goals</h3>
+                    <form id="settings-nutrition-goals" class="space-y-4">
+                        <div class="space-y-2">
+                            <label for="settings-calorie-goal" class="block text-sm font-medium text-gray-700">Daily Calorie Goal</label>
+                            <div class="relative">
+                                <input type="number" id="settings-calorie-goal" class="w-full p-3 sm:p-4 pr-24 border border-gray-200 rounded-xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" placeholder="2000" min="0" step="50">
+                                <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                                    <button type="button" class="number-control-btn p-2 text-gray-400 hover:text-gray-600" data-input="settings-calorie-goal" data-action="decrement">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="number-control-btn p-2 text-gray-400 hover:text-gray-600" data-input="settings-calorie-goal" data-action="increment">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
                                 </div>
                             </div>
-                            <div class="space-y-2">
-                                <label class="text-sm font-medium text-gray-600">Daily Protein Goal (g)</label>
-                                <div class="flex items-center gap-2">
-                                    <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-l-2xl hover:bg-gray-200 transition-colors" data-input="settings-protein-goal" data-action="decrement">-</button>
-                                    <input type="number" id="settings-protein-goal" value="150" class="w-full p-4 text-center border-t border-b border-gray-200 bg-white/80 backdrop-blur-xl" min="0" disabled>
-                                    <button type="button" class="number-control-btn bg-gray-100 p-4 rounded-r-2xl hover:bg-gray-200 transition-colors" data-input="settings-protein-goal" data-action="increment">+</button>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="settings-protein-goal" class="block text-sm font-medium text-gray-700">Daily Protein Goal (g)</label>
+                            <div class="relative">
+                                <input type="number" id="settings-protein-goal" class="w-full p-3 sm:p-4 pr-24 border border-gray-200 rounded-xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500" placeholder="150" min="0" step="5">
+                                <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                                    <button type="button" class="number-control-btn p-2 text-gray-400 hover:text-gray-600" data-input="settings-protein-goal" data-action="decrement">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="number-control-btn p-2 text-gray-400 hover:text-gray-600" data-input="settings-protein-goal" data-action="increment">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
                                 </div>
                             </div>
-                            <div class="flex gap-2 pt-4">
-                                <button type="submit" id="save-settings-goals" class="flex-1 bg-blue-600 text-white font-medium py-3 rounded-xl hover:bg-blue-700 transition-colors">
-                                    Save Goals
-                                </button>
-                                <button type="button" id="edit-settings-goals" class="hidden bg-gray-600 text-white font-medium py-3 px-4 rounded-xl hover:bg-gray-700 transition-colors">
-                                    Edit
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- Data Management -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-semibold text-gray-900">Data Management</h3>
-                        <div class="space-y-3">
-                            <button id="export-data" class="w-full p-4 rounded-2xl border border-gray-200/50 bg-white hover:bg-gray-50 transition-all duration-200 flex items-center gap-3">
-                                <i class="fas fa-download text-gray-600"></i>
-                                <span>Export Data</span>
-                            </button>
-                            <button id="import-data" class="w-full p-4 rounded-2xl border border-gray-200/50 bg-white hover:bg-gray-50 transition-all duration-200 flex items-center gap-3">
-                                <i class="fas fa-upload text-gray-600"></i>
-                                <span>Import Data</span>
-                            </button>
-                            <button id="clear-data" class="w-full p-4 rounded-2xl border border-red-200/50 bg-white hover:bg-red-50 transition-all duration-200 flex items-center gap-3 text-red-600">
-                                <i class="fas fa-trash-alt"></i>
-                                <span>Clear All Data</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button type="submit" id="save-settings-goals" class="flex-1 bg-blue-600 text-white px-4 py-3 rounded-xl hover:bg-blue-700 transition-colors text-sm sm:text-base">Save Goals</button>
+                            <button type="button" id="edit-settings-goals" class="hidden bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-colors text-sm sm:text-base">
+                                <i class="fas fa-edit"></i>
                             </button>
                         </div>
+                    </form>
+                </div>
+
+                <!-- Notification Preferences Section -->
+                <div class="card p-4 sm:p-6">
+                    <h3 class="text-lg font-medium mb-4 text-gray-900">Notification Preferences</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-900">Workout Reminders</h4>
+                                <p class="text-xs text-gray-500">Get notified about your scheduled workouts</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="workout-reminders" class="toggle-checkbox">
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-900">Nutrition Reminders</h4>
+                                <p class="text-xs text-gray-500">Get reminded to log your meals</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="nutrition-reminders" class="toggle-checkbox">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Management Section -->
+                <div class="card p-4 sm:p-6">
+                    <h3 class="text-lg font-medium mb-4 text-gray-900">Data Management</h3>
+                    <div class="space-y-3">
+                        <button id="export-data" class="w-full bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-colors text-sm sm:text-base flex items-center justify-center gap-2">
+                            <i class="fas fa-download"></i>
+                            Export Data
+                        </button>
+                        <button id="import-data" class="w-full bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-colors text-sm sm:text-base flex items-center justify-center gap-2">
+                            <i class="fas fa-upload"></i>
+                            Import Data
+                        </button>
+                        <button id="clear-data" class="w-full bg-red-100 text-red-700 px-4 py-3 rounded-xl hover:bg-red-200 transition-colors text-sm sm:text-base flex items-center justify-center gap-2">
+                            <i class="fas fa-trash"></i>
+                            Clear All Data
+                        </button>
                     </div>
                 </div>
             </div>
