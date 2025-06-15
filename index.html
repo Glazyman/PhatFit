@@ -3506,18 +3506,17 @@ Example bad response:
         const categoryFrequency = {};
         const recentPRs = [];
         
-        // Ensure workouts data is properly initialized
-        if (!state.workouts || typeof state.workouts !== 'object') {
+        // Initialize state.workouts if it doesn't exist
+        if (!state.workouts) {
             state.workouts = {};
-            saveData();
         }
         
         let currentDate = new Date(startDate);
         while (currentDate <= endDate) {
             const dayString = currentDate.toISOString().split('T')[0];
             
-            // Ensure the day's workouts array exists and is valid
-            if (!Array.isArray(state.workouts[dayString])) {
+            // Ensure the day's workouts array exists
+            if (!state.workouts[dayString]) {
                 state.workouts[dayString] = [];
             }
             
@@ -3541,27 +3540,27 @@ Example bad response:
                 lastWorkoutDate = new Date(currentDate);
                 
                 // Process each workout
-                dailyWorkouts.forEach(workout => {
-                    if (workout && typeof workout === 'object' && workout.name && workout.category) {
-                        const caloriesBurned = calculateCaloriesBurned(workout);
+                dailyWorkouts.forEach(w => {
+                    if (w && typeof w === 'object') {
+                        const caloriesBurned = calculateCaloriesBurned(w);
                         totalCaloriesBurned += caloriesBurned;
                         
                         // Track exercise frequency
-                        exerciseFrequency[workout.name] = (exerciseFrequency[workout.name] || 0) + 1;
+                        exerciseFrequency[w.name] = (exerciseFrequency[w.name] || 0) + 1;
                         
                         // Track category data
-                        if (!categoryVolume[workout.category]) {
-                            categoryVolume[workout.category] = 0;
-                            categoryFrequency[workout.category] = 0;
+                        if (!categoryVolume[w.category]) {
+                            categoryVolume[w.category] = 0;
+                            categoryFrequency[w.category] = 0;
                         }
-                        categoryVolume[workout.category] += caloriesBurned;
-                        categoryFrequency[workout.category]++;
+                        categoryVolume[w.category] += caloriesBurned;
+                        categoryFrequency[w.category]++;
                         
                         // Check for PR
-                        if (checkForPR(workout.name, workout.weight)) {
+                        if (checkForPR(w.name, w.weight)) {
                             recentPRs.push({
-                                name: workout.name,
-                                weight: workout.weight,
+                                name: w.name,
+                                weight: w.weight,
                                 date: new Date(dayString)
                             });
                         }
@@ -3633,7 +3632,7 @@ Example bad response:
                         <span class="text-sm text-gray-500">${frequency} workouts</span>
                     </div>
                     <div class="progress-bar">
-                        <div class="progress-bar-fill" style="width: ${(frequency / maxFrequency) * 100}%"></div>
+                        <div class="progress-bar-fill" style="width: ${maxFrequency > 0 ? (frequency / maxFrequency) * 100 : 0}%"></div>
                     </div>
                 </div>
             `).join('');
@@ -3641,7 +3640,7 @@ Example bad response:
         // Update weekly chart
         updateWeeklyWorkoutChart(startDate, endDate);
     };
-
+    
     const updateWeeklyWorkoutChart = (startDate, endDate) => {
         const workoutData = {
             labels: [],
