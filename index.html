@@ -2246,13 +2246,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function addModalMessage(role, content) {
-        if (aiHelperWelcome) aiHelperWelcome.style.display = 'none';
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `chat-message ${role}-message`;
-        msgDiv.innerHTML = `<div class="message-content">${content}</div><div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>`;
-        aiHelperModalMessages.appendChild(msgDiv);
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${role}-message`;
+        messageDiv.innerHTML = `
+            <div class="message-content">
+                ${content}
+            </div>
+        `;
+        aiHelperModalMessages.appendChild(messageDiv);
         aiHelperModalMessages.scrollTop = aiHelperModalMessages.scrollHeight;
     }
+
     aiHelperModalSend.addEventListener('click', async () => {
         const question = aiHelperModalInput.value.trim();
         if (!question) return;
