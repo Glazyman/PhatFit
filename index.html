@@ -1761,7 +1761,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 let dailyWorkoutCalories = 0;
                 
                 dailyWorkouts.forEach(workout => {
-                    dailyWorkoutCalories += calculateCaloriesBurned(workout);
+                    // Use AI calories if available, otherwise fallback to calculated
+                    dailyWorkoutCalories += (typeof workout.caloriesBurned === 'number' && !isNaN(workout.caloriesBurned))
+                        ? workout.caloriesBurned
+                        : calculateCaloriesBurned(workout);
                 });
                 
                 // Update daily calories if it's today
