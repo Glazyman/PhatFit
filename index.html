@@ -755,23 +755,27 @@
                             </div>
                         </div>
 
-                        <!-- Nutrition Insights -->
+                        <!-- Weekly Progress -->
                         <div class="card p-6">
-                            <h4 class="text-lg font-medium mb-4 text-gray-900">Nutrition Insights</h4>
-                            <div id="nutrition-insights" class="space-y-4">
-                                <div class="insight-card">
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <i class="fas fa-utensils text-emerald-600"></i>
-                                        <h4 class="text-sm font-medium text-gray-900">Most Common Foods</h4>
+                            <h4 class="text-lg font-medium mb-4 text-gray-900">Weekly Progress</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium text-gray-700">Weekly Calorie Goal</span>
+                                        <span class="text-sm text-gray-500" id="weekly-calorie-progress-text">0/0 cal</span>
                                     </div>
-                                    <div id="common-foods" class="text-sm text-gray-600"></div>
+                                    <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-blue-500 rounded-full" id="weekly-calorie-progress-bar" style="width: 0%"></div>
+                                    </div>
                                 </div>
-                                <div class="insight-card">
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <i class="fas fa-chart-line text-blue-600"></i>
-                                        <h4 class="text-sm font-medium text-gray-900">Nutrition Trends</h4>
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium text-gray-700">Weekly Protein Goal</span>
+                                        <span class="text-sm text-gray-500" id="weekly-protein-progress-text">0/0g</span>
                                     </div>
-                                    <div id="nutrition-trends" class="text-sm text-gray-600"></div>
+                                    <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-emerald-500 rounded-full" id="weekly-protein-progress-bar" style="width: 0%"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -808,35 +812,6 @@
                                     </button>
                                 </div>
                             </form>
-                        </div>
-                    </div>
-
-                    <!-- Weekly Progress -->
-                    <div class="mt-8">
-                        <h4 class="text-lg font-medium mb-4 text-gray-900">Weekly Progress</h4>
-                        <div class="grid grid-cols-1 gap-6">
-                            <div class="card p-6">
-                                <div class="space-y-4">
-                                    <div>
-                                        <div class="flex justify-between items-center mb-2">
-                                            <span class="text-sm font-medium text-gray-700">Weekly Calorie Goal</span>
-                                            <span class="text-sm text-gray-500" id="weekly-calorie-progress-text">0/0 cal</span>
-                                        </div>
-                                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                            <div class="h-full bg-blue-500 rounded-full" id="weekly-calorie-progress-bar" style="width: 0%"></div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="flex justify-between items-center mb-2">
-                                            <span class="text-sm font-medium text-gray-700">Weekly Protein Goal</span>
-                                            <span class="text-sm text-gray-500" id="weekly-protein-progress-text">0/0g</span>
-                                        </div>
-                                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                            <div class="h-full bg-emerald-500 rounded-full" id="weekly-protein-progress-bar" style="width: 0%"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
