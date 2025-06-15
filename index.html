@@ -1813,7 +1813,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!state.food[state.currentDate]) state.food[state.currentDate] = [];
             state.food[state.currentDate].push({ id: Date.now().toString(), ...foodData });
         }
-        saveData(); renderAll(); resetFoodForm();
+        saveData(); 
+        renderAll(); 
+        updateFoodProgress(); // Add this line to update progress after saving food
+        resetFoodForm();
     });
 
     getEl('cancel-btn').addEventListener('click', () => { confirmModal.classList.add('hidden'); });
