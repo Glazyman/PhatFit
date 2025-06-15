@@ -2467,24 +2467,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     messages: [
                         {
                             role: 'system',
-                            content: `You are a fitness AI assistant with expertise in both workout and nutrition analysis. Use the following comprehensive user data to provide personalized, data-driven insights and recommendations. Focus on specific details from their logs and provide actionable advice.
+                            content: `You are a fitness AI assistant. Be direct and concise in your responses. Use the following user data to provide brief, actionable insights:
 
 User Data (last 7 days):
 ${JSON.stringify(userDataCopy, null, 2)}
 
 Guidelines for responses:
-1. Reference specific exercises, weights, and progressions when discussing workouts
-2. Mention actual calorie and protein intake when discussing nutrition
-3. Highlight recent achievements and streaks
-4. Identify patterns in their workout and nutrition habits
-5. Provide specific, actionable recommendations based on their data
-6. Use their actual numbers and metrics in your analysis
-7. Be encouraging but honest about areas for improvement
-8. Consider their workout consistency and nutrition tracking habits
-9. Reference their muscle balance and exercise variety
-10. Acknowledge their PRs and achievements
+1. Keep responses under 2-3 sentences
+2. Focus on key metrics and actionable advice
+3. Use bullet points for multiple points
+4. Avoid unnecessary explanations
+5. Be direct and to the point
+6. Use numbers and specific data when relevant
+7. No small talk or lengthy introductions
+8. No repetitive information
+9. No unnecessary context
+10. Get straight to the point
 
-Be specific and reference their actual logs when possible.`
+Example good response:
+"Your average daily protein is 120g, below your 150g goal. Increase protein-rich foods like chicken breast and Greek yogurt to meet your target."
+
+Example bad response:
+"Looking at your nutrition data over the past week, I notice that your protein intake has been consistently below your target. This is important because protein helps with muscle recovery and growth. I would recommend trying to incorporate more protein-rich foods into your diet, such as chicken breast, which is a great source of lean protein, and Greek yogurt, which is also high in protein and can be a good snack option."`
                         },
                         { role: 'user', content: question }
                     ]
@@ -2508,7 +2512,7 @@ Be specific and reference their actual logs when possible.`
         } catch (error) {
             console.error('AI Helper Error:', error);
             loadingDiv.remove();
-            addModalMessage('ai', `I apologize, but I encountered an error while processing your request: ${error.message}. Please try again in a moment.`);
+            addModalMessage('ai', `Error: ${error.message}. Please try again.`);
         }
     });
     aiHelperModalInput.addEventListener('keypress', (e) => {
