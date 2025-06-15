@@ -370,26 +370,6 @@
         .insight-card div[id] {
             @apply text-sm text-gray-600;
         }
-        
-        .recommendation-card {
-            @apply bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-xl p-4;
-        }
-        
-        .recommendation-card:hover {
-            @apply bg-white/80 border-gray-300/50 transition-all duration-200;
-        }
-        
-        .recommendation-card i {
-            @apply text-lg;
-        }
-        
-        .recommendation-card h4 {
-            @apply text-sm font-medium text-gray-900;
-        }
-        
-        .recommendation-card div[id] {
-            @apply text-sm text-gray-600;
-        }
     </style>
 </head>
 <body class="text-gray-900">
@@ -853,10 +833,43 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (viewName === 'workout'){
             workoutSummaryView.classList.remove('hidden');
             workoutDashBtn.classList.add('active');
-            // Generate AI workout recommendations only when workout view is active
+            // Generate workout insights only when workout view is active
             const { startDate, endDate } = getDateRange();
-            const workoutData = analyzeWorkoutData(startDate, endDate);
-            generateWorkoutRecommendations(workoutData);
+            const exerciseProgression = {};
+            const categoryVolume = {};
+            const exerciseFrequency = {};
+            const recentPRs = [];
+            
+            let currentDate = new Date(startDate);
+            while (currentDate <= endDate) {
+                const dayString = currentDate.toISOString().split('T')[0];
+                if (state.workouts && state.workouts[dayString]) {
+                    state.workouts[dayString].forEach(w => {
+                        categoryVolume[w.category] = (categoryVolume[w.category] || 0) + (Number(w.reps) * Number(w.weight));
+                        exerciseFrequency[w.name] = (exerciseFrequency[w.name] || 0) + 1;
+                        
+                        if (!exerciseProgression[w.name]) {
+                            exerciseProgression[w.name] = [];
+                        }
+                        exerciseProgression[w.name].push({
+                            date: new Date(dayString),
+                            weight: Number(w.weight),
+                            sets: Number(w.sets),
+                            reps: Number(w.reps)
+                        });
+                        
+                        if (checkForPR(w.name, w.weight)) {
+                            recentPRs.push({
+                                name: w.name,
+                                weight: w.weight,
+                                date: new Date(dayString)
+                            });
+                        }
+                    });
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            generateWorkoutInsights(exerciseProgression, categoryVolume, exerciseFrequency, recentPRs);
         } else {
             foodSummaryView.classList.remove('hidden');
             foodDashBtn.classList.add('active');
@@ -864,12 +877,170 @@ document.addEventListener('DOMContentLoaded', () => {
         renderSummary();
     };
 
-    const analyzeWorkoutData = (startDate, endDate) => {
+
+    const renderAll = () => {
+        updateDateDisplay();
+        renderWorkouts();
+        renderFoodLog();
+        if (!dashboardPage.classList.contains('hidden')) {
+            renderSummary();
+        }
+    };
+
+    const updateDateDisplay = () => {
+        const today = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+        const currentDateObj = new Date(state.currentDate + 'T00:00:00');
+
+        let displayText;
+        if (currentDateObj.toDateString() === today.toDateString()) displayText = "Today";
+        else if (currentDateObj.toDateString() === yesterday.toDateString()) displayText = "Yesterday";
+        else displayText = currentDateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        
+        dateDisplay.textContent = displayText;
+        manualDateInput.value = state.currentDate;
+    };
+
+    const calculateCaloriesBurned = (workout) => {
+        const reps = Number(workout.reps) || 0;
+        const sets = Number(workout.sets) || 0;
+        const weight = Number(workout.weight) || 1;
+        const categoryMultipliers = { Legs: 1.5, Back: 1.5, Chest: 1.2, Shoulders: 1.2, Arms: 1.0, Abs: 1.0 };
+        const multiplier = categoryMultipliers[workout.category] || 1.0;
+        return sets * reps * 0.25 * multiplier * (1 + (Math.log(weight) / 10));
+    };
+
+    const renderWorkouts = () => {
+        workoutList.innerHTML = '';
+        const dailyWorkouts = state.workouts[state.currentDate] || [];
+        let dailyCaloriesBurned = 0;
+
+        if (dailyWorkouts.length === 0) {
+            workoutList.innerHTML = `<p class="text-gray-500 text-center py-8">No workouts logged.</p>`;
+        } else {
+            dailyWorkouts.forEach(workout => {
+                // Use AI calories if available, otherwise fallback to calculated
+                dailyCaloriesBurned += (typeof workout.caloriesBurned === 'number' && !isNaN(workout.caloriesBurned))
+                    ? workout.caloriesBurned
+                    : calculateCaloriesBurned(workout);
+                const isPR = checkForPR(workout.name, workout.weight);
+                const card = document.createElement('div');
+                card.className = 'list-item fade-in';
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div class="w-full">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-semibold text-gray-900">${workout.name} <span class="text-xs font-medium text-gray-500">(${workout.category})</span></h4>
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="editWorkout('${workout.id}')" class="p-2 text-gray-400 hover:text-gray-600 transition-colors"><i class="fas fa-pencil-alt h-4 w-4"></i></button>
+                                    <button onclick="requestDeleteItem('workouts', '${workout.id}')" class="p-2 text-gray-400 hover:text-red-500 transition-colors"><i class="fas fa-trash-alt h-4 w-4"></i></button>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-1">
+                                ${workout.sets} sets, ${workout.reps} reps @ ${workout.weight} lb
+                                ${workout.caloriesBurned ? `<span class=\"ml-2 text-xs text-blue-600\">AI: ${Math.round(workout.caloriesBurned)} cal</span>` : ''}
+                                ${isPR ? `<span class=\"ml-2 bg-yellow-400/20 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded-full\">PR!</span>` : ''}
+                            </p>
+                            ${workout.notes ? `
+                            <div class="mt-2">
+                                <button onclick="this.parentElement.querySelector('.notes-content').classList.toggle('hidden')" class="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1">
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                    Notes
+                                </button>
+                                <div class="notes-content hidden mt-1 text-sm text-gray-600 bg-gray-50 p-2 rounded-lg">
+                                    ${workout.notes}
+                                </div>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>`;
+                workoutList.appendChild(card);
+            });
+        }
+        
+        dailyCaloriesBurnedSummary.innerHTML = `
+            <div class="stats-card">
+                <p class="text-sm text-gray-500">Est. Calories Burned</p>
+                <p class="text-3xl font-semibold text-blue-600 mt-1">${Math.round(dailyCaloriesBurned)}</p>
+            </div>`;
+    };
+    
+    const renderFoodLog = () => {
+        foodList.innerHTML = '';
+        const dailyFood = state.food[state.currentDate] || [];
+        let totalCals = 0, totalProt = 0;
+
+        if (dailyFood.length === 0) {
+            foodList.innerHTML = `<p class="text-gray-500 text-center py-8">No food logged.</p>`;
+        } else {
+            dailyFood.forEach(item => {
+                totalCals += (item.calories || 0) * (item.quantity || 1);
+                totalProt += (item.protein || 0) * (item.quantity || 1);
+                const card = document.createElement('div');
+                card.className = 'list-item fade-in';
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-semibold text-gray-900">${item.quantity} x ${item.name}</h4>
+                            <p class="text-sm text-gray-600 mt-1">${item.calories} kcal, ${item.protein}g protein (each)</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="editFood('${item.id}')" class="p-2 text-gray-400 hover:text-gray-600 transition-colors"><i class="fas fa-pencil-alt h-4 w-4"></i></button>
+                            <button onclick="requestDeleteItem('food', '${item.id}')" class="p-2 text-gray-400 hover:text-red-500 transition-colors"><i class="fas fa-trash-alt h-4 w-4"></i></button>
+                        </div>
+                    </div>`;
+                foodList.appendChild(card);
+            });
+        }
+
+        dailyNutritionSummary.innerHTML = `
+            <div class="grid grid-cols-2 gap-4">
+                <div class="stats-card">
+                    <p class="text-sm text-gray-500">Total Calories</p>
+                    <p class="text-3xl font-semibold text-blue-600 mt-1">${Math.round(totalCals)}</p>
+                </div>
+                <div class="stats-card">
+                    <p class="text-sm text-gray-500">Total Protein</p>
+                    <p class="text-3xl font-semibold text-blue-600 mt-1">${Math.round(totalProt)}g</p>
+                </div>
+            </div>`;
+    };
+
+    let nutritionChart, dailyEffortChart, workoutVolumeChart, foodDetailsChart;
+    const getDateRange = () => {
+        if (state.customDateRange) {
+            return {
+                startDate: new Date(getEl('start-date').value),
+                endDate: new Date(getEl('end-date').value)
+            };
+        }
+
+        const baseDate = new Date();
+        baseDate.setDate(baseDate.getDate() + (state.dashboardWeekOffset * 7));
+        const dayOfWeek = baseDate.getDay();
+        const startOfWeek = new Date(baseDate);
+        startOfWeek.setDate(baseDate.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        
+        return { startDate: startOfWeek, endDate: endOfWeek };
+    };
+
+    const updateDateInputs = (startDate, endDate) => {
+        getEl('start-date').value = startDate.toISOString().split('T')[0];
+        getEl('end-date').value = endDate.toISOString().split('T')[0];
+    };
+
+    const renderSummary = () => {
+        const { startDate, endDate } = getDateRange();
+        updateDateInputs(startDate, endDate);
+        
+        const labels = [], calorieData = [], proteinData = [], dailySetsData = [], dailyRepsData = [];
+        let totalCalories = 0, totalProtein = 0, workoutCount = 0, totalCaloriesBurned = 0, totalSets = 0, totalReps = 0;
+        
+        const exerciseFrequency = {};
         const categoryVolume = {};
-        const categoryFrequency = {};
-        const lastWorkoutDates = {};
-        const workoutIntensity = {};
-        let totalWorkouts = 0;
         
         let currentDate = new Date(startDate);
         while (currentDate <= endDate) {
