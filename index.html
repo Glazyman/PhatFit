@@ -388,6 +388,42 @@
                 @apply hidden;
             }
         }
+        
+        .chat-message {
+            @apply p-4 rounded-xl max-w-[85%] break-words;
+        }
+        
+        .user-message {
+            @apply bg-blue-500 text-white ml-auto;
+        }
+        
+        .ai-message {
+            @apply bg-white/50 backdrop-blur-sm border border-gray-200/50;
+        }
+        
+        .message-content {
+            @apply text-sm sm:text-base;
+        }
+        
+        .message-time {
+            @apply text-xs text-gray-500 mt-1;
+        }
+        
+        #chat-messages::-webkit-scrollbar {
+            @apply w-2;
+        }
+        
+        #chat-messages::-webkit-scrollbar-track {
+            @apply bg-transparent;
+        }
+        
+        #chat-messages::-webkit-scrollbar-thumb {
+            @apply bg-gray-200 rounded-full;
+        }
+        
+        #chat-messages::-webkit-scrollbar-thumb:hover {
+            @apply bg-gray-300;
+        }
     </style>
 </head>
 <body class="text-gray-900">
@@ -623,33 +659,31 @@
                                     <i class="fas fa-robot text-blue-600"></i>
                                     <h4 class="text-lg font-medium text-gray-900">Ask me anything about your fitness journey</h4>
                                 </div>
-                                <div class="flex flex-col sm:flex-row gap-2">
-                                    <div class="flex-1 relative">
-                                        <textarea id="ai-question" placeholder="e.g., How have I grown in the past week? What's my recommended calorie intake? How can I improve my workout routine?" class="w-full p-4 pr-24 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 h-24 sm:h-32 resize-none"></textarea>
-                                        <button id="ask-ai-btn" class="absolute bottom-4 right-4 bg-gray-900 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl hover:bg-gray-800 transition-colors text-sm sm:text-base">
-                                            <i class="fas fa-paper-plane mr-1 sm:mr-2"></i>Ask
-                                        </button>
-                                    </div>
+                                
+                                <!-- Chat Messages Container -->
+                                <div id="chat-messages" class="flex-1 space-y-4 max-h-[400px] overflow-y-auto p-4 bg-white/30 backdrop-blur-sm rounded-xl">
+                                    <!-- Messages will be inserted here -->
                                 </div>
+
+                                <!-- Quick Question Buttons -->
                                 <div class="flex flex-wrap gap-2">
                                     <button class="quick-question-btn" data-question="How have I grown in the past week?">Past Week Progress</button>
                                     <button class="quick-question-btn" data-question="What's my recommended calorie intake?">Calorie Needs</button>
                                     <button class="quick-question-btn" data-question="How can I improve my workout routine?">Workout Tips</button>
                                     <button class="quick-question-btn" data-question="What's my muscle balance like?">Muscle Balance</button>
                                 </div>
-                                <div id="ai-response" class="mt-4 p-4 bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-xl hidden">
-                                    <div class="flex items-start gap-3">
-                                        <i class="fas fa-robot text-blue-600 mt-1"></i>
-                                        <div class="flex-1">
-                                            <div id="ai-response-content" class="text-gray-600"></div>
-                                            <div id="ai-loading" class="hidden">
-                                                <div class="flex items-center gap-2 text-gray-500">
-                                                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-500"></div>
-                                                    <span>Analyzing your data...</span>
-                                                </div>
-                                            </div>
-                                        </div>
+
+                                <!-- Input Area -->
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1 relative">
+                                        <input type="text" id="ai-question" placeholder="Ask me anything about your fitness journey..." class="w-full p-4 pr-12 border border-gray-200 rounded-2xl bg-white/80 backdrop-blur-xl focus:ring-2 focus:ring-blue-500">
+                                        <button id="clear-ai-input" class="absolute right-12 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                            <i class="fas fa-times"></i>
+                                        </button>
                                     </div>
+                                    <button id="ask-ai-btn" class="bg-gray-900 text-white px-4 py-4 rounded-xl hover:bg-gray-800 transition-colors">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -1787,8 +1821,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const question = getEl('ai-question').value.trim();
         if (!question) return;
         
-        getEl('ai-response').classList.add('hidden');
-        getEl('ai-loading').classList.remove('hidden');
+        // Add user message to chat
+        addMessageToChat('user', question);
+        
+        // Clear input
+        getEl('ai-question').value = '';
+        
+        // Show loading state
+        const loadingId = addMessageToChat('ai', 'Analyzing your data...', true);
         
         // Analyze user data based on the question
         const { startDate, endDate } = getDateRange();
@@ -1811,9 +1851,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const data = await response.json();
-        getEl('ai-loading').classList.add('hidden');
-        getEl('ai-response').classList.remove('hidden');
-        getEl('ai-response-content').textContent = data.choices[0].message.content;
+        
+        // Remove loading message and add AI response
+        removeMessage(loadingId);
+        addMessageToChat('ai', data.choices[0].message.content);
+    });
+
+    // Add clear input functionality
+    getEl('clear-ai-input').addEventListener('click', () => {
+        getEl('ai-question').value = '';
+    });
+
+    // Add enter key support
+    getEl('ai-question').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            getEl('ask-ai-btn').click();
+        }
     });
 
     // Add quick question buttons functionality
@@ -1823,6 +1876,38 @@ document.addEventListener('DOMContentLoaded', () => {
             getEl('ask-ai-btn').click();
         });
     });
+
+    function addMessageToChat(role, content, isLoading = false) {
+        const messagesContainer = getEl('chat-messages');
+        const messageDiv = document.createElement('div');
+        const messageId = 'msg-' + Date.now();
+        messageDiv.id = messageId;
+        messageDiv.className = `chat-message ${role}-message ${isLoading ? 'opacity-50' : ''}`;
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.textContent = content;
+        
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'message-time';
+        timeDiv.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+        messageDiv.appendChild(contentDiv);
+        messageDiv.appendChild(timeDiv);
+        messagesContainer.appendChild(messageDiv);
+        
+        // Scroll to bottom
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        return messageId;
+    }
+
+    function removeMessage(messageId) {
+        const message = document.getElementById(messageId);
+        if (message) {
+            message.remove();
+        }
+    }
 
     const analyzeUserData = (startDate, endDate) => {
         const workoutData = {
