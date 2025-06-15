@@ -862,6 +862,33 @@
                                 <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Nutrition Progress</h3>
                                 <div id="nutrition-progress" class="space-y-4"></div>
                             </div>
+                            <div class="card p-6">
+                                <h3 class="text-lg font-medium mb-4 text-gray-900">Daily Workout Progress</h3>
+                                <div id="workout-progress" class="space-y-4"></div>
+                            </div>
+                            <div class="card p-6">
+                                <h3 class="text-lg font-medium mb-4 text-gray-900">Weekly Summary</h3>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-sm font-medium text-gray-600">Calories Balance</span>
+                                            <span class="text-sm text-gray-500" id="weekly-calories-balance">0 cal</span>
+                                        </div>
+                                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                            <div class="h-full bg-blue-500 rounded-full" id="weekly-calories-balance-bar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-sm font-medium text-gray-600">Protein Progress</span>
+                                            <span class="text-sm text-gray-500" id="weekly-protein-progress">0/0 g</span>
+                                        </div>
+                                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                            <div class="h-full bg-emerald-500 rounded-full" id="weekly-protein-progress-bar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1929,6 +1956,74 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>`;
             });
+
+            // Update workout progress
+            const workoutProgress = getEl('workout-progress');
+            workoutProgress.innerHTML = '';
+            const dailyWorkoutCalories = {};
+            
+            // Calculate daily workout calories
+            currentDate = new Date(startDate);
+            while (currentDate <= endDate) {
+                const dayString = currentDate.toISOString().split('T')[0];
+                const dayLabel = currentDate.toLocaleDateString('en-US', { weekday: 'short' });
+                let dailyCalories = 0;
+                
+                if (state.workouts && state.workouts[dayString]) {
+                    state.workouts[dayString].forEach(w => {
+                        if (w && typeof w === 'object') {
+                            const caloriesBurned = (typeof w.caloriesBurned === 'number' && !isNaN(w.caloriesBurned))
+                                ? w.caloriesBurned
+                                : calculateCaloriesBurned(w);
+                            dailyCalories += caloriesBurned;
+                        }
+                    });
+                }
+                dailyWorkoutCalories[dayLabel] = dailyCalories;
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            // Find max calories for scaling
+            const maxWorkoutCalories = Math.max(...Object.values(dailyWorkoutCalories), 0);
+            const maxNutritionCalories = Math.max(...calorieData, 0);
+            const maxCaloriesOverall = Math.max(maxWorkoutCalories, maxNutritionCalories);
+
+            // Render workout progress
+            labels.forEach((day, index) => {
+                const workoutCalories = dailyWorkoutCalories[day] || 0;
+                const nutritionCalories = calorieData[index];
+                
+                workoutProgress.innerHTML += `
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-600">${day}</span>
+                            <span class="text-sm text-gray-500">Burned: ${Math.round(workoutCalories)} cal / Consumed: ${nutritionCalories} cal</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill bg-blue-500" style="width: ${(workoutCalories / maxCaloriesOverall) * 100}%"></div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill bg-orange-500" style="width: ${(nutritionCalories / maxCaloriesOverall) * 100}%"></div>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            // Update weekly summary
+            const weeklyCalorieGoal = state.goals.nutrition.calorieGoal * 7;
+            const weeklyProteinGoal = state.goals.nutrition.proteinGoal * 7;
+            const caloriesBalance = totalCalories - weeklyCaloriesBurned;
+            
+            getEl('weekly-calories-balance').textContent = `${caloriesBalance} cal`;
+            getEl('weekly-protein-progress').textContent = `${totalProtein}/${weeklyProteinGoal} g`;
+            
+            // Calculate balance bar percentage (centered at 0)
+            const maxBalance = Math.max(Math.abs(caloriesBalance), weeklyCalorieGoal);
+            const balancePercentage = ((caloriesBalance + maxBalance) / (maxBalance * 2)) * 100;
+            getEl('weekly-calories-balance-bar').style.width = `${balancePercentage}%`;
+            
+            getEl('weekly-protein-progress-bar').style.width = `${Math.min((totalProtein / weeklyProteinGoal) * 100, 100)}%`;
         }
     };
 
