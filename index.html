@@ -2083,8 +2083,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Analyze workouts
             if (state.workouts && state.workouts[dayString]) {
                 workoutData.totalWorkouts++;
-                const dailySets = 0;
-                const dailyReps = 0;
+                let dailySets = 0;
+                let dailyReps = 0;
                 
                 state.workouts[dayString].forEach(w => {
                     const volume = Number(w.reps) * Number(w.weight);
