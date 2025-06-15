@@ -225,6 +225,20 @@
                 padding: 1.25rem;
                 border-radius: 0;
             }
+            .mobile-nav-container {
+                background-color: rgba(255, 255, 255, 0.8);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-radius: 1rem;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                padding: 0.75rem;
+                margin-bottom: 1rem;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            }
+            .mobile-nav-container .nav-btn {
+                flex: 1;
+                margin: 0 0.25rem;
+            }
             h1 {
                 font-size: 1.75rem;
             }
@@ -621,12 +635,21 @@
                     </label>
                     <button id="next-day-btn" class="p-3 text-gray-400 hover:text-gray-800 transition-colors"><i class="fas fa-chevron-right fa-fw"></i></button>
                 </div>
-                <div class="bg-white/80 backdrop-blur-xl p-1 rounded-2xl border border-gray-200/50 flex items-center gap-2">
+                <div class="bg-white/80 backdrop-blur-xl p-1 rounded-2xl border border-gray-200/50 flex items-center gap-2 hidden sm:flex">
                     <button id="workout-nav-btn" class="nav-btn active">Workout</button>
                     <button id="food-nav-btn" class="nav-btn">Food</button>
                     <button id="dashboard-nav-btn" class="nav-btn"><i class="fas fa-chart-line mr-1"></i>Stats</button>
                     <button id="ai-helper-menu-btn" class="nav-btn flex items-center gap-2"><i class="fas fa-robot"></i><span class="hidden sm:inline">AI Helper</span></button>
                     <button id="settings-nav-btn" class="nav-btn flex items-center gap-2"><i class="fas fa-cog"></i><span class="hidden sm:inline">Settings</span></button>
+                </div>
+                <div class="mobile-nav-container sm:hidden">
+                    <div class="flex items-center justify-between">
+                        <button id="workout-nav-btn-mobile" class="nav-btn active">Workout</button>
+                        <button id="food-nav-btn-mobile" class="nav-btn">Food</button>
+                        <button id="dashboard-nav-btn-mobile" class="nav-btn"><i class="fas fa-chart-line"></i></button>
+                        <button id="ai-helper-menu-btn-mobile" class="nav-btn"><i class="fas fa-robot"></i></button>
+                        <button id="settings-nav-btn-mobile" class="nav-btn"><i class="fas fa-cog"></i></button>
+                    </div>
                 </div>
             </div>
         </header>
@@ -1500,21 +1523,28 @@ document.addEventListener('DOMContentLoaded', () => {
         foodPage.classList.add('hidden');
         dashboardPage.classList.add('hidden');
         
+        // Reset all navigation buttons
         workoutNavBtn.classList.remove('active');
         foodNavBtn.classList.remove('active');
         dashboardNavBtn.classList.remove('active');
+        getEl('workout-nav-btn-mobile').classList.remove('active');
+        getEl('food-nav-btn-mobile').classList.remove('active');
+        getEl('dashboard-nav-btn-mobile').classList.remove('active');
 
         if (pageName === 'workout') {
             workoutPage.classList.remove('hidden');
             workoutNavBtn.classList.add('active');
+            getEl('workout-nav-btn-mobile').classList.add('active');
         } else if (pageName === 'food') {
             foodPage.classList.remove('hidden');
             foodNavBtn.classList.add('active');
-            updateFoodProgress(); // Add this line to update progress when showing food page
+            getEl('food-nav-btn-mobile').classList.add('active');
+            updateFoodProgress();
         } else {
             state.dashboardWeekOffset = 0;
             dashboardPage.classList.remove('hidden');
             dashboardNavBtn.classList.add('active');
+            getEl('dashboard-nav-btn-mobile').classList.add('active');
             showDashboardView('overall');
         }
     };
@@ -2193,6 +2223,20 @@ document.addEventListener('DOMContentLoaded', () => {
     updateDateInputs(startOfWeek, endOfWeek);
 
     const initializeApp = () => {
+        // Initialize state
+        state = {
+            currentDate: new Date().toISOString().split('T')[0],
+            workouts: JSON.parse(localStorage.getItem('workouts')) || {},
+            food: JSON.parse(localStorage.getItem('food')) || {},
+            favorites: JSON.parse(localStorage.getItem('favorites')) || { exercises: [], foods: [] },
+            goals: JSON.parse(localStorage.getItem('goals')) || {
+                nutrition: { calorieGoal: 2000, proteinGoal: 150 }
+            },
+            dashboardWeekOffset: 0,
+            customDateRange: false,
+            activeDashboardView: 'overall'
+        };
+
         const categories = ['Legs', 'Arms', 'Shoulders', 'Chest', 'Back', 'Abs'];
         categories.forEach(cat => categoryInput.add(new Option(cat, cat)));
         
@@ -2225,7 +2269,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearFoodBtn.style.pointerEvents = 'none';
             foodNameInput.focus();
         });
-        
+
         // Initialize goals form values and button state
         const savedGoals = localStorage.getItem('goals');
         if (savedGoals) {
@@ -2273,7 +2317,47 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         );
 
-        showPage('workout');
+        // Initialize mobile navigation
+        const mobileNavButtons = {
+            'workout-nav-btn-mobile': 'workout',
+            'food-nav-btn-mobile': 'food',
+            'dashboard-nav-btn-mobile': 'dashboard'
+        };
+
+        Object.entries(mobileNavButtons).forEach(([buttonId, pageName]) => {
+            const button = getEl(buttonId);
+            if (button) {
+                button.addEventListener('click', () => {
+                    console.log(`Mobile button clicked: ${buttonId}`);
+                    showPage(pageName);
+                });
+            } else {
+                console.error(`Mobile button not found: ${buttonId}`);
+            }
+        });
+
+        // Initialize AI Helper and Settings buttons
+        const aiHelperBtn = getEl('ai-helper-menu-btn-mobile');
+        if (aiHelperBtn) {
+            aiHelperBtn.addEventListener('click', () => {
+                console.log('AI Helper button clicked');
+                aiHelperModal.classList.add('active');
+                aiHelperModal.style.display = 'flex';
+                setTimeout(() => aiHelperModalInput.focus(), 200);
+            });
+        }
+
+        const settingsBtn = getEl('settings-nav-btn-mobile');
+        if (settingsBtn) {
+            settingsBtn.addEventListener('click', () => {
+                console.log('Settings button clicked');
+                settingsModal.classList.remove('hidden');
+            });
+        }
+
+        // Set initial active state
+        const currentPage = window.location.hash.slice(1) || 'workout';
+        showPage(currentPage);
         renderAll();
     };
     
@@ -3131,6 +3215,25 @@ Example bad response:
             renderAll();
             alert('All data has been cleared.');
         }
+    });
+
+    // Mobile navigation buttons
+    getEl('workout-nav-btn-mobile').addEventListener('click', () => {
+        showPage('workout');
+    });
+    getEl('food-nav-btn-mobile').addEventListener('click', () => {
+        showPage('food');
+    });
+    getEl('dashboard-nav-btn-mobile').addEventListener('click', () => {
+        showPage('dashboard');
+    });
+    getEl('ai-helper-menu-btn-mobile').addEventListener('click', () => {
+        aiHelperModal.classList.add('active');
+        aiHelperModal.style.display = 'flex';
+        setTimeout(() => aiHelperModalInput.focus(), 200);
+    });
+    getEl('settings-nav-btn-mobile').addEventListener('click', () => {
+        settingsModal.classList.remove('hidden');
     });
 });
 </script>
