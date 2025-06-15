@@ -788,37 +788,55 @@
 
     <!-- AI Helper Modal Popup -->
     <div id="ai-helper-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm hidden">
-        <div class="relative w-full max-w-md mx-auto bg-white rounded-2xl shadow-2xl flex flex-col" style="min-height: 520px; max-height: 90vh;">
+        <div class="relative w-full max-w-2xl mx-auto bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl flex flex-col border border-gray-200/50" style="min-height: 600px; max-height: 90vh;">
             <!-- Header -->
-            <div class="flex items-center justify-between p-4 border-b border-gray-100 rounded-t-2xl bg-white/80">
-                <div class="flex items-center gap-3">
-                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=ai" alt="AI Avatar" class="w-10 h-10 rounded-full border border-gray-200 bg-gray-50">
+            <div class="flex items-center justify-between p-6 border-b border-gray-100/50 rounded-t-3xl bg-white/80 backdrop-blur-sm">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
+                        <i class="fas fa-robot text-white text-xl"></i>
+                    </div>
                     <div>
-                        <div class="font-semibold text-lg text-gray-900">AI Helper</div>
-                        <div class="text-xs text-green-500 flex items-center gap-1"><span class="inline-block w-2 h-2 bg-green-400 rounded-full"></span>Online</div>
+                        <div class="font-semibold text-xl text-gray-900">AI Helper</div>
+                        <div class="text-sm text-gray-500 flex items-center gap-2">
+                            <span class="inline-block w-2 h-2 bg-green-400 rounded-full"></span>
+                            Ready to assist
+                        </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button id="new-chat-btn" class="text-sm px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors flex items-center gap-1.5">
-                        <i class="fas fa-plus"></i>
+                <div class="flex items-center gap-3">
+                    <button id="new-chat-btn" class="text-sm px-4 py-2 bg-gray-100/80 hover:bg-gray-200/80 text-gray-700 rounded-xl transition-all duration-200 flex items-center gap-2 shadow-sm hover:shadow">
+                        <i class="fas fa-plus text-blue-500"></i>
                         New Chat
                     </button>
-                    <button id="close-ai-helper-modal" class="text-gray-400 hover:text-gray-700 text-xl p-2 rounded-full transition"><i class="fas fa-times"></i></button>
+                    <button id="close-ai-helper-modal" class="text-gray-400 hover:text-gray-700 text-xl p-2 rounded-xl hover:bg-gray-100/80 transition-all duration-200">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             </div>
             <!-- Welcome Message -->
             <div class="flex-1 flex flex-col overflow-hidden">
                 <div class="flex-1 overflow-y-auto p-6" id="ai-helper-modal-messages">
                     <div class="flex flex-col items-center justify-center h-full text-center text-gray-700" id="ai-helper-welcome">
-                        <div class="text-3xl mb-2">✨</div>
-                        <div class="font-bold text-xl mb-1">Welcome to your AI Helper</div>
-                        <div class="text-sm text-gray-500 mb-4">I can help you with fitness questions, stats, and tips. Ask me anything!</div>
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg mb-6">
+                            <i class="fas fa-robot text-white text-2xl"></i>
+                        </div>
+                        <div class="font-bold text-2xl mb-3 bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">Welcome to your AI Helper</div>
+                        <div class="text-gray-500 max-w-md">I can help you with fitness questions, analyze your workout data, and provide personalized recommendations. What would you like to know?</div>
                     </div>
                 </div>
                 <!-- Chat Input -->
-                <div class="border-t border-gray-100 bg-white/80 p-4 flex items-center gap-2">
-                    <input type="text" id="ai-helper-modal-input" class="flex-1 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 bg-white/90" placeholder="Ask me anything...">
-                    <button id="ai-helper-modal-send" class="bg-blue-600 text-white p-3 rounded-xl hover:bg-blue-700 transition"><i class="fas fa-paper-plane"></i></button>
+                <div class="border-t border-gray-100/50 bg-white/80 backdrop-blur-sm p-6">
+                    <div class="flex items-center gap-3">
+                        <div class="flex-1 relative">
+                            <input type="text" id="ai-helper-modal-input" class="w-full p-4 pr-12 rounded-2xl border border-gray-200/50 focus:ring-2 focus:ring-blue-500 bg-white/90 shadow-sm" placeholder="Ask me anything about your fitness journey...">
+                            <button id="clear-ai-helper-input" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <button id="ai-helper-modal-send" class="bg-blue-600 text-white p-4 rounded-2xl hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow flex items-center justify-center w-14 h-14">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2366,6 +2384,19 @@ Be specific and reference their actual logs when possible.`
     });
     aiHelperModalInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') aiHelperModalSend.click();
+    });
+
+    // Add clear input functionality for AI helper modal
+    const clearAiHelperInput = getEl('clear-ai-helper-input');
+    aiHelperModalInput.addEventListener('input', () => {
+        clearAiHelperInput.classList.toggle('hidden', !aiHelperModalInput.value);
+        clearAiHelperInput.style.pointerEvents = aiHelperModalInput.value ? 'auto' : 'none';
+    });
+    clearAiHelperInput.addEventListener('click', () => {
+        aiHelperModalInput.value = '';
+        clearAiHelperInput.classList.add('hidden');
+        clearAiHelperInput.style.pointerEvents = 'none';
+        aiHelperModalInput.focus();
     });
 });
 </script>
