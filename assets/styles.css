@@ -866,18 +866,23 @@ p {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  flex-wrap: nowrap;
+  gap: 10px;
+  flex-wrap: wrap;
   min-width: 0;
 }
 .secure-checkout-title {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: clamp(0.78rem, 2vw, 0.97rem);
+  font-size: clamp(0.8rem, 3.5vw, 0.95rem);
   color: var(--ink-900);
   min-width: 0;
-  white-space: nowrap;
+  flex-shrink: 1;
+}
+.stripe-badge-img {
+  flex-shrink: 0;
+  height: 22px;
+  width: auto;
 }
 .secure-checkout-title svg { flex-shrink: 0; width: 16px; height: 18px; }
 .secure-checkout-title strong { font-weight: 700; }
@@ -1354,8 +1359,17 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   /* Single-column tier grid on very small screens */
   .tier-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
 
-  /* Secure checkout section — shrink badges so all fit in one row */
+  /* Secure checkout section — shrink for narrow screens */
+  .secure-checkout-top { gap: 8px; }
+  .stripe-badge-img { height: 18px; }
+  .secure-checkout-title { font-size: 0.8rem; }
   .card-badge { height: 26px; padding: 3px 4px; border-radius: 4px; }
   .card-badge img { height: 18px; }
   .secure-cards { gap: 4px; }
+  .secure-cancel { font-size: 0.74rem; }
+
+  /* Freq toggle — full width pills */
+  .custom-freq-toggle { gap: 6px; }
+  .custom-freq-opt { flex: 1; }
+  .custom-freq-opt span { display: block; text-align: center; padding: 0.45em 0.5em; font-size: 0.84rem; }
 }
