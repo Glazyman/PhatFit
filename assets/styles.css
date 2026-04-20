@@ -927,17 +927,22 @@ p {
   opacity: 0.6;
 }
 .card-badge {
-  height: 44px;
-  min-width: 40px;
+  height: 32px;
   border-radius: 6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--ink-200);
   background: var(--paper);
-  padding: 0 6px;
+  padding: 4px 6px;
+  overflow: hidden;
 }
-.card-badge img { display: block; }
+.card-badge img {
+  display: block;
+  height: 22px;
+  width: auto;
+  object-fit: contain;
+}
 
 
 .donate-cards { display: grid; gap: 24px; grid-template-columns: 1fr; }
@@ -1349,7 +1354,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 
   /* Secure checkout — shrink badges so all fit in one row */
   .secure-checkout { padding: 14px 16px 16px; }
-  .card-badge { height: 32px; min-width: 32px; padding: 0 4px; border-radius: 4px; }
+  .card-badge { height: 26px; padding: 3px 4px; border-radius: 4px; }
   .card-badge img { height: 18px; }
   .secure-cards { gap: 4px; }
 }
