@@ -708,7 +708,6 @@ p {
   grid-template-columns: 1fr;
   margin-top: 20px;
 }
-@media (min-width: 860px) { .tier-monthly-row { grid-template-columns: 1fr 1fr; } }
 
 .tier-monthly-card {
   background: linear-gradient(155deg, var(--ink-800) 0%, var(--ink-950) 100%);
@@ -853,13 +852,13 @@ p {
 .custom-amount-input::placeholder { color: var(--ink-400); font-weight: 400; }
 
 /* ── Secure checkout banner ─────────────────────────────────── */
-.secure-checkout {
-  background: var(--paper);
-  border: 1px solid var(--ink-200);
-  border-radius: var(--radius-lg);
-  padding: 18px 22px 20px;
-  margin-top: 36px;
-  overflow: hidden;
+/* .secure-checkout is now embedded inside .custom-amount-box — no wrapper card needed */
+
+/* Full-width separator between form and secure checkout section */
+.custom-amount-box .secure-divider-full {
+  margin: 18px -32px 14px;
+  border: none;
+  border-top: 1px solid var(--ink-100);
 }
 .secure-checkout-top {
   display: flex;
@@ -903,7 +902,7 @@ p {
 .secure-divider {
   border: none;
   border-top: 1px solid var(--ink-200);
-  margin: 16px 0;
+  margin: 8px 0;
 }
 .secure-cards {
   display: flex;
@@ -918,8 +917,8 @@ p {
 .secure-cancel {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
+  gap: 6px;
+  font-size: 0.78rem;
   color: var(--ink-600);
 }
 .secure-cancel svg {
@@ -927,19 +926,19 @@ p {
   opacity: 0.6;
 }
 .card-badge {
-  height: 32px;
-  border-radius: 6px;
+  height: 24px;
+  border-radius: 4px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--ink-200);
   background: var(--paper);
-  padding: 4px 6px;
+  padding: 2px 4px;
   overflow: hidden;
 }
 .card-badge img {
   display: block;
-  height: 22px;
+  height: 16px;
   width: auto;
   object-fit: contain;
 }
@@ -1345,6 +1344,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .card-step .step-num { left: 18px; }
   .donate-card { padding: 28px 22px; }
   .custom-amount-box { padding: 22px 18px; }
+  .custom-amount-box .secure-divider-full { margin: 18px -18px 14px; }
   .tier-monthly-card { padding: 22px 18px; }
   .cta-banner { padding: 28px 22px; }
   .trust-strip { padding: 20px 20px; }
@@ -1352,8 +1352,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   /* Single-column tier grid on very small screens */
   .tier-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
 
-  /* Secure checkout — shrink badges so all fit in one row */
-  .secure-checkout { padding: 14px 16px 16px; }
+  /* Secure checkout section — shrink badges so all fit in one row */
   .card-badge { height: 26px; padding: 3px 4px; border-radius: 4px; }
   .card-badge img { height: 18px; }
   .secure-cards { gap: 4px; }
