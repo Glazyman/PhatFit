@@ -68,14 +68,23 @@
       });
     });
 
-    /* ── Custom amount form (donate page + home page) ───────── */
-    ["custom-amount-form", "home-custom-amount-form"].forEach(function (formId) {
+    /* ── Custom amount forms (one-time tab + monthly tab, donate + home) ─ */
+    function bindCustomAmountForm(formId, inputId, freqName) {
       var form = document.getElementById(formId);
       if (!form) return;
+      function syncSubmitLabel() {
+        var btn = form.querySelector('button[type="submit"]');
+        if (!btn) return;
+        var checked = form.querySelector("input[name='" + freqName + "']:checked");
+        btn.textContent =
+          checked && checked.value === "monthly" ? "Subscribe" : "Donate";
+      }
+      form.querySelectorAll("input[name='" + freqName + "']").forEach(function (radio) {
+        radio.addEventListener("change", syncSubmitLabel);
+      });
+      syncSubmitLabel();
       form.addEventListener("submit", function (e) {
         e.preventDefault();
-        var inputId = formId === "home-custom-amount-form" ? "home-custom-amount-input" : "custom-amount-input";
-        var freqName = formId === "home-custom-amount-form" ? "home-custom-freq" : "custom-freq";
         var input = document.getElementById(inputId);
         var val = parseFloat(input ? input.value : "");
         if (!val || val < 1) {
@@ -90,7 +99,11 @@
           openOrAlert(cfg.STRIPE_DONATE_ONE_TIME_URL, ALERT_MSG.oneTime);
         }
       });
-    });
+    }
+    bindCustomAmountForm("custom-amount-form", "custom-amount-input", "custom-freq");
+    bindCustomAmountForm("custom-amount-form-monthly", "custom-amount-input-monthly", "custom-freq-monthly");
+    bindCustomAmountForm("home-custom-amount-form", "home-custom-amount-input", "home-custom-freq");
+    bindCustomAmountForm("home-custom-amount-form-monthly", "home-custom-amount-input-monthly", "home-custom-freq-monthly");
   }
 
   function bindMobileNav() {

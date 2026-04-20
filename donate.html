@@ -186,24 +186,35 @@
 
           <div class="tier-monthly-row">
             <div class="custom-amount-box">
-              <h3>Custom monthly amount</h3>
-              <p>Choose any amount — billed automatically each month.</p>
-              <div class="custom-amount-field">
-                <div class="custom-amount-wrap">
-                  <input
-                    class="custom-amount-input"
-                    type="number"
-                    min="1"
-                    step="1"
-                    placeholder="Enter monthly amount"
-                    aria-label="Custom monthly donation amount in USD"
-                    readonly
-                    style="cursor: not-allowed;"
-                  />
+              <h3>Custom amount</h3>
+              <p>Choose one-time or monthly, then enter any amount you like.</p>
+              <form id="custom-amount-form-monthly" autocomplete="off">
+                <div class="custom-freq-toggle" role="group" aria-label="Donation frequency">
+                  <label class="custom-freq-opt">
+                    <input type="radio" name="custom-freq-monthly" value="one-time" />
+                    <span>One‑time</span>
+                  </label>
+                  <label class="custom-freq-opt">
+                    <input type="radio" name="custom-freq-monthly" value="monthly" checked />
+                    <span>Monthly</span>
+                  </label>
                 </div>
-                <a class="btn btn-primary" href="#" data-stripe="monthly">Subscribe</a>
-              </div>
-              <p style="font-size: 0.8rem; margin-top: 10px; color: var(--ink-400);">For a custom monthly amount, use the Subscribe button — then set the quantity on the next screen (quantity&nbsp;=&nbsp;$&nbsp;per month).</p>
+                <div class="custom-amount-field">
+                  <div class="custom-amount-wrap">
+                    <input
+                      id="custom-amount-input-monthly"
+                      class="custom-amount-input"
+                      type="number"
+                      min="1"
+                      step="1"
+                      placeholder="Enter amount"
+                      aria-label="Custom donation amount in USD"
+                    />
+                  </div>
+                  <button type="submit" class="btn btn-primary">Subscribe</button>
+                </div>
+              </form>
+              <p style="font-size: 0.8rem; margin-top: 10px; color: var(--ink-400);">For monthly, set <strong>quantity</strong> on the next screen to match dollars per month (quantity&nbsp;=&nbsp;$&nbsp;/&nbsp;mo).</p>
               <hr class="secure-divider-full" />
               <div class="secure-checkout-top">
                 <div class="secure-checkout-title">
