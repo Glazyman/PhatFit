@@ -25,7 +25,7 @@
         <li><a href="how-funding-works.html">How Funding Works</a></li>
         <li><a href="apply.html">Apply</a></li>
         <li><a href="contact.html">Contact</a></li>
-        <li><a class="btn btn-primary" href="donate.html">Donate</a></li>
+        <li><a class="btn btn-primary" href="#donate">Donate</a></li>
       </ul>
     </div>
   </header>
@@ -87,32 +87,178 @@
       </div>
     </section>
 
-    <!-- DONATE PREVIEW -->
-    <section class="section section-cream">
+    <!-- DONATE SECTION -->
+    <section class="section section-cream" id="donate">
       <div class="container">
-        <div class="grid grid-2" style="align-items: center; gap: 60px;">
-          <div>
-            <span class="eyebrow">Help fund therapy</span>
-            <h2>Every dollar reaches a child who needs it.</h2>
-            <p>Ahavas Chaya is a registered 501(c)(3) nonprofit. All donations are tax‑deductible, and maaser money may be used.</p>
-            <div class="btn-row" style="margin-top: 1.5em;">
-              <a class="btn btn-primary" href="#" data-stripe="one-time">Donate</a>
-              <a class="btn btn-secondary" href="#" data-stripe="monthly">Donate Monthly</a>
+        <div class="center" style="max-width: 720px; margin: 0 auto 48px;">
+          <span class="eyebrow">Help fund therapy</span>
+          <h2>Every dollar reaches a child who needs it.</h2>
+          <p class="lede" style="margin: 0 auto;">Choose a preset amount or enter your own — one‑time or monthly.</p>
+        </div>
+
+        <!-- TABS -->
+        <div class="tier-tabs" role="tablist" aria-label="Donation type" style="margin: 0 auto 32px;">
+          <button class="tier-tab is-active" id="home-tab-onetime" role="tab" aria-selected="true" aria-controls="home-panel-onetime">One‑time</button>
+          <button class="tier-tab" id="home-tab-monthly" role="tab" aria-selected="false" aria-controls="home-panel-monthly">Monthly</button>
+        </div>
+
+        <!-- ONE-TIME PANEL -->
+        <div id="home-panel-onetime" role="tabpanel" aria-labelledby="home-tab-onetime">
+          <div class="tier-grid">
+            <a class="tier-card" href="#" data-tier="18">
+              <span class="tier-label">Chai — חי</span>
+              <span class="tier-amount"><sup>$</sup>18</span>
+              <span class="tier-desc">One session of therapy for a child in need.</span>
+              <span class="tier-btn">Donate</span>
+            </a>
+            <a class="tier-card" href="#" data-tier="36">
+              <span class="tier-label">Double Chai</span>
+              <span class="tier-amount"><sup>$</sup>36</span>
+              <span class="tier-desc">Two sessions — double the impact.</span>
+              <span class="tier-btn">Donate</span>
+            </a>
+            <a class="tier-card is-popular" href="#" data-tier="54">
+              <span class="tier-label">Triple Chai</span>
+              <span class="tier-amount"><sup>$</sup>54</span>
+              <span class="tier-desc">Three sessions of care for a vulnerable child.</span>
+              <span class="tier-btn">Donate</span>
+            </a>
+            <a class="tier-card" href="#" data-tier="100">
+              <span class="tier-label">Supporter</span>
+              <span class="tier-amount"><sup>$</sup>100</span>
+              <span class="tier-desc">Help fund a full month of weekly sessions.</span>
+              <span class="tier-btn">Donate</span>
+            </a>
+            <a class="tier-card" href="#" data-tier="180">
+              <span class="tier-label">Ten Chai</span>
+              <span class="tier-amount"><sup>$</sup>180</span>
+              <span class="tier-desc">A transformative gift covering two months of care.</span>
+              <span class="tier-btn">Donate</span>
+            </a>
+            <a class="tier-card" href="#" data-tier="360">
+              <span class="tier-label">Champion</span>
+              <span class="tier-amount"><sup>$</sup>360</span>
+              <span class="tier-desc">Four months of therapy — a life-changing commitment.</span>
+              <span class="tier-btn">Donate</span>
+            </a>
+          </div>
+          <div class="tier-monthly-row" style="margin-top: 20px;">
+            <div class="custom-amount-box">
+              <h3>Custom amount</h3>
+              <p>Give any amount that feels meaningful to you.</p>
+              <form id="home-custom-amount-form" autocomplete="off">
+                <div class="custom-freq-toggle" role="group" aria-label="Donation frequency">
+                  <label class="custom-freq-opt">
+                    <input type="radio" name="home-custom-freq" value="one-time" checked />
+                    <span>One‑time</span>
+                  </label>
+                  <label class="custom-freq-opt">
+                    <input type="radio" name="home-custom-freq" value="monthly" />
+                    <span>Monthly</span>
+                  </label>
+                </div>
+                <div class="custom-amount-field">
+                  <div class="custom-amount-wrap">
+                    <input
+                      id="home-custom-amount-input"
+                      class="custom-amount-input"
+                      type="number"
+                      min="1"
+                      step="1"
+                      placeholder="Enter amount"
+                      aria-label="Custom donation amount in USD"
+                    />
+                  </div>
+                  <button type="submit" class="btn btn-primary" style="height: 52px; border-radius: 999px; padding: 0 1.6em;">Donate</button>
+                </div>
+              </form>
             </div>
           </div>
-          <div class="trust-list">
-            <div class="trust-list-item">
-              <span class="trust-icon" aria-hidden="true">✓</span>
-              <div><strong>501(c)(3) nonprofit</strong><br /><span>All donations are tax‑deductible</span></div>
+        </div>
+
+        <!-- MONTHLY PANEL -->
+        <div id="home-panel-monthly" role="tabpanel" aria-labelledby="home-tab-monthly" hidden>
+          <div class="tier-grid">
+            <a class="tier-card" href="#" data-stripe="monthly">
+              <span class="tier-label">Chai / mo</span>
+              <span class="tier-amount"><sup>$</sup>18<span style="font-size:1rem; font-weight:500; letter-spacing:0;">/mo</span></span>
+              <span class="tier-desc">One session per month, every month.</span>
+              <span class="tier-btn">Subscribe</span>
+            </a>
+            <a class="tier-card" href="#" data-stripe="monthly">
+              <span class="tier-label">Double Chai / mo</span>
+              <span class="tier-amount"><sup>$</sup>36<span style="font-size:1rem; font-weight:500; letter-spacing:0;">/mo</span></span>
+              <span class="tier-desc">Steady support across two sessions monthly.</span>
+              <span class="tier-btn">Subscribe</span>
+            </a>
+            <a class="tier-card is-popular" href="#" data-stripe="monthly">
+              <span class="tier-label">Triple Chai / mo</span>
+              <span class="tier-amount"><sup>$</sup>54<span style="font-size:1rem; font-weight:500; letter-spacing:0;">/mo</span></span>
+              <span class="tier-desc">Three sessions every month — a sustaining gift.</span>
+              <span class="tier-btn">Subscribe</span>
+            </a>
+            <a class="tier-card" href="#" data-stripe="monthly">
+              <span class="tier-label">Sustainer / mo</span>
+              <span class="tier-amount"><sup>$</sup>100<span style="font-size:1rem; font-weight:500; letter-spacing:0;">/mo</span></span>
+              <span class="tier-desc">Fund a full month of weekly care, every month.</span>
+              <span class="tier-btn">Subscribe</span>
+            </a>
+            <a class="tier-card" href="#" data-stripe="monthly">
+              <span class="tier-label">Ten Chai / mo</span>
+              <span class="tier-amount"><sup>$</sup>180<span style="font-size:1rem; font-weight:500; letter-spacing:0;">/mo</span></span>
+              <span class="tier-desc">Major monthly commitment to ongoing child welfare.</span>
+              <span class="tier-btn">Subscribe</span>
+            </a>
+            <a class="tier-card" href="#" data-stripe="monthly">
+              <span class="tier-label">Champion / mo</span>
+              <span class="tier-amount"><sup>$</sup>360<span style="font-size:1rem; font-weight:500; letter-spacing:0;">/mo</span></span>
+              <span class="tier-desc">Champion-level recurring support for children in crisis.</span>
+              <span class="tier-btn">Subscribe</span>
+            </a>
+          </div>
+          <div class="tier-monthly-row" style="margin-top: 20px;">
+            <div class="custom-amount-box">
+              <h3>Custom monthly amount</h3>
+              <p>Any amount — billed automatically each month. Cancel anytime from your Stripe receipt email.</p>
+              <div class="custom-amount-field">
+                <div class="custom-amount-wrap">
+                  <input class="custom-amount-input" type="number" min="1" step="1" placeholder="Enter monthly amount" aria-label="Custom monthly amount" readonly style="cursor:not-allowed;" />
+                </div>
+                <a class="btn btn-primary" href="#" data-stripe="monthly" style="height:52px; border-radius:999px; padding:0 1.6em; display:inline-flex; align-items:center;">Subscribe</a>
+              </div>
+              <p style="font-size:0.8rem; margin-top:10px; color:var(--ink-400);">Set quantity on the next screen — quantity&nbsp;=&nbsp;$&nbsp;per month.</p>
             </div>
-            <div class="trust-list-item">
-              <span class="trust-icon" aria-hidden="true">★</span>
-              <div><strong>Maaser money may be used</strong><br /><span>Qualified for maaser contributions</span></div>
+            <div class="tier-monthly-card" style="pointer-events:none; opacity:0.55;">
+              <span class="tier-monthly-icon" aria-hidden="true">↻</span>
+              <div>
+                <h3>Cancel anytime</h3>
+                <p>Manage or cancel from the link in any Stripe receipt email — no login needed.</p>
+              </div>
             </div>
-            <div class="trust-list-item">
-              <span class="trust-icon" aria-hidden="true">♥</span>
-              <div><strong>100% mission-focused</strong><br /><span>Every gift funds a child's therapy</span></div>
+          </div>
+        </div>
+
+        <!-- SECURE CHECKOUT BANNER -->
+        <div class="secure-checkout">
+          <div class="secure-checkout-top">
+            <div class="secure-checkout-title">
+              <svg width="20" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="11" width="18" height="11" rx="2" fill="#1E293B"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#1E293B" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="12" cy="16" r="1.5" fill="white"/></svg>
+              <span>Guaranteed <strong>safe &amp; secure</strong> checkout</span>
             </div>
+            <div class="secure-stripe-badge">
+              <span>Powered by</span>
+              <strong>stripe</strong>
+            </div>
+          </div>
+          <hr class="secure-divider" />
+          <div class="secure-cards">
+            <div class="card-badge card-visa">VISA</div>
+            <div class="card-badge card-mc"><span class="mc-circle mc-red"></span><span class="mc-circle mc-orange"></span></div>
+            <div class="card-badge card-amex">AMEX</div>
+            <div class="card-badge card-jcb">JCB</div>
+            <div class="card-badge card-discover">DISCOVER</div>
+            <div class="card-badge card-diners">DINERS</div>
+            <div class="card-badge card-unionpay">UnionPay</div>
           </div>
         </div>
       </div>
