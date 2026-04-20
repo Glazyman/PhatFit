@@ -576,17 +576,19 @@ p {
 /* ── Donation tiers ─────────────────────────────────────────── */
 .tier-tabs {
   display: flex;
-  gap: 4px;
-  margin-bottom: 32px;
+  gap: 5px;
+  margin: 0 auto 36px;
   background: #e5e5ea;
-  border-radius: 12px;
-  padding: 4px;
+  border-radius: 14px;
+  padding: 5px;
   width: fit-content;
+  max-width: 100%;
 }
 .tier-tab {
-  padding: 0.52em 1.4em;
-  border-radius: 9px;
-  font-size: 0.92rem;
+  padding: 0.65em 1.65em;
+  min-height: 48px;
+  border-radius: 10px;
+  font-size: 1.02rem;
   font-weight: 600;
   cursor: pointer;
   border: none;
