@@ -854,45 +854,51 @@ p {
 
 /* ── Secure checkout banner ─────────────────────────────────── */
 .secure-checkout {
-  background: var(--ink-50);
-  border: 1px solid var(--ink-100);
+  background: var(--paper);
+  border: 1px solid var(--ink-200);
   border-radius: var(--radius-lg);
-  padding: 20px 28px 22px;
+  padding: 18px 22px 20px;
   margin-top: 36px;
+  overflow: hidden;
 }
 .secure-checkout-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: 12px;
+  flex-wrap: nowrap;
+  min-width: 0;
 }
 .secure-checkout-title {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 0.97rem;
+  gap: 8px;
+  font-size: clamp(0.78rem, 2vw, 0.97rem);
   color: var(--ink-900);
+  min-width: 0;
+  white-space: nowrap;
 }
-.secure-checkout-title svg { flex-shrink: 0; }
+.secure-checkout-title svg { flex-shrink: 0; width: 16px; height: 18px; }
 .secure-checkout-title strong { font-weight: 700; }
 .secure-stripe-badge {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   background: var(--ink-900);
   color: #fff;
   border-radius: 8px;
-  padding: 6px 14px;
-  font-size: 0.82rem;
+  padding: 6px 12px;
+  font-size: 0.78rem;
   font-weight: 400;
   white-space: nowrap;
+  flex-shrink: 0;
 }
+.secure-stripe-badge svg { flex-shrink: 0; }
 .secure-stripe-badge strong {
-  font-size: 1rem;
+  font-size: 0.92rem;
   font-weight: 700;
-  font-family: 'Courier New', monospace;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
+  font-family: var(--font-sans);
 }
 .secure-divider {
   border: none;
@@ -902,9 +908,13 @@ p {
 .secure-cards {
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 8px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.secure-cards::-webkit-scrollbar { display: none; }
 .secure-cancel {
   display: flex;
   align-items: center;
@@ -917,37 +927,17 @@ p {
   opacity: 0.6;
 }
 .card-badge {
-  height: 32px;
-  min-width: 48px;
+  height: 44px;
+  min-width: 40px;
   border-radius: 6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--ink-200);
   background: var(--paper);
-  padding: 0 8px;
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.03em;
+  padding: 0 6px;
 }
-.card-visa     { color: #1A1F71; font-size: 0.85rem; letter-spacing: 0.05em; }
-.card-amex     { background: #007BC1; color: #fff; border-color: #007BC1; }
-.card-jcb      { background: linear-gradient(135deg, #003087 33%, #cc0000 33%, #cc0000 66%, #009f6b 66%); color: #fff; border-color: transparent; }
-.card-discover { color: #FF6600; font-size: 0.62rem; letter-spacing: 0.04em; }
-.card-diners   { color: #004B87; font-size: 0.65rem; }
-.card-unionpay { background: #c0392b; color: #fff; border-color: #c0392b; font-size: 0.6rem; letter-spacing: 0.02em; }
-/* Mastercard — overlapping circles */
-.card-mc {
-  gap: 0;
-  padding: 0 8px;
-}
-.mc-circle {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-}
-.mc-red    { background: #EB001B; margin-right: -7px; }
-.mc-orange { background: #F79E1B; }
+.card-badge img { display: block; }
 
 
 .donate-cards { display: grid; gap: 24px; grid-template-columns: 1fr; }
@@ -1356,4 +1346,10 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 
   /* Single-column tier grid on very small screens */
   .tier-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* Secure checkout — shrink badges so all fit in one row */
+  .secure-checkout { padding: 14px 16px 16px; }
+  .card-badge { height: 32px; min-width: 32px; padding: 0 4px; border-radius: 4px; }
+  .card-badge img { height: 18px; }
+  .secure-cards { gap: 4px; }
 }
