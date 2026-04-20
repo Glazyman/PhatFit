@@ -353,18 +353,60 @@ p {
     top: calc(100% + 10px);
     left: 0;
     right: 0;
-    background: var(--ink-950);
-    border-radius: var(--radius-lg);
-    padding: 14px;
+    background: #1C1C1E;
+    border-radius: 20px;
+    padding: 8px 8px 12px;
     flex-direction: column;
     align-items: stretch;
-    gap: 4px;
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: var(--shadow-lg);
+    gap: 2px;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.36);
   }
   .nav-links.is-open { display: flex; }
-  .nav-links a { padding: 0.85em 1em; }
-  .nav-links .btn { margin: 8px 0 0; text-align: center; justify-content: center; }
+
+  /* Regular nav links — iOS grouped list row style */
+  .nav-links li { display: block; }
+  .nav-links a {
+    display: block;
+    padding: 0.9em 1.1em;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 12px;
+    color: rgba(255,255,255,0.82);
+    letter-spacing: -0.01em;
+  }
+  .nav-links a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+
+  /* Donate button — full-width iOS blue pill at the bottom */
+  .nav-links li:last-child {
+    margin-top: 10px;
+    padding: 0;
+    border: none;
+  }
+  .nav-links .btn {
+    display: flex;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 54px;
+    font-size: 1.08rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    border-radius: 16px;
+    justify-content: center;
+    align-items: center;
+    background: var(--blue);
+    color: #fff;
+    box-shadow: none;
+    border: none;
+  }
+  .nav-links .btn:hover,
+  .nav-links .btn:active {
+    background: var(--blue-hover);
+    color: #fff;
+    transform: none;
+    box-shadow: none;
+  }
 }
 
 /* ── Hero photo split ───────────────────────────────────────── */
@@ -608,6 +650,11 @@ p {
   display: grid;
   gap: 20px;
   grid-template-columns: repeat(2, 1fr);
+  padding-top: 14px; /* room for the "Most Popular" badge that overflows */
+  align-items: stretch;
+}
+.tier-grid .tier-card {
+  height: 100%;
 }
 @media (min-width: 720px) { .tier-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 1080px) { .tier-grid { grid-template-columns: repeat(6, 1fr); } }
@@ -701,6 +748,42 @@ p {
 }
 
 /* ── Monthly tier (featured) ────────────────────────────────── */
+/* ── Donate page desktop layout ─────────────────────────────── */
+.donate-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  align-items: start;
+}
+@media (min-width: 860px) {
+  .donate-layout {
+    grid-template-columns: 1fr 360px;
+    gap: 36px;
+    align-items: start;
+  }
+  .donate-layout .tier-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  /* Align aside top with tier-grid top (grid has 14px padding for badge) */
+  .donate-layout-aside .tier-monthly-row {
+    margin-top: 0;
+    padding-top: 14px;
+  }
+  .donate-layout-aside .custom-amount-box {
+    position: sticky;
+    top: 96px;
+    max-width: 100%;
+  }
+  .tier-card {
+    padding: 32px 24px 28px;
+  }
+}
+
+.donate-layout-aside {
+  display: flex;
+  flex-direction: column;
+}
+
 .tier-monthly-row {
   display: flex;
   justify-content: center;
