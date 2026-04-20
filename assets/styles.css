@@ -769,6 +769,12 @@ p {
     margin-top: 0;
     padding-top: 14px;
   }
+  /* donate.html places custom-amount-box directly in aside (no .tier-monthly-row wrapper) */
+  .donate-layout-aside > .custom-amount-box {
+    margin-top: 14px; /* match tier-grid padding-top for visual alignment */
+    position: sticky;
+    top: 96px;
+  }
   .donate-layout-aside .custom-amount-box {
     position: sticky;
     top: 96px;
