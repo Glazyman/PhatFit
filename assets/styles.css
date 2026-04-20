@@ -703,10 +703,9 @@ p {
 
 /* ── Monthly tier (featured) ────────────────────────────────── */
 .tier-monthly-row {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: 1fr;
-  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
 }
 
 .tier-monthly-card {
@@ -793,19 +792,22 @@ p {
   background: var(--paper);
   border: 1px solid var(--ink-100);
   border-radius: var(--radius-lg);
-  padding: 32px;
+  padding: 28px 32px 24px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  width: 100%;
+  max-width: 560px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
 }
 .custom-amount-box h3 {
-  margin-bottom: 6px;
-  font-size: 1.2rem;
+  margin-bottom: 4px;
+  font-size: 1.1rem;
 }
-.custom-amount-box p {
+.custom-amount-box > p {
   color: var(--ink-500);
-  font-size: 0.9rem;
-  margin-bottom: 18px;
+  font-size: 0.875rem;
+  margin-bottom: 16px;
 }
 .custom-amount-field {
   display: flex;
@@ -1343,8 +1345,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .card-step { padding: 76px 18px 22px; } /* preserve top space for step number */
   .card-step .step-num { left: 18px; }
   .donate-card { padding: 28px 22px; }
-  .custom-amount-box { padding: 22px 18px; }
-  .custom-amount-box .secure-divider-full { margin: 18px -18px 14px; }
+  .custom-amount-box { padding: 22px 20px 20px; }
+  .custom-amount-box .secure-divider-full { margin: 16px -20px 12px; }
   .tier-monthly-card { padding: 22px 18px; }
   .cta-banner { padding: 28px 22px; }
   .trust-strip { padding: 20px 20px; }
