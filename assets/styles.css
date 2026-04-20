@@ -749,11 +749,15 @@ p {
 /* ── Custom amount frequency toggle ────────────────────────── */
 .custom-freq-toggle {
   display: flex;
-  gap: 8px;
+  gap: 3px;
   margin-bottom: 14px;
+  background: var(--ink-100);
+  border-radius: 999px;
+  padding: 3px;
 }
 .custom-freq-opt {
   display: flex;
+  flex: 1;
   align-items: center;
   cursor: pointer;
 }
@@ -764,24 +768,26 @@ p {
   height: 0;
 }
 .custom-freq-opt span {
-  display: inline-block;
-  padding: 0.5em 1.1em;
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 0.48em 1em;
   border-radius: 999px;
   font-size: 0.88rem;
   font-weight: 600;
-  border: 1.5px solid var(--ink-200);
   color: var(--ink-500);
-  background: var(--ink-50);
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  background: transparent;
+  border: none;
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
   user-select: none;
+  white-space: nowrap;
 }
 .custom-freq-opt input[type="radio"]:checked + span {
-  background: var(--blue);
-  color: #fff;
-  border-color: var(--blue);
+  background: var(--paper);
+  color: var(--ink-900);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
 }
-.custom-freq-opt:hover span { border-color: var(--blue); color: var(--blue); }
-.custom-freq-opt input[type="radio"]:checked + span { color: #fff; }
+.custom-freq-opt:hover span { color: var(--ink-800); }
 .custom-freq-opt input[type="radio"]:focus-visible + span {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
@@ -1368,8 +1374,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .secure-cards { gap: 4px; }
   .secure-cancel { font-size: 0.74rem; }
 
-  /* Freq toggle — full width pills */
-  .custom-freq-toggle { gap: 6px; }
-  .custom-freq-opt { flex: 1; }
-  .custom-freq-opt span { display: block; text-align: center; padding: 0.45em 0.5em; font-size: 0.84rem; }
+  /* Freq toggle — tighter on small screens */
+  .custom-freq-opt span { font-size: 0.84rem; padding: 0.45em 0.8em; }
 }
