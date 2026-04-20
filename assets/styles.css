@@ -5,46 +5,46 @@
    ──────────────────────────────────────────────────────────── */
 
 :root {
-  /* Brand */
-  --blue:        #3B82F6;
-  --blue-hover:  #2563EB;
-  --blue-deep:   #1D4ED8;
-  --blue-soft:   #EFF6FF;
-  --blue-tint:   #DBEAFE;
+  /* Brand — iOS blue */
+  --blue:        #007AFF;
+  --blue-hover:  #0071E3;
+  --blue-deep:   #0060D1;
+  --blue-soft:   #E8F1FF;
+  --blue-tint:   #D0E4FF;
 
-  /* Neutrals */
-  --ink-950:  #0B1220;
-  --ink-900:  #0F172A;
-  --ink-800:  #1E293B;
-  --ink-700:  #334155;
-  --ink-600:  #475569;
-  --ink-500:  #64748B;
-  --ink-400:  #94A3B8;
-  --ink-300:  #CBD5E1;
-  --ink-200:  #E2E8F0;
-  --ink-100:  #F1F5F9;
-  --ink-50:   #F8FAFC;
+  /* Neutrals — Apple system palette */
+  --ink-950:  #1C1C1E;
+  --ink-900:  #1C1C1E;
+  --ink-800:  #2C2C2E;
+  --ink-700:  #3A3A3C;
+  --ink-600:  #48484A;
+  --ink-500:  #636366;
+  --ink-400:  #8E8E93;
+  --ink-300:  #AEAEB2;
+  --ink-200:  #D1D1D6;
+  --ink-100:  #E5E5EA;
+  --ink-50:   #F2F2F7;
   --paper:    #FFFFFF;
 
   /* Decorative accents */
-  --accent-orange: #FB923C;
-  --accent-yellow: #FBBF24;
-  --accent-rose:   #FB7185;
-  --accent-mint:   #34D399;
+  --accent-orange: #FF9500;
+  --accent-yellow: #FFCC00;
+  --accent-rose:   #FF2D55;
+  --accent-mint:   #34C759;
 
   /* Layout */
   --container: 1200px;
   --radius-sm: 10px;
-  --radius:    16px;
-  --radius-lg: 28px;
-  --radius-xl: 40px;
+  --radius:    14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
 
-  --shadow-sm:  0 2px 6px rgba(15, 23, 42, 0.05);
-  --shadow:     0 12px 32px rgba(15, 23, 42, 0.08);
-  --shadow-lg:  0 24px 60px rgba(15, 23, 42, 0.16);
-  --shadow-blue: 0 12px 28px rgba(59, 130, 246, 0.28);
+  --shadow-sm:  0 1px 4px rgba(0,0,0,0.06), 0 2px 10px rgba(0,0,0,0.04);
+  --shadow:     0 4px 20px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-lg:  0 12px 48px rgba(0,0,0,0.14), 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-blue: 0 4px 20px rgba(0, 122, 255, 0.30);
 
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
 }
 
 /* ── Reset ──────────────────────────────────────────────────── */
@@ -56,7 +56,7 @@ body {
   font-size: 17px;
   line-height: 1.6;
   color: var(--ink-700);
-  background: var(--paper);
+  background: var(--ink-50);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -138,11 +138,11 @@ p {
 }
 .section { padding: clamp(64px, 9vw, 120px) 0; }
 .section-tight { padding: clamp(40px, 6vw, 80px) 0; }
-.section-cream { background: var(--ink-50); }
+.section-cream { background: #fff; }
 .section-navy {
   background:
-    radial-gradient(60% 80% at 100% 0%, rgba(59,130,246,0.18) 0%, transparent 60%),
-    var(--ink-950);
+    radial-gradient(60% 80% at 100% 0%, rgba(0,122,255,0.18) 0%, transparent 60%),
+    #1C1C1E;
   color: rgba(255,255,255,0.85);
 }
 .section-navy h1, .section-navy h2, .section-navy h3 { color: #fff; }
@@ -463,7 +463,7 @@ p {
   position: relative;
   overflow: hidden;
   padding: clamp(80px, 10vw, 160px) 0 clamp(72px, 10vw, 130px);
-  background: var(--paper);
+  background: #fff;
 }
 .hero-inner {
   position: relative;
@@ -494,29 +494,24 @@ p {
   font-weight: 500;
 }
 
-/* Floating accent dots in hero (decorative only) */
-.dots { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-.dot {
-  position: absolute;
-  border-radius: 50%;
-}
-.dot-orange { background: var(--accent-orange); width: 22px; height: 22px; top: 22%; left: 6%; }
-.dot-yellow { background: var(--accent-yellow); width: 38px; height: 38px; top: 70%; left: 4%; }
-.dot-blue   { background: var(--blue-tint);    width: 64px; height: 64px; top: 18%; right: 6%; }
-.dot-blue-2 { background: var(--blue);         width: 14px; height: 14px; top: 72%; right: 18%; opacity: 0.85; }
-.dot-rose   { background: var(--accent-rose);  width: 16px; height: 16px; top: 12%; right: 22%; }
+/* Ambient glow (Apple-style soft gradient blobs) */
+.dots { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+.dot { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.55; }
+.dot-orange { background: #FF9500; width: 280px; height: 280px; top: -60px; right: 10%; }
+.dot-yellow { display: none; }
+.dot-blue   { background: #007AFF; width: 360px; height: 360px; top: 20%; right: -80px; opacity: 0.12; }
+.dot-blue-2 { display: none; }
+.dot-rose   { background: #FF2D55; width: 200px; height: 200px; top: 40%; left: -60px; opacity: 0.10; }
 @media (max-width: 720px) {
-  .dot-orange { top: 6%; left: auto; right: 16%; }
-  .dot-yellow { top: 88%; left: 8%; width: 28px; height: 28px; }
-  .dot-blue { width: 38px; height: 38px; top: 4%; right: 4%; }
-  .dot-blue-2 { display: none; }
-  .dot-rose { top: 88%; right: 8%; }
+  .dot-orange { width: 180px; height: 180px; top: -40px; right: 0; }
+  .dot-blue   { width: 220px; height: 220px; top: 10%; right: -60px; }
+  .dot-rose   { width: 140px; height: 140px; top: 60%; left: -40px; }
 }
 
 /* ── Page header (interior pages) ──────────────────────────── */
 .page-header {
   padding: clamp(80px, 9vw, 130px) 0 clamp(40px, 5vw, 70px);
-  background: var(--paper);
+  background: #fff;
   position: relative;
   overflow: hidden;
 }
@@ -530,15 +525,15 @@ p {
 
 /* ── Cards ──────────────────────────────────────────────────── */
 .card {
-  background: var(--paper);
-  border: 1px solid var(--ink-100);
+  background: #fff;
+  border: none;
   border-radius: var(--radius-lg);
-  padding: 32px;
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  padding: 28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.04);
+  transition: box-shadow 0.22s ease, transform 0.22s ease;
   height: 100%;
 }
-.card:hover { box-shadow: var(--shadow); border-color: var(--ink-200); transform: translateY(-2px); }
+.card:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.11), 0 2px 6px rgba(0,0,0,0.05); transform: translateY(-2px); }
 .card h3 { margin-bottom: 0.5em; color: var(--ink-900); }
 .card p:last-child { margin-bottom: 0; }
 .card a { font-weight: 600; }
@@ -568,9 +563,9 @@ p {
 .card-icon {
   width: 48px;
   height: 48px;
-  border-radius: 14px;
-  background: var(--blue-tint);
-  color: var(--blue-deep);
+  border-radius: 12px;
+  background: var(--blue-soft);
+  color: var(--blue);
   display: inline-grid;
   place-items: center;
   font-size: 1.15rem;
@@ -581,29 +576,29 @@ p {
 /* ── Donation tiers ─────────────────────────────────────────── */
 .tier-tabs {
   display: flex;
-  gap: 8px;
-  margin-bottom: 36px;
-  background: var(--ink-100);
-  border-radius: 999px;
-  padding: 5px;
+  gap: 4px;
+  margin-bottom: 32px;
+  background: #e5e5ea;
+  border-radius: 12px;
+  padding: 4px;
   width: fit-content;
 }
 .tier-tab {
-  padding: 0.55em 1.3em;
-  border-radius: 999px;
+  padding: 0.52em 1.4em;
+  border-radius: 9px;
   font-size: 0.92rem;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   border: none;
   background: transparent;
   color: var(--ink-500);
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
   letter-spacing: -0.005em;
 }
 .tier-tab.is-active {
-  background: var(--paper);
+  background: #fff;
   color: var(--ink-900);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.14);
 }
 .tier-tab:hover:not(.is-active) { color: var(--ink-900); }
 
@@ -616,26 +611,28 @@ p {
 @media (min-width: 1080px) { .tier-grid { grid-template-columns: repeat(6, 1fr); } }
 
 .tier-card {
-  background: var(--ink-900);
+  background: #1C1C1E;
   border-radius: var(--radius-lg);
-  padding: 28px 22px 26px;
+  padding: 26px 20px 24px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   cursor: pointer;
-  border: 2px solid transparent;
-  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  border: 1.5px solid rgba(255,255,255,0.06);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   text-decoration: none;
 }
 .tier-card:hover {
   transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 10px 36px rgba(0,0,0,0.28);
   border-color: var(--blue);
   color: inherit;
 }
 .tier-card.is-popular {
   background: linear-gradient(155deg, var(--blue) 0%, var(--blue-deep) 100%);
   box-shadow: var(--shadow-blue);
+  border-color: transparent;
   position: relative;
 }
 .tier-card.is-popular::before {
@@ -645,7 +642,7 @@ p {
   left: 50%;
   transform: translateX(-50%);
   background: var(--accent-yellow);
-  color: var(--ink-900);
+  color: #1C1C1E;
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -750,9 +747,9 @@ p {
 .custom-freq-toggle {
   display: flex;
   gap: 3px;
-  margin-bottom: 14px;
-  background: var(--ink-100);
-  border-radius: 999px;
+  margin-bottom: 16px;
+  background: #e9eaec;
+  border-radius: 12px;
   padding: 3px;
 }
 .custom-freq-opt {
@@ -771,8 +768,8 @@ p {
   display: block;
   width: 100%;
   text-align: center;
-  padding: 0.48em 1em;
-  border-radius: 999px;
+  padding: 0.5em 1em;
+  border-radius: 9px;
   font-size: 0.88rem;
   font-weight: 600;
   color: var(--ink-500);
@@ -783,9 +780,9 @@ p {
   white-space: nowrap;
 }
 .custom-freq-opt input[type="radio"]:checked + span {
-  background: var(--paper);
+  background: #fff;
   color: var(--ink-900);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.14);
 }
 .custom-freq-opt:hover span { color: var(--ink-800); }
 .custom-freq-opt input[type="radio"]:focus-visible + span {
@@ -793,36 +790,38 @@ p {
   outline-offset: 2px;
 }
 
-/* ── Custom amount input ────────────────────────────────────── */
+/* ── Custom amount card (iPhone-style form card) ─────────────── */
 .custom-amount-box {
-  background: var(--paper);
-  border: 1px solid var(--ink-100);
-  border-radius: var(--radius-lg);
-  padding: 28px 32px 24px;
+  background: #fff;
+  border: none;
+  border-radius: 22px;
+  padding: 24px 24px 20px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   width: 100%;
   max-width: 560px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 40px rgba(0,0,0,0.10), 0 1px 6px rgba(0,0,0,0.06);
 }
 .custom-amount-box h3 {
-  margin-bottom: 4px;
-  font-size: 1.1rem;
+  margin-bottom: 2px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink-900);
 }
 .custom-amount-box > p {
-  color: var(--ink-500);
-  font-size: 0.875rem;
+  color: var(--ink-400);
+  font-size: 0.82rem;
   margin-bottom: 16px;
+  line-height: 1.4;
 }
 .custom-amount-field {
   display: flex;
+  flex-direction: column;
   gap: 10px;
-  align-items: stretch;
 }
 .custom-amount-wrap {
   position: relative;
-  flex: 1;
+  width: 100%;
 }
 .custom-amount-wrap::before {
   content: "$";
@@ -830,18 +829,18 @@ p {
   left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  color: var(--ink-700);
+  color: var(--ink-600);
   pointer-events: none;
 }
 .custom-amount-input {
   width: 100%;
-  height: 52px;
-  padding: 0 16px 0 32px;
+  height: 54px;
+  padding: 0 16px 0 34px;
   border: 1.5px solid var(--ink-200);
-  border-radius: 999px;
-  font-size: 1.1rem;
+  border-radius: 14px;
+  font-size: 1.25rem;
   font-weight: 700;
   font-family: var(--font-sans);
   color: var(--ink-900);
@@ -855,18 +854,30 @@ p {
 .custom-amount-input:focus {
   border-color: var(--blue);
   box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
-  background: var(--paper);
+  background: #fff;
 }
-.custom-amount-input::placeholder { color: var(--ink-400); font-weight: 400; }
+.custom-amount-input::placeholder { color: var(--ink-300); font-weight: 400; font-size: 1rem; }
+/* Full-width stacked button inside the card */
+.custom-amount-field .btn {
+  width: 100% !important;
+  height: 52px !important;
+  border-radius: 14px !important;
+  padding: 0 !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
 
 /* ── Secure checkout banner ─────────────────────────────────── */
 /* .secure-checkout is now embedded inside .custom-amount-box — no wrapper card needed */
 
 /* Full-width separator between form and secure checkout section */
 .custom-amount-box .secure-divider-full {
-  margin: 18px -32px 14px;
+  margin: 18px -24px 14px;
   border: none;
-  border-top: 1px solid var(--ink-100);
+  border-top: 1px solid #f0f0f0;
 }
 .secure-checkout-top {
   display: flex;
@@ -962,16 +973,16 @@ p {
 
 .donate-card {
   position: relative;
-  background: var(--paper);
-  border: 1px solid var(--ink-100);
+  background: #fff;
+  border: none;
   border-radius: var(--radius-lg);
   padding: 40px 36px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 14px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.04);
   display: flex;
   flex-direction: column;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.donate-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.donate-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
 .donate-card.is-featured {
   background:
     radial-gradient(80% 80% at 100% 0%, rgba(255,255,255,0.16) 0%, transparent 60%),
@@ -1161,9 +1172,9 @@ p {
 /* ── CTA banner ─────────────────────────────────────────────── */
 .cta-banner {
   background:
-    radial-gradient(60% 80% at 100% 0%, rgba(59,130,246,0.32) 0%, transparent 60%),
-    radial-gradient(40% 60% at 0% 100%, rgba(255,255,255,0.05) 0%, transparent 70%),
-    var(--ink-950);
+    radial-gradient(60% 80% at 100% 0%, rgba(0,122,255,0.28) 0%, transparent 60%),
+    radial-gradient(40% 60% at 0% 100%, rgba(255,255,255,0.04) 0%, transparent 70%),
+    #1C1C1E;
   border-radius: var(--radius-lg);
   padding: clamp(40px, 5vw, 70px);
   color: #fff;
@@ -1239,9 +1250,10 @@ p {
   display: grid;
   gap: 18px;
   grid-template-columns: 1fr;
-  background: var(--paper);
-  border: 1px solid var(--ink-100);
+  background: #fff;
+  border: none;
   border-radius: var(--radius-lg);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   padding: 28px 32px;
   margin-top: 36px;
 }
@@ -1356,8 +1368,10 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .card-step { padding: 76px 18px 22px; } /* preserve top space for step number */
   .card-step .step-num { left: 18px; }
   .donate-card { padding: 28px 22px; }
-  .custom-amount-box { padding: 22px 20px 20px; }
-  .custom-amount-box .secure-divider-full { margin: 16px -20px 12px; }
+  .custom-amount-box { padding: 20px 18px 18px; border-radius: 18px; }
+  .custom-amount-box .secure-divider-full { margin: 16px -18px 12px; }
+  .custom-amount-input { font-size: 1.1rem; height: 50px; border-radius: 12px; }
+  .custom-amount-field .btn { border-radius: 12px !important; }
   .tier-monthly-card { padding: 22px 18px; }
   .cta-banner { padding: 28px 22px; }
   .trust-strip { padding: 20px 20px; }
