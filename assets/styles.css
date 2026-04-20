@@ -17,6 +17,7 @@
   --ink-900:  #0F172A;
   --ink-800:  #1E293B;
   --ink-700:  #334155;
+  --ink-600:  #475569;
   --ink-500:  #64748B;
   --ink-400:  #94A3B8;
   --ink-300:  #CBD5E1;
@@ -1319,4 +1320,40 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
   html { scroll-behavior: auto; }
+}
+
+/* ── Mobile refinements (≤ 480px) ──────────────────────────── */
+@media (max-width: 480px) {
+  /* Stack donation amount input + button vertically */
+  .custom-amount-field {
+    flex-direction: column;
+  }
+  .custom-amount-field .btn {
+    width: 100%;
+    justify-content: center;
+    border-radius: 999px !important;
+    height: auto !important;
+    padding: 0.95em 1.6em !important;
+  }
+
+  /* Reduce tier card padding so 2-col fits comfortably */
+  .tier-card {
+    padding: 20px 14px 18px;
+  }
+  .tier-amount {
+    font-size: 1.9rem;
+  }
+
+  /* Reduce card and donate-card padding */
+  .card { padding: 22px 18px; }
+  .card-step { padding: 76px 18px 22px; } /* preserve top space for step number */
+  .card-step .step-num { left: 18px; }
+  .donate-card { padding: 28px 22px; }
+  .custom-amount-box { padding: 22px 18px; }
+  .tier-monthly-card { padding: 22px 18px; }
+  .cta-banner { padding: 28px 22px; }
+  .trust-strip { padding: 20px 20px; }
+
+  /* Single-column tier grid on very small screens */
+  .tier-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
 }
