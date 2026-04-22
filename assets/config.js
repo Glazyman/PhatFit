@@ -38,13 +38,19 @@ window.AHAVAS_CONFIG = {
   STRIPE_DONATE_MONTHLY_URL: "",
 
   /* ── Chai & Win Raffle ─────────────────────────────────────── */
-  // Create separate Stripe Payment Links for the raffle so you can
-  // track raffle revenue separately from regular donations.
-  //
-  // One-time raffle tiers: create 3 fixed-price Payment Links ($20, $80, $200)
-  // Monthly raffle tiers:  create 3 recurring Payment Links ($15, $60, $150/mo)
-  //
-  // For now you can reuse the donation URLs above as a placeholder.
-  STRIPE_RAFFLE_ONETIME_URL: "",  // one-time raffle payment link
-  STRIPE_RAFFLE_MONTHLY_URL: ""   // monthly raffle subscription link
+  // Two drawings: Wig and Luxury Item, each with one-time + monthly.
+  // Create 4 separate Stripe Payment Links (or reuse the fallback URLs
+  // below until you set up dedicated links).
+
+  // Wig drawing
+  STRIPE_RAFFLE_WIG_ONETIME_URL:  "",   // one-time wig raffle
+  STRIPE_RAFFLE_WIG_MONTHLY_URL:  "",   // monthly wig raffle subscription
+
+  // Luxury Item drawing
+  STRIPE_RAFFLE_ITEM_ONETIME_URL: "",   // one-time item raffle
+  STRIPE_RAFFLE_ITEM_MONTHLY_URL: "",   // monthly item raffle subscription
+
+  // Legacy / fallback (used if giveaway-specific URLs above are empty)
+  STRIPE_RAFFLE_ONETIME_URL: "",
+  STRIPE_RAFFLE_MONTHLY_URL: ""
 };

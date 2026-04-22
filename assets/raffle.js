@@ -2,105 +2,150 @@
   "use strict";
 
   /* ── Config ──────────────────────────────────────────────── */
-  var ADMIN_PASSWORD = "ahavas2026"; // change this!
-  var STORAGE_KEY    = "chaiwin_entries";
-
-  // ↓ STEP 1: Replace with your email to receive entry notifications
-  // FormSubmit is free — first submission will send you a confirmation email to activate
+  var ADMIN_PASSWORD   = "ahavas2026"; // change before launch
+  var STORAGE_KEY      = "chaiwin_entries";
   var FORMSUBMIT_EMAIL = "info@ahavaschaya.com";
+
+  /* ── State ───────────────────────────────────────────────── */
+  var currentGiveaway = "wig"; // "wig" | "item"
 
   /* ── Countdown ───────────────────────────────────────────── */
   function getDrawDate() {
-    var now = new Date();
-    var year  = now.getFullYear();
-    var month = now.getMonth();
-    // Last day of current month
-    var d = new Date(year, month + 1, 0, 23, 59, 59);
-    return d;
+    var n = new Date();
+    return new Date(n.getFullYear(), n.getMonth() + 1, 0, 23, 59, 59);
   }
 
   function updateCountdown() {
-    var target = getDrawDate();
-    var now    = new Date();
-    var diff   = target - now;
-
-    if (diff <= 0) diff = 0;
-
+    var diff  = Math.max(0, getDrawDate() - new Date());
     var days  = Math.floor(diff / 86400000);
     var hours = Math.floor((diff % 86400000) / 3600000);
     var mins  = Math.floor((diff % 3600000)  / 60000);
     var secs  = Math.floor((diff % 60000)    / 1000);
-
     function pad(n) { return String(n).padStart(2, "0"); }
-    var dEl = document.getElementById("cd-days");
-    var hEl = document.getElementById("cd-hours");
-    var mEl = document.getElementById("cd-mins");
-    var sEl = document.getElementById("cd-secs");
-    if (dEl) dEl.textContent = pad(days);
-    if (hEl) hEl.textContent = pad(hours);
-    if (mEl) mEl.textContent = pad(mins);
-    if (sEl) sEl.textContent = pad(secs);
+    var g = function(id) { return document.getElementById(id); };
+    if (g("cd-days"))  g("cd-days").textContent  = pad(days);
+    if (g("cd-hours")) g("cd-hours").textContent = pad(hours);
+    if (g("cd-mins"))  g("cd-mins").textContent  = pad(mins);
+    if (g("cd-secs"))  g("cd-secs").textContent  = pad(secs);
   }
 
-  /* ── Raffle Tabs ─────────────────────────────────────────── */
-  function bindRaffleTabs() {
-    var btnOnetime = document.getElementById("raffle-tab-onetime");
-    var btnMonthly = document.getElementById("raffle-tab-monthly");
-    var panelOt    = document.getElementById("raffle-panel-onetime");
-    var panelMo    = document.getElementById("raffle-panel-monthly");
-    if (!btnOnetime || !btnMonthly) return;
+  /* ── Giveaway tabs (Wig / Luxury Item) ───────────────────── */
+  function bindGiveawayTabs() {
+    var tabWig    = document.getElementById("gtab-wig");
+    var tabItem   = document.getElementById("gtab-item");
+    var panelWig  = document.getElementById("gpanel-wig");
+    var panelItem = document.getElementById("gpanel-item");
+    if (!tabWig || !panelWig) return;
 
-    function activateTab(activeBtn, inactiveBtn, showPanel, hidePanel) {
-      activeBtn.classList.add("is-active");
-      activeBtn.setAttribute("aria-selected", "true");
-      inactiveBtn.classList.remove("is-active");
-      inactiveBtn.setAttribute("aria-selected", "false");
-      showPanel.hidden = false;
-      hidePanel.hidden = true;
-      // Uncheck hidden radios, auto-select popular in shown panel
-      hidePanel.querySelectorAll("input[type='radio']").forEach(function(r) { r.checked = false; });
-      var popular = showPanel.querySelector(".raffle-tier-card.is-popular input[type='radio']");
-      var first   = showPanel.querySelector("input[type='radio']");
-      if (popular) popular.checked = true;
-      else if (first) first.checked = true;
+    function switchGiveaway(giveaway) {
+      currentGiveaway = giveaway;
+      var isWig = giveaway === "wig";
+      tabWig.classList.toggle("is-active", isWig);
+      tabWig.setAttribute("aria-selected", String(isWig));
+      tabItem.classList.toggle("is-active", !isWig);
+      tabItem.setAttribute("aria-selected", String(!isWig));
+      panelWig.hidden  = !isWig;
+      panelItem.hidden = isWig;
+      // Clear radios in the hidden panel
+      var hidden = isWig ? panelItem : panelWig;
+      hidden.querySelectorAll("input[type='radio']").forEach(function(r) { r.checked = false; });
+      // Auto-select in the visible panel's active freq tab
+      var shown      = isWig ? panelWig : panelItem;
+      var activeFreq = shown.querySelector("[role='tabpanel']:not([hidden])");
+      if (activeFreq) autoSelectInPanel(activeFreq);
       updateSummary();
     }
 
-    btnOnetime.addEventListener("click", function() {
-      activateTab(btnOnetime, btnMonthly, panelOt, panelMo);
+    tabWig.addEventListener("click",  function() { switchGiveaway("wig"); });
+    tabItem.addEventListener("click", function() { switchGiveaway("item"); });
+
+    // Hero prize card "Enter X Drawing" buttons
+    document.querySelectorAll("[data-goto-wig]").forEach(function(btn) {
+      btn.addEventListener("click", function(e) {
+        e.preventDefault();
+        switchGiveaway("wig");
+        scrollToEnter();
+      });
     });
-    btnMonthly.addEventListener("click", function() {
-      activateTab(btnMonthly, btnOnetime, panelMo, panelOt);
+    document.querySelectorAll("[data-goto-item]").forEach(function(btn) {
+      btn.addEventListener("click", function(e) {
+        e.preventDefault();
+        switchGiveaway("item");
+        scrollToEnter();
+      });
     });
   }
 
-  /* ── Summary Line ────────────────────────────────────────── */
+  function scrollToEnter() {
+    var s = document.getElementById("enter");
+    if (s) setTimeout(function() { s.scrollIntoView({ behavior: "smooth" }); }, 50);
+  }
+
+  /* ── Freq tabs (Single / Monthly per giveaway) ───────────── */
+  function bindFreqTabs() {
+    document.querySelectorAll(".giveaway-freq-tab").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        var giveaway = btn.dataset.giveaway;
+        var freq     = btn.dataset.freq;
+        var panel    = document.getElementById("gpanel-" + giveaway);
+        if (!panel) return;
+
+        // Update tab active states
+        panel.querySelectorAll(".giveaway-freq-tab").forEach(function(t) {
+          var active = t === btn;
+          t.classList.toggle("is-active", active);
+          t.setAttribute("aria-selected", String(active));
+        });
+
+        // Show/hide freq sub-panels
+        var targetId = giveaway + "-panel-" + freq;
+        panel.querySelectorAll("[id^='" + giveaway + "-panel-']").forEach(function(p) {
+          p.hidden = (p.id !== targetId);
+        });
+
+        // Auto-select popular tier in newly shown panel
+        var shown = document.getElementById(targetId);
+        if (shown) autoSelectInPanel(shown);
+        updateSummary();
+      });
+    });
+  }
+
+  function autoSelectInPanel(panel) {
+    if (panel.querySelector("input[type='radio']:checked")) return; // already selected
+    var popular = panel.querySelector(".raffle-tier-card.is-popular input[type='radio']");
+    var first   = panel.querySelector("input[type='radio']");
+    if (popular) popular.checked = true;
+    else if (first) first.checked = true;
+  }
+
+  /* ── Summary line ────────────────────────────────────────── */
   function updateSummary() {
-    var checked = document.querySelector("input[name='raffle-tier']:checked");
-    var el = document.getElementById("raffle-summary");
-    var submitLabel = document.getElementById("raffle-submit-label");
-    if (!el || !checked) return;
-    var entries = checked.dataset.entries;
-    var price   = checked.dataset.price;
-    var monthly = checked.dataset.monthly === "true";
-    var label   = monthly
-      ? entries + " " + (entries === "1" ? "entry" : "entries") + "/month · $" + price + "/mo"
-      : entries + " " + (entries === "1" ? "entry" : "entries") + " · $" + price + " one-time";
-    el.textContent = label;
-    if (submitLabel) {
-      submitLabel.textContent = monthly ? "Subscribe & Enter" : "Donate & Enter";
+    var panel    = document.getElementById("gpanel-" + currentGiveaway);
+    var el       = document.getElementById("raffle-summary");
+    var btnLabel = document.getElementById("raffle-submit-label");
+    if (!panel || !el) return;
+    var checked = panel.querySelector("input[name='raffle-tier']:checked");
+    if (!checked) return;
+    var entries  = checked.dataset.entries;
+    var price    = checked.dataset.price;
+    var monthly  = checked.dataset.monthly === "true";
+    var gLabel   = currentGiveaway === "wig" ? "Wig Drawing" : "Luxury Item Drawing";
+    el.textContent = gLabel + " · " + entries + " " +
+      (entries === "1" ? "entry" : "entries") +
+      (monthly ? "/month · $" + price + "/mo" : " · $" + price + " one-time");
+    if (btnLabel) {
+      btnLabel.textContent = monthly ? "Subscribe & Enter" : "Donate & Enter";
     }
   }
 
   function bindTierChange() {
     document.addEventListener("change", function(e) {
-      if (e.target && e.target.name === "raffle-tier") {
-        updateSummary();
-      }
+      if (e.target && e.target.name === "raffle-tier") updateSummary();
     });
   }
 
-  /* ── Form Validation & Submit ────────────────────────────── */
+  /* ── Form validation & submit ────────────────────────────── */
   function bindForm() {
     var form = document.getElementById("raffle-form");
     if (!form) return;
@@ -109,7 +154,7 @@
       e.preventDefault();
       var errorEl  = document.getElementById("raffle-error");
       var submitBtn = document.getElementById("raffle-submit");
-      var submitLabel = document.getElementById("raffle-submit-label");
+      var submitLbl = document.getElementById("raffle-submit-label");
       errorEl.textContent = "";
 
       var first   = document.getElementById("rf-first");
@@ -117,70 +162,76 @@
       var email   = document.getElementById("rf-email");
       var phone   = document.getElementById("rf-phone");
       var terms   = document.getElementById("rf-terms");
-      var checked = document.querySelector("input[name='raffle-tier']:checked");
+      var panel   = document.getElementById("gpanel-" + currentGiveaway);
+      var checked = panel ? panel.querySelector("input[name='raffle-tier']:checked") : null;
 
-      // Validate
       [first, last, email].forEach(function(f) { f.classList.remove("is-error"); });
-      if (!first.value.trim())  { first.classList.add("is-error"); first.focus(); errorEl.textContent = "Please enter your first name."; return; }
-      if (!last.value.trim())   { last.classList.add("is-error");  last.focus();  errorEl.textContent = "Please enter your last name."; return; }
+      if (!first.value.trim()) { first.classList.add("is-error"); first.focus(); errorEl.textContent = "Please enter your first name."; return; }
+      if (!last.value.trim())  { last.classList.add("is-error");  last.focus();  errorEl.textContent = "Please enter your last name."; return; }
       if (!email.value.trim() || !email.value.includes("@")) { email.classList.add("is-error"); email.focus(); errorEl.textContent = "Please enter a valid email address."; return; }
-      if (!terms.checked)  { errorEl.textContent = "Please agree to the Terms & Conditions to continue."; return; }
-      if (!checked)        { errorEl.textContent = "Please select an entry option above."; return; }
+      if (!terms.checked) { errorEl.textContent = "Please agree to the Terms & Conditions to continue."; return; }
+      if (!checked)       { errorEl.textContent = "Please select an entry option above."; return; }
 
-      var isMonthly = checked.dataset.monthly === "true";
-      var now       = new Date();
-      var monthStr  = now.toLocaleString("default", { month: "long", year: "numeric" });
+      var isMonthly     = checked.dataset.monthly === "true";
+      var now           = new Date();
+      var monthStr      = now.toLocaleString("default", { month: "long", year: "numeric" });
+      var giveawayLabel = currentGiveaway === "wig" ? "Wig Drawing" : "Luxury Item Drawing";
 
       var entry = {
-        first:   first.value.trim(),
-        last:    last.value.trim(),
-        email:   email.value.trim(),
-        phone:   phone.value.trim() || "—",
-        entries: checked.dataset.entries,
-        type:    isMonthly ? "Monthly" : "One-time",
-        price:   "$" + checked.dataset.price + (isMonthly ? "/mo" : ""),
-        month:   monthStr,
-        ts:      now.toISOString()
+        first:    first.value.trim(),
+        last:     last.value.trim(),
+        email:    email.value.trim(),
+        phone:    phone.value.trim() || "—",
+        giveaway: giveawayLabel,
+        entries:  checked.dataset.entries,
+        type:     isMonthly ? "Monthly" : "One-time",
+        price:    "$" + checked.dataset.price + (isMonthly ? "/mo" : ""),
+        month:    monthStr,
+        ts:       now.toISOString()
       };
 
-      // Save locally (admin download backup)
       saveEntry(entry);
+      submitBtn.disabled   = true;
+      submitLbl.textContent = "Saving your entry…";
 
-      // Disable button while submitting
-      submitBtn.disabled = true;
-      submitLabel.textContent = "Saving your entry…";
-
-      // Send entry data to FormSubmit (free email endpoint — no backend needed)
-      // The first time you submit, FormSubmit will send an activation email to FORMSUBMIT_EMAIL
       fetch("https://formsubmit.co/ajax/" + FORMSUBMIT_EMAIL, {
-        method: "POST",
+        method:  "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({
-          _subject:       "🎟 New Chai & Win Entry — " + monthStr,
-          Name:           entry.first + " " + entry.last,
-          Email:          entry.email,
-          Phone:          entry.phone,
-          Entries:        entry.entries,
-          Type:           entry.type,
-          Amount:         entry.price,
-          Month:          entry.month,
-          Submitted:      entry.ts,
-          _template:      "table"
+          _subject:  "🎟 New Chai & Win Entry — " + giveawayLabel + " — " + monthStr,
+          Name:      entry.first + " " + entry.last,
+          Email:     entry.email,
+          Phone:     entry.phone,
+          Giveaway:  entry.giveaway,
+          Entries:   entry.entries,
+          Type:      entry.type,
+          Amount:    entry.price,
+          Month:     entry.month,
+          Submitted: entry.ts,
+          _template: "table"
         })
       })
       .then(function(res) { return res.json(); })
-      .catch(function() { return { success: false }; })
+      .catch(function()   { return { success: false }; })
       .finally(function() {
-        // Always go to Stripe regardless of email success
-        goToStripe(isMonthly, submitBtn, submitLabel);
+        goToStripe(isMonthly, submitBtn, submitLbl);
       });
     });
   }
 
   function goToStripe(isMonthly, btn, label) {
     var cfg = window.AHAVAS_CONFIG || {};
-    var url = isMonthly ? cfg.STRIPE_RAFFLE_MONTHLY_URL || cfg.STRIPE_DONATE_MONTHLY_URL
-                        : cfg.STRIPE_RAFFLE_ONETIME_URL || cfg.STRIPE_DONATE_ONE_TIME_URL;
+    var url;
+
+    if (currentGiveaway === "wig") {
+      url = isMonthly
+        ? (cfg.STRIPE_RAFFLE_WIG_MONTHLY_URL  || cfg.STRIPE_RAFFLE_MONTHLY_URL  || cfg.STRIPE_DONATE_MONTHLY_URL)
+        : (cfg.STRIPE_RAFFLE_WIG_ONETIME_URL  || cfg.STRIPE_RAFFLE_ONETIME_URL  || cfg.STRIPE_DONATE_ONE_TIME_URL);
+    } else {
+      url = isMonthly
+        ? (cfg.STRIPE_RAFFLE_ITEM_MONTHLY_URL || cfg.STRIPE_RAFFLE_MONTHLY_URL  || cfg.STRIPE_DONATE_MONTHLY_URL)
+        : (cfg.STRIPE_RAFFLE_ITEM_ONETIME_URL || cfg.STRIPE_RAFFLE_ONETIME_URL  || cfg.STRIPE_DONATE_ONE_TIME_URL);
+    }
 
     if (url) {
       label.textContent = "Redirecting to checkout…";
@@ -188,15 +239,12 @@
     } else {
       btn.disabled = false;
       label.textContent = "Proceed to Checkout";
-      var errorEl = document.getElementById("raffle-error");
-      errorEl.textContent =
-        "Stripe is not yet configured. Open assets/config.js and add " +
-        "STRIPE_RAFFLE_MONTHLY_URL or STRIPE_RAFFLE_ONETIME_URL. " +
-        "Your entry has been saved.";
+      document.getElementById("raffle-error").textContent =
+        "Stripe is not configured yet. Open assets/config.js and add the raffle Stripe URLs. Your entry has been saved.";
     }
   }
 
-  /* ── Entry Storage ───────────────────────────────────────── */
+  /* ── Entry storage ───────────────────────────────────────── */
   function saveEntry(entry) {
     var all = getEntries();
     all.push(entry);
@@ -204,24 +252,18 @@
   }
 
   function getEntries() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch(e) { return []; }
+    try { var r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : []; }
+    catch(e) { return []; }
   }
 
-  /* ── Admin Panel ─────────────────────────────────────────── */
+  /* ── Admin panel ─────────────────────────────────────────── */
   function showAdminPanel() {
-    var section = document.getElementById("raffle-admin");
-    if (section) {
-      section.style.display = "block";
-      section.removeAttribute("aria-hidden");
-      section.scrollIntoView({ behavior: "smooth" });
-    }
+    var s = document.getElementById("raffle-admin");
+    if (s) { s.style.display = "block"; s.removeAttribute("aria-hidden"); s.scrollIntoView({ behavior: "smooth" }); }
   }
 
   window.checkAdminPw = function() {
-    var pw = document.getElementById("admin-pw");
+    var pw  = document.getElementById("admin-pw");
     var err = document.getElementById("admin-pw-error");
     if (!pw) return;
     if (pw.value === ADMIN_PASSWORD) {
@@ -248,26 +290,23 @@
     var title   = document.getElementById("admin-month-title");
     if (!tbody) return;
 
-    // Current month name
-    var now = new Date();
+    var now       = new Date();
     var monthName = now.toLocaleString("default", { month: "long", year: "numeric" });
     if (title) title.textContent = "Entries — " + monthName;
 
-    // Stats
     var totalEntries = entries.reduce(function(s, e) { return s + parseInt(e.entries || 0); }, 0);
     var monthlyCount = entries.filter(function(e) { return e.type === "Monthly"; }).length;
-    var revenue      = entries.reduce(function(s, e) { return s + parseInt(e.price || 0); }, 0);
+    var wigCount     = entries.filter(function(e) { return (e.giveaway || "").includes("Wig"); }).length;
     if (stats) {
       stats.innerHTML =
         stat(entries.length, "Total Donors") +
-        stat(totalEntries, "Total Entries") +
-        stat(monthlyCount, "Monthly Subscribers") +
-        stat("$" + revenue, "Revenue");
+        stat(totalEntries,   "Total Entries") +
+        stat(monthlyCount,   "Monthly") +
+        stat(wigCount,       "Wig Drawing");
     }
 
-    // Table rows
     if (entries.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:32px; color:var(--ink-400);">No entries yet this month.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:32px; color:var(--ink-400);">No entries yet this month.</td></tr>';
       return;
     }
     tbody.innerHTML = entries.map(function(e, i) {
@@ -277,12 +316,13 @@
         "<td><strong>" + esc(e.first) + " " + esc(e.last) + "</strong></td>" +
         "<td>" + esc(e.email) + "</td>" +
         "<td>" + esc(e.phone || "—") + "</td>" +
+        "<td>" + esc(e.giveaway || "—") + "</td>" +
         "<td><span class='raffle-entry-badge'>" + esc(e.entries) + "</span></td>" +
         "<td>" + (e.type === "Monthly"
           ? "<span class='raffle-monthly-badge'>Monthly</span>"
-          : "<span style='font-size:0.8rem; color:var(--ink-500);'>One-time</span>") + "</td>" +
-        "<td>$" + esc(e.price) + "</td>" +
-        "<td style='color:var(--ink-400); font-size:0.8rem;'>" + date + "</td>" +
+          : "<span style='font-size:0.8rem;color:var(--ink-500);'>One-time</span>") + "</td>" +
+        "<td>" + esc(e.price) + "</td>" +
+        "<td style='color:var(--ink-400);font-size:0.8rem;'>" + date + "</td>" +
         "</tr>";
     }).join("");
   }
@@ -294,28 +334,24 @@
   function esc(str) {
     if (!str) return "";
     return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
-  /* ── CSV Download ────────────────────────────────────────── */
+  /* ── CSV download ────────────────────────────────────────── */
   window.downloadCSV = function() {
-    var entries = getEntries();
-    var now = new Date();
+    var entries   = getEntries();
+    var now       = new Date();
     var monthName = now.toLocaleString("default", { month: "long", year: "numeric" });
-    var header = ["#", "First Name", "Last Name", "Email", "Phone", "Entries", "Type", "Amount", "Submitted"];
+    var header    = ["#", "First Name", "Last Name", "Email", "Phone", "Giveaway", "Entries", "Type", "Amount", "Submitted"];
     var rows = entries.map(function(e, i) {
       return [
-        i + 1,
-        e.first, e.last, e.email, e.phone || "",
-        e.entries, e.type, "$" + e.price,
+        i + 1, e.first, e.last, e.email, e.phone || "",
+        e.giveaway || "", e.entries, e.type, e.price,
         e.ts ? new Date(e.ts).toLocaleString() : ""
       ].map(function(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(",");
     });
-    var csv = [header.map(function(h) { return '"' + h + '"'; }).join(",")]
-      .concat(rows).join("\n");
+    var csv  = [header.map(function(h) { return '"' + h + '"'; }).join(",")].concat(rows).join("\n");
     var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     var url  = URL.createObjectURL(blob);
     var a    = document.createElement("a");
@@ -331,15 +367,12 @@
   function init() {
     updateCountdown();
     setInterval(updateCountdown, 1000);
-    bindRaffleTabs();
+    bindGiveawayTabs();
+    bindFreqTabs();
     bindTierChange();
     bindForm();
     updateSummary();
-
-    // Show admin panel if ?admin=1 in URL
-    if (window.location.search.includes("admin=1")) {
-      showAdminPanel();
-    }
+    if (window.location.search.includes("admin=1")) showAdminPanel();
   }
 
   if (document.readyState === "loading") {

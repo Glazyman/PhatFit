@@ -29,47 +29,64 @@
 .raffle-hero {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(145deg, #071326 0%, #0d1b3e 45%, #061232 100%);
-  padding: clamp(72px, 10vw, 120px) 0 clamp(56px, 8vw, 90px);
+  background: #fff;
+  padding: clamp(64px, 9vw, 110px) 0 clamp(52px, 7vw, 88px);
+  border-bottom: 1px solid var(--ink-100);
 }
 .raffle-hero-bg {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 70% at 100%  0%,  rgba(0,122,255,0.55)    0%, transparent 50%),
-    radial-gradient(ellipse 55% 55% at   0% 100%, rgba(126,200,255,0.28)  0%, transparent 55%),
-    radial-gradient(ellipse 45% 50% at  50%  55%, rgba(0,55,180,0.22)     0%, transparent 60%);
+    radial-gradient(ellipse 70% 60% at 100%  0%,  rgba(0,122,255,0.07)  0%, transparent 55%),
+    radial-gradient(ellipse 55% 50% at   0% 100%, rgba(0,122,255,0.05)  0%, transparent 55%);
   pointer-events: none;
   z-index: 0;
 }
 .raffle-hero-inner {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 48px;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 }
-@media (min-width: 900px) {
-  .raffle-hero-inner { grid-template-columns: 1fr 1fr; gap: 56px; }
+
+/* ── Hero text: centered ─────────────────────────────────────── */
+.raffle-hero-inner { align-items: center; }
+.raffle-hero-text {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
 }
+.raffle-eyebrow    { justify-content: center; }
+.raffle-hero-lede  { margin-left: auto; margin-right: auto; }
+.btn-row           { justify-content: center; }
+.raffle-disclaimer { text-align: center; }
 
 /* ── Hero text ──────────────────────────────────────────────── */
 .raffle-hero-text h1 {
-  font-size: clamp(2.6rem, 5.5vw, 4.4rem);
+  font-size: clamp(2rem, 4.5vw, 3.8rem);
   font-weight: 900;
-  color: #fff;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  margin-bottom: 0.7em;
+  color: var(--ink-900);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  margin-bottom: 0.6em;
+  white-space: nowrap;
 }
-.hl-gold { color: var(--gold); }
+@media (max-width: 640px) {
+  .raffle-hero-text h1 { white-space: normal; font-size: clamp(1.75rem, 7.5vw, 2.4rem); }
+}
+.hl-gold {
+  background: linear-gradient(135deg, #007AFF 0%, #0055D4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 .raffle-hero-lede {
-  font-size: clamp(0.98rem, 2vw, 1.12rem);
-  color: rgba(255,255,255,0.68);
-  line-height: 1.6;
-  max-width: 460px;
-  margin-bottom: 1.8em;
+  font-size: clamp(1rem, 1.8vw, 1.1rem);
+  color: var(--ink-500);
+  line-height: 1.65;
+  max-width: 520px;
+  margin-bottom: 2em;
 }
 .raffle-eyebrow {
   display: inline-flex;
@@ -79,10 +96,10 @@
   font-weight: 700;
   letter-spacing: 0.13em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--blue);
   margin-bottom: 1.25rem;
-  background: rgba(126,200,255,0.12);
-  border: 1px solid rgba(126,200,255,0.28);
+  background: var(--blue-soft);
+  border: 1px solid var(--blue-tint);
   padding: 5px 14px 5px 10px;
   border-radius: 999px;
 }
@@ -90,16 +107,16 @@
   content: "";
   width: 7px; height: 7px;
   border-radius: 50%;
-  background: var(--gold);
-  box-shadow: 0 0 8px rgba(126,200,255,0.8);
+  background: var(--blue);
+  box-shadow: 0 0 8px rgba(0,122,255,0.5);
   flex-shrink: 0;
 }
 .raffle-disclaimer {
   font-size: 0.8rem;
-  color: rgba(255,255,255,0.38);
+  color: var(--ink-400);
   margin-top: 1em;
 }
-.raffle-disclaimer a { color: rgba(255,255,255,0.52); text-decoration: underline; }
+.raffle-disclaimer a { color: var(--blue); text-decoration: underline; }
 
 /* ── Countdown card (inside hero) ───────────────────────────── */
 .raffle-countdown-card {
@@ -159,8 +176,8 @@
 /* ── Ghost button for hero ───────────────────────────────────── */
 .raffle-btn-ghost {
   background: transparent;
-  border: 2px solid rgba(255,255,255,0.3);
-  color: #fff;
+  border: 2px solid var(--ink-200);
+  color: var(--ink-700);
   border-radius: var(--radius-pill, 999px);
   padding: 0.65em 1.4em;
   font-weight: 600;
@@ -168,12 +185,21 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  transition: border-color 0.18s, background 0.18s;
+  transition: border-color 0.18s, background 0.18s, color 0.18s;
   text-decoration: none;
 }
 .raffle-btn-ghost:hover {
-  border-color: rgba(255,255,255,0.65);
-  background: rgba(255,255,255,0.08);
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-soft);
+}
+/* ── Hero button row ─────────────────────────────────────────── */
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.2em;
 }
 .raffle-hero-cta {
   min-width: 180px;
@@ -186,7 +212,94 @@
   box-shadow: 0 10px 36px rgba(0,122,255,0.60) !important;
 }
 
-/* ── Prize cards (hero right column) ────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   PRIZES SECTION (below hero)
+   ───────────────────────────────────────────────────────────── */
+.raffle-prizes-section {
+  background: var(--hero-dark);
+  padding: clamp(40px, 6vw, 72px) 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.raffle-prizes-section .eyebrow { color: var(--gold); opacity: 1; }
+.raffle-prizes-section h2 {
+  color: #fff;
+  background: none;
+  -webkit-text-fill-color: #fff;
+  margin-bottom: 0.3em;
+}
+.prizes-tagline {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-weight: 500;
+  color: rgba(255,255,255,0.75);
+  margin: 0 0 0.4em;
+  line-height: 1.4;
+}
+.prizes-cause {
+  font-size: 0.92rem;
+  color: var(--gold);
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+.raffle-prizes-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 640px) {
+  .raffle-prizes-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+}
+
+/* Prize cards inside prizes section */
+.raffle-prizes-section .prize-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(126,200,255,0.18);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.22s, border-color 0.22s, box-shadow 0.22s;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+}
+.raffle-prizes-section .prize-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(126,200,255,0.55);
+  box-shadow: 0 14px 44px rgba(0,122,255,0.30);
+}
+.raffle-prizes-section .prize-card-fig {
+  position: relative;
+  width: 100%;
+  height: clamp(220px, 30vw, 340px);
+  margin: 0;
+  overflow: hidden;
+}
+.raffle-prizes-section .prize-card-fig img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.raffle-prizes-section .prize-fig-fallback { position: absolute; inset: 0; }
+.raffle-prizes-section .prize-card-body {
+  padding: 20px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.raffle-prizes-section .prize-enter-btn {
+  align-self: stretch !important;
+  text-align: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 44px !important;
+  font-size: 0.95rem !important;
+  border-radius: 12px !important;
+  padding: 0 !important;
+  margin-top: auto;
+}
+
+/* ── Prize cards (hero right column — legacy, now unused) ────── */
 .raffle-hero-prizes {
   display: flex;
   flex-direction: column;
@@ -291,6 +404,65 @@
   padding: 0 14px !important;
   border-radius: 8px !important;
   min-width: 0 !important;
+}
+
+/* ── Desktop: image on top, text + button below ──────────────── */
+@media (min-width: 641px) {
+  .raffle-hero-prizes { gap: 18px; align-items: stretch; }
+
+  .prize-card {
+    flex-direction: column;
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  /* Image fills a fixed-height top section */
+  .prize-card-fig {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    min-height: unset;
+    flex-shrink: 0;
+    margin: 0;
+  }
+  .prize-card-fig img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .prize-fig-fallback { position: absolute; inset: 0; }
+
+  /* Body sits below the image, outside it */
+  .prize-card-body {
+    position: static;
+    background: none;
+    padding: 18px 20px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .prize-card-tag   { font-size: 0.65rem; margin-bottom: 5px; }
+  .prize-card-body h3 { font-size: 1.05rem; margin-bottom: 4px; }
+  .prize-card-body > p { font-size: 0.82rem; color: rgba(255,255,255,0.55); margin-bottom: 10px; }
+  .prize-features   { display: flex; flex-direction: column; margin-bottom: 16px; flex: 1; }
+  .prize-features li { font-size: 0.78rem; color: rgba(255,255,255,0.6); }
+
+  /* Button full-width at bottom of card */
+  .prize-enter-btn {
+    align-self: stretch !important;
+    text-align: center !important;
+    justify-content: center !important;
+    font-size: 0.88rem !important;
+    height: 40px !important;
+    padding: 0 !important;
+    border-radius: 10px !important;
+    margin-top: auto;
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -917,21 +1089,107 @@
 /* ─────────────────────────────────────────────────────────────
    RESPONSIVE OVERRIDES
    ───────────────────────────────────────────────────────────── */
-@media (max-width: 560px) {
-  .raffle-hero-prizes { gap: 12px; }
-  .prize-card-fig { width: 100px; min-height: 150px; }
-  .prize-card-body { padding: 14px; }
-  .prize-card-body h3 { font-size: 0.88rem; }
-  .prize-features { display: none; }
-  .raffle-winners-grid { grid-template-columns: 1fr; }
-  .impact-stats-row { gap: 16px; }
-  .raffle-form-card { padding: 22px 18px 20px; }
+
+/* ── ≤ 768px: tablet ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Prize cards: image on top, body below */
+  .prize-card { flex-direction: column; }
+  .prize-card-fig { width: 100%; min-height: 160px; max-height: 180px; }
 }
-@media (max-width: 420px) {
+
+/* ── ≤ 640px: standard mobile ──────────────────────────────── */
+@media (max-width: 640px) {
+  /* Tighter container edge padding on phones */
+  .container { padding: 0 16px; }
+
+  /* ── Hero ──────────────────────────────────── */
+  .raffle-hero { padding: 52px 0 44px; }
+  .raffle-hero-text h1 { font-size: clamp(1.9rem, 7.5vw, 2.6rem); margin-bottom: 0.5em; }
+  .raffle-hero-lede { font-size: 0.95rem; margin-bottom: 1.3em; }
+  .raffle-eyebrow { font-size: 0.68rem; letter-spacing: 0.1em; }
+
+  /* Countdown: full width + centered */
+  .raffle-countdown-card { width: 100%; box-sizing: border-box; }
+  .raffle-countdown-card .countdown-timer { justify-content: center; }
+  .raffle-countdown-card .countdown-unit { min-width: 40px; }
+  .raffle-countdown-card .countdown-unit span { font-size: 1.6rem; }
+
+  /* CTA buttons: stack full width */
+  .btn-row {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  .btn-row .btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  /* Prize cards: compact horizontal card */
+  .raffle-hero-prizes { gap: 10px; }
+  .prize-card { flex-direction: row; }
+  .prize-card-fig { width: 88px; min-height: 120px; max-height: none; flex-shrink: 0; }
+  .prize-card-body { padding: 12px 14px; }
+  .prize-card-body h3 { font-size: 0.88rem; }
+  .prize-card-body > p { font-size: 0.78rem; margin-bottom: 8px; }
+  .prize-features { display: none; }
+  .prize-enter-btn { font-size: 0.76rem !important; height: 30px !important; padding: 0 10px !important; }
+
+  /* ── How It Works ──────────────────────────── */
+  .how-step { padding: 0; gap: 14px; }
+  .how-step-num { width: 40px; height: 40px; font-size: 1rem; }
+
+  /* ── Impact section ───────────────────────── */
+  .impact-stats-row { gap: 10px; }
+  .impact-stat strong { font-size: 1.5rem; }
+  .impact-stat span { font-size: 0.74rem; max-width: 95px; }
+  .impact-story { padding: 15px 15px 13px; border-radius: 14px; }
+  .impact-story blockquote { font-size: 0.88rem; }
+
+  /* ── Enter section ────────────────────────── */
+  .raffle-section-header { margin-bottom: 28px; }
+  .giveaway-selector { gap: 10px; }
+  .giveaway-tab { padding: 12px 14px; gap: 10px; border-radius: 14px; }
+  .giveaway-tab-fig { width: 46px; height: 46px; border-radius: 9px; }
+  .giveaway-tab-info strong { font-size: 0.88rem; }
+  .giveaway-tab-info span { font-size: 0.75rem; }
+  .giveaway-tab-price strong { font-size: 0.9rem; }
+  .gtab-from { font-size: 0.62rem; }
+
+  .giveaway-freq-tabs { max-width: 100%; border-radius: 10px; }
+  .giveaway-freq-tab { font-size: 0.83rem; padding: 7px 8px; }
+  .freq-save-badge { font-size: 0.58rem; padding: 2px 5px; }
+
+  .raffle-tier-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
+  .raffle-tier-inner { padding: 20px 16px 18px; border-radius: 14px; }
+  .raffle-tier-price { font-size: 1.5rem; }
+  .raffle-tier-entries { font-size: 1rem; }
+
+  /* ── Form ─────────────────────────────────── */
+  .raffle-form-card { padding: 20px 16px 18px; border-radius: 16px; }
+  .raffle-field input { height: 44px; font-size: 0.93rem; }
+  .raffle-submit-btn { height: 50px !important; font-size: 0.98rem !important; border-radius: 12px !important; }
+
+  /* ── Winners ──────────────────────────────── */
+  .raffle-winners-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .raffle-winner-card { padding: 18px 12px 16px; border-radius: 14px; gap: 8px; }
+  .winner-trophy { font-size: 1.6rem; }
+  .winner-info strong { font-size: 0.88rem; }
+  .winner-info span { font-size: 0.77rem; }
+}
+
+/* ── ≤ 400px: very small phones ────────────────────────────── */
+@media (max-width: 400px) {
+  .raffle-hero-text h1 { font-size: 1.8rem; }
+  .raffle-countdown-card { padding: 10px 12px; }
+  .raffle-countdown-card .countdown-unit { min-width: 34px; }
+  .raffle-countdown-card .countdown-unit span { font-size: 1.25rem; }
+  .raffle-countdown-card .countdown-sep { font-size: 1rem; }
   .giveaway-tab-price { display: none; }
-  .raffle-countdown-card .countdown-unit { min-width: 38px; }
-  .raffle-countdown-card .countdown-unit span { font-size: 1.4rem; }
-  .raffle-hero-text h1 { font-size: 2.2rem; }
+  .raffle-winners-grid { grid-template-columns: 1fr; }
+  .raffle-admin-card { padding: 20px 14px; }
 }
 
 /* ── Respect reduced-motion ──────────────────────────────────── */
