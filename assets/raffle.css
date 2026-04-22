@@ -645,6 +645,8 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.03em;
+  line-height: 1.2;
+  padding-bottom: 0.12em;
   margin-bottom: 0.5em;
 }
 .impact-lede {
