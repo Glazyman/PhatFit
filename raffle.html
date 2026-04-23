@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="assets/raffle.css" />
 </head>
 <body>
-
   <main id="main">
 
     <!-- ══════════════════════════════════════════════════════════
@@ -47,7 +46,7 @@
           <!-- Prize 2: Watch -->
           <div class="prize-card">
             <figure class="prize-card-fig" style="background:linear-gradient(145deg,#1a1a1a,#0d0d0d)">
-              <img src="assets/raffle/item-april-2026.jpg" alt="Rolex Submariner Two-Tone Watch" loading="lazy" onerror="this.style.opacity='0'" />
+              <img src="assets/raffle/rolex-winner.jpg" alt="Rolex Submariner Two-Tone Watch" loading="lazy" onerror="this.style.opacity='0'" />
             </figure>
             <div class="prize-card-body">
               <div class="prize-card-tag">Item Drawing · April 2026</div>
@@ -228,7 +227,7 @@
           <button class="giveaway-tab" id="gtab-item" role="tab" aria-selected="false" aria-controls="gpanel-item">
             <div class="giveaway-tab-img">
               <figure class="giveaway-tab-fig" style="background:linear-gradient(135deg,#2c2a28,#1c1a18)">
-                <img src="assets/raffle/item-april-2026.jpg" alt="" onerror="this.style.opacity='0'" />
+                <img src="assets/raffle/rolex-winner.jpg" alt="" onerror="this.style.opacity='0'" />
                 <span class="gtab-fallback-icon" aria-hidden="true">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20 12v9H4v-9M22 7H2v5h20V7zM12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </span>
@@ -439,65 +438,52 @@
           <p class="raffle-winners-sub">Every month we celebrate those who win — and the children who benefit from everyone's generosity.</p>
         </div>
 
-        <div class="raffle-winners-grid">
+        <div class="winners-photo-row">
 
-          <div class="raffle-winner-card">
-            <div class="winner-card-band">
-              <div class="winner-avatar">RG</div>
+          <div class="winner-photo-card">
+            <div class="winner-photo-wrap">
+              <img src="assets/raffle/rolex-winner.jpg" alt="R. Goldstein with prize" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
+              <span class="winner-month-badge">March 2026</span>
             </div>
-            <div class="winner-info">
-              <div class="winner-trophy-row">
-                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 0v4m-3 2h6" stroke="#007AFF" stroke-width="2" stroke-linecap="round"/></svg>
-                <span class="winner-prize-label">Winner</span>
-              </div>
+            <div class="winner-photo-info">
               <strong>R. Goldstein</strong>
               <span>Premium European Wig</span>
-              <time>March 2026</time>
             </div>
           </div>
 
-          <div class="raffle-winner-card">
-            <div class="winner-card-band">
-              <div class="winner-avatar">SB</div>
+          <div class="winner-photo-card">
+            <div class="winner-photo-wrap">
+              <img src="assets/raffle/rolex-winner.jpg" alt="S. Bernstein with prize" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
+              <span class="winner-month-badge">February 2026</span>
             </div>
-            <div class="winner-info">
-              <div class="winner-trophy-row">
-                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 0v4m-3 2h6" stroke="#007AFF" stroke-width="2" stroke-linecap="round"/></svg>
-                <span class="winner-prize-label">Winner</span>
-              </div>
+            <div class="winner-photo-info">
               <strong>S. Bernstein</strong>
               <span>Luxury Sheitel Set</span>
-              <time>February 2026</time>
             </div>
           </div>
 
-          <div class="raffle-winner-card">
-            <div class="winner-card-band">
-              <div class="winner-avatar">MF</div>
+          <div class="winner-photo-card">
+            <div class="winner-photo-wrap">
+              <img src="assets/raffle/rolex-winner.jpg" alt="M. Friedman with prize" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
+              <span class="winner-month-badge">January 2026</span>
             </div>
-            <div class="winner-info">
-              <div class="winner-trophy-row">
-                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 0v4m-3 2h6" stroke="#007AFF" stroke-width="2" stroke-linecap="round"/></svg>
-                <span class="winner-prize-label">Winner</span>
-              </div>
+            <div class="winner-photo-info">
               <strong>M. Friedman</strong>
               <span>Designer Accessory Bundle</span>
-              <time>January 2026</time>
             </div>
           </div>
 
-          <div class="raffle-winner-card is-upcoming">
-            <div class="winner-card-band is-soon-band">
-              <div class="winner-avatar is-soon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <div class="winner-photo-card is-upcoming">
+            <div class="winner-photo-wrap upcoming-wrap">
+              <div class="upcoming-placeholder">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2a5 5 0 1 1 0 10A5 5 0 0 1 12 2Zm0 12c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4Z" fill="currentColor"/></svg>
+                <p>Your photo<br/>here!</p>
               </div>
+              <span class="winner-month-badge upcoming">April 2026</span>
             </div>
-            <div class="winner-info">
-              <div class="winner-trophy-row">
-                <span class="winner-prize-label upcoming-label">April 2026</span>
-              </div>
+            <div class="winner-photo-info">
               <strong>Could be you!</strong>
-              <span>Enter before April 30th to win this month's prize.</span>
+              <span>Enter before April 30th</span>
               <a href="#enter" class="winner-enter-btn">Enter Now</a>
             </div>
           </div>
