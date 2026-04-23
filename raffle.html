@@ -432,44 +432,110 @@
          ══════════════════════════════════════════════════════════ -->
     <section class="section raffle-winners-section" id="winners">
       <div class="container">
-        <div class="raffle-section-header winners-header">
-          <span class="eyebrow">Hall of Winners</span>
-          <h2>Past Winners</h2>
-          <p class="raffle-winners-sub">Every month we celebrate those who win — and the children who benefit from everyone's generosity.</p>
+        <div class="winners-top-row">
+          <div class="raffle-section-header winners-header" style="text-align:left; margin-bottom:0;">
+            <span class="eyebrow">Hall of Winners</span>
+            <h2>Past Winners</h2>
+            <p class="raffle-winners-sub">Every month we celebrate those who win — and the children who benefit from everyone's generosity.</p>
+          </div>
+          <div class="winners-scroll-controls" id="winnersControls">
+            <button class="wsc-btn" id="winnersPrev" aria-label="Scroll left">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.75 16.25L6.5 10l6.25-6.25" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="wsc-btn" id="winnersNext" aria-label="Scroll right">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7.25 3.75L13.5 10l-6.25 6.25" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
         </div>
 
+        <div class="winners-scroll-wrap" id="winnersScroll">
         <div class="winners-photo-row">
 
           <div class="winner-photo-card">
             <div class="winner-photo-wrap">
               <img src="assets/raffle/rolex-winner.jpg" alt="R. Goldstein with prize" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
-              <span class="winner-month-badge">March 2026</span>
             </div>
             <div class="winner-photo-info">
               <strong>R. Goldstein</strong>
               <span>Premium European Wig</span>
+              <time>March 2026</time>
             </div>
           </div>
 
           <div class="winner-photo-card">
             <div class="winner-photo-wrap">
               <img src="assets/raffle/rolex-winner.jpg" alt="S. Bernstein with prize" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
-              <span class="winner-month-badge">February 2026</span>
             </div>
             <div class="winner-photo-info">
               <strong>S. Bernstein</strong>
               <span>Luxury Sheitel Set</span>
+              <time>February 2026</time>
             </div>
           </div>
 
           <div class="winner-photo-card">
             <div class="winner-photo-wrap">
               <img src="assets/raffle/rolex-winner.jpg" alt="M. Friedman with prize" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
-              <span class="winner-month-badge">January 2026</span>
             </div>
             <div class="winner-photo-info">
               <strong>M. Friedman</strong>
               <span>Designer Accessory Bundle</span>
+              <time>January 2026</time>
+            </div>
+          </div>
+
+          <div class="winner-photo-card">
+            <div class="winner-photo-wrap">
+              <img src="assets/raffle/wig-april-2026.jpg" alt="D. Weiss with prize" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
+            </div>
+            <div class="winner-photo-info">
+              <strong>D. Weiss</strong>
+              <span>European Remy Wig</span>
+              <time>December 2025</time>
+            </div>
+          </div>
+
+          <div class="winner-photo-card">
+            <div class="winner-photo-wrap">
+              <img src="assets/raffle/wig-april-2026.jpg" alt="C. Levine with prize" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
+            </div>
+            <div class="winner-photo-info">
+              <strong>C. Levine</strong>
+              <span>Luxury Hair Piece</span>
+              <time>November 2025</time>
+            </div>
+          </div>
+
+          <div class="winner-photo-card">
+            <div class="winner-photo-wrap">
+              <img src="assets/raffle/wig-april-2026.jpg" alt="R. Cohen with prize" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
+            </div>
+            <div class="winner-photo-info">
+              <strong>R. Cohen</strong>
+              <span>Premium Sheitel</span>
+              <time>October 2025</time>
+            </div>
+          </div>
+
+          <div class="winner-photo-card">
+            <div class="winner-photo-wrap">
+              <img src="assets/raffle/wig-april-2026.jpg" alt="E. Katz with prize" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
+            </div>
+            <div class="winner-photo-info">
+              <strong>E. Katz</strong>
+              <span>Luxury Wig Set</span>
+              <time>September 2025</time>
+            </div>
+          </div>
+
+          <div class="winner-photo-card">
+            <div class="winner-photo-wrap">
+              <img src="assets/raffle/wig-april-2026.jpg" alt="B. Stern with prize" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
+            </div>
+            <div class="winner-photo-info">
+              <strong>B. Stern</strong>
+              <span>European Hair Bundle</span>
+              <time>August 2025</time>
             </div>
           </div>
 
@@ -479,16 +545,17 @@
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2a5 5 0 1 1 0 10A5 5 0 0 1 12 2Zm0 12c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4Z" fill="currentColor"/></svg>
                 <p>Your photo<br/>here!</p>
               </div>
-              <span class="winner-month-badge upcoming">April 2026</span>
             </div>
             <div class="winner-photo-info">
               <strong>Could be you!</strong>
               <span>Enter before April 30th</span>
+              <time>April 2026</time>
               <a href="#enter" class="winner-enter-btn">Enter Now</a>
             </div>
           </div>
 
-        </div>
+        </div><!-- /.winners-photo-row -->
+        </div><!-- /.winners-scroll-wrap -->
       </div>
     </section>
 
@@ -599,5 +666,22 @@
   <script src="assets/config.js"></script>
   <script src="assets/main.js"></script>
   <script src="assets/raffle.js"></script>
+  <script>
+    (function() {
+      var track = document.getElementById('winnersScroll');
+      var prev  = document.getElementById('winnersPrev');
+      var next  = document.getElementById('winnersNext');
+      if (!track || !prev || !next) return;
+      var step = 220;
+      prev.addEventListener('click', function() { track.scrollBy({ left: -step, behavior: 'smooth' }); });
+      next.addEventListener('click', function() { track.scrollBy({ left:  step, behavior: 'smooth' }); });
+      function update() {
+        prev.disabled = track.scrollLeft <= 0;
+        next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+      }
+      track.addEventListener('scroll', update, { passive: true });
+      update();
+    })();
+  </script>
 </body>
 </html>
