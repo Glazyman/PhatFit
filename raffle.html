@@ -556,6 +556,12 @@
 
         </div><!-- /.winners-photo-row -->
         </div><!-- /.winners-scroll-wrap -->
+
+        <div class="winners-scroll-hint" id="winnersHint" aria-hidden="true">
+          <span>Scroll to see more</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
       </div>
     </section>
 
@@ -671,16 +677,29 @@
       var track = document.getElementById('winnersScroll');
       var prev  = document.getElementById('winnersPrev');
       var next  = document.getElementById('winnersNext');
-      if (!track || !prev || !next) return;
-      var step = 220;
-      prev.addEventListener('click', function() { track.scrollBy({ left: -step, behavior: 'smooth' }); });
-      next.addEventListener('click', function() { track.scrollBy({ left:  step, behavior: 'smooth' }); });
-      function update() {
-        prev.disabled = track.scrollLeft <= 0;
-        next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+      var hint  = document.getElementById('winnersHint');
+      if (!track) return;
+
+      // desktop scroll buttons
+      var step = 240;
+      if (prev) prev.addEventListener('click', function() { track.scrollBy({ left: -step, behavior: 'smooth' }); });
+      if (next) next.addEventListener('click', function() { track.scrollBy({ left:  step, behavior: 'smooth' }); });
+
+      function updateButtons() {
+        if (prev) prev.disabled = track.scrollLeft <= 0;
+        if (next) next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
       }
-      track.addEventListener('scroll', update, { passive: true });
-      update();
+
+      // hide mobile hint once user scrolls
+      function onScroll() {
+        updateButtons();
+        if (hint && track.scrollLeft > 10) {
+          hint.classList.add('is-hidden');
+          track.removeEventListener('scroll', onScroll);
+        }
+      }
+      track.addEventListener('scroll', onScroll, { passive: true });
+      updateButtons();
     })();
   </script>
 </body>
