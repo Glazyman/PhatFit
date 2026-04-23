@@ -874,18 +874,18 @@
 .giveaway-freq-tabs {
   display: flex;
   background: #e5e5ea;
-  border-radius: 12px;
-  padding: 4px;
+  border-radius: 14px;
+  padding: 5px;
   margin: 0 auto 28px;
-  max-width: 340px;
+  max-width: 420px;
 }
 .giveaway-freq-tab {
   flex: 1;
   border: none;
   background: transparent;
-  border-radius: 9px;
-  padding: 8px 14px;
-  font-size: 0.92rem;
+  border-radius: 10px;
+  padding: 11px 18px;
+  font-size: 1.02rem;
   font-weight: 600;
   color: var(--ink-600);
   cursor: pointer;
@@ -893,7 +893,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 8px;
   white-space: nowrap;
   font-family: var(--font-sans);
 }
@@ -1337,8 +1337,8 @@
   .giveaway-tab-price strong { font-size: 0.9rem; }
   .gtab-from { font-size: 0.62rem; }
 
-  .giveaway-freq-tabs { max-width: 100%; border-radius: 10px; }
-  .giveaway-freq-tab { font-size: 0.83rem; padding: 7px 8px; }
+  .giveaway-freq-tabs { max-width: 100%; border-radius: 12px; padding: 4px; }
+  .giveaway-freq-tab { font-size: 0.95rem; padding: 10px 12px; }
   .freq-save-badge { font-size: 0.58rem; padding: 2px 5px; }
 
   .raffle-tier-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
