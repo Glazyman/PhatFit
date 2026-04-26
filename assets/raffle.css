@@ -1148,7 +1148,7 @@
   width: 140px;
   flex-shrink: 0;
 }
-@media (min-width: 768px) { .winner-photo-card { width: 220px; gap: 16px; } }
+@media (min-width: 768px) { .winner-photo-card { width: 280px; gap: 18px; } }
 
 /* circle photo */
 .winner-photo-wrap {
@@ -1162,7 +1162,7 @@
   box-shadow: 0 4px 18px rgba(0,0,0,0.10);
   flex-shrink: 0;
 }
-@media (min-width: 768px) { .winner-photo-wrap { width: 200px; height: 200px; border-width: 4px; } }
+@media (min-width: 768px) { .winner-photo-wrap { width: 260px; height: 260px; border-width: 4px; } }
 .winner-photo-wrap img {
   width: 100%;
   height: 100%;
@@ -1379,8 +1379,8 @@
   .winners-top-row { flex-direction: column; align-items: flex-start; }
   .winners-scroll-wrap { margin-top: 20px; }
   .winners-photo-row { gap: 22px; padding: 10px 28px 6px; }
-  .winner-photo-card { width: 155px; gap: 12px; }
-  .winner-photo-wrap { width: 140px; height: 140px; }
+  .winner-photo-card { width: 185px; gap: 14px; }
+  .winner-photo-wrap { width: 170px; height: 170px; }
   .winner-photo-info strong { font-size: 0.86rem; }
   .winner-photo-info span { font-size: 0.73rem; }
   .winner-enter-btn { font-size: 0.74rem; padding: 7px 14px; }
