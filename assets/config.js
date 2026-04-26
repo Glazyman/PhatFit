@@ -20,16 +20,28 @@ window.AHAVAS_CONFIG = {
   /* ── Monthly recurring ─────────────────────────────────────── */
   STRIPE_DONATE_MONTHLY_URL: "https://buy.stripe.com/14AcN4adi3QjaJb8bl7wA0c",
 
-  /* ── Chai & Win Raffle ─────────────────────────────────────── */
-  // Wig drawing
-  STRIPE_RAFFLE_WIG_ONETIME_URL:  "https://buy.stripe.com/7sY9ASgBGfz14kN63d7wA01",
-  STRIPE_RAFFLE_WIG_MONTHLY_URL:  "https://buy.stripe.com/bJe3cuadi0E76sVajt7wA02",
+  /* ── Chai & Win Raffle — per-tier links ────────────────────── */
+  // Each key matches the radio input's value in raffle.html exactly.
+  STRIPE_RAFFLE_TIERS: {
+    // Wig Drawing — one-time
+    "wig-single-1":   "https://buy.stripe.com/5kQ6oG2KQbiLdVn3V57wA0d",  // 1 entry  $20
+    "wig-single-5":   "https://buy.stripe.com/6oU5kC4SYdqT04xajt7wA0e",  // 5 entries $80
+    "wig-single-12":  "https://buy.stripe.com/14AaEW3OU4Un3gJ1MX7wA0f",  // 12 entries $200
+    // Wig Drawing — monthly
+    "wig-monthly-1":  "https://buy.stripe.com/6oU00iety72vdVnbnx7wA0g",  // 1 entry/mo  $15
+    "wig-monthly-5":  "https://buy.stripe.com/fZuaEWdpugD5bNf3V57wA0h",  // 5 entries/mo $60
+    "wig-monthly-12": "https://buy.stripe.com/3cI5kC99e1Ib9F763d7wA0i",  // 12 entries/mo $150
+    // Luxury Item Drawing — one-time
+    "item-single-1":   "https://buy.stripe.com/aFadR85X23Qj7wZ1MX7wA0j", // 1 entry  $20
+    "item-single-5":   "https://buy.stripe.com/8x2cN4clq4UneZrezJ7wA0k", // 5 entries $80
+    "item-single-12":  "https://buy.stripe.com/6oUaEWgBG4Un5oRdvF7wA0l", // 12 entries $200
+    // Luxury Item Drawing — monthly
+    "item-monthly-1":  "https://buy.stripe.com/3cIfZg1GMdqT18B4Z97wA0m", // 1 entry/mo  $15
+    "item-monthly-5":  "https://buy.stripe.com/6oUdR8dpucmP04x2R17wA0n", // 5 entries/mo $60
+    "item-monthly-12": "https://buy.stripe.com/cNi14m99e0E75oRgHR7wA0o"  // 12 entries/mo $150
+  },
 
-  // Luxury Item drawing
-  STRIPE_RAFFLE_ITEM_ONETIME_URL: "https://buy.stripe.com/bJe14mfxC2Mf4kN3V57wA03",
-  STRIPE_RAFFLE_ITEM_MONTHLY_URL: "https://buy.stripe.com/6oU3cu99ecmP3gJ77h7wA04",
-
-  // Legacy / fallback
-  STRIPE_RAFFLE_ONETIME_URL: "https://buy.stripe.com/7sY9ASgBGfz14kN63d7wA01",
-  STRIPE_RAFFLE_MONTHLY_URL: "https://buy.stripe.com/bJe3cuadi0E76sVajt7wA02"
+  // Legacy / fallback (kept for the donation page)
+  STRIPE_RAFFLE_ONETIME_URL: "https://buy.stripe.com/5kQ6oG2KQbiLdVn3V57wA0d",
+  STRIPE_RAFFLE_MONTHLY_URL: "https://buy.stripe.com/6oU00iety72vdVnbnx7wA0g"
 };

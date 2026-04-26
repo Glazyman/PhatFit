@@ -220,18 +220,17 @@
   }
 
   function goToStripe(isMonthly, btn, label) {
-    var cfg = window.AHAVAS_CONFIG || {};
-    var url;
+    var cfg    = window.AHAVAS_CONFIG || {};
+    var panel  = document.getElementById("gpanel-" + currentGiveaway);
+    var checked = panel ? panel.querySelector("input[name='raffle-tier']:checked") : null;
+    var tierVal = checked ? checked.value : null; // e.g. "wig-single-5"
 
-    if (currentGiveaway === "wig") {
-      url = isMonthly
-        ? (cfg.STRIPE_RAFFLE_WIG_MONTHLY_URL  || cfg.STRIPE_RAFFLE_MONTHLY_URL  || cfg.STRIPE_DONATE_MONTHLY_URL)
-        : (cfg.STRIPE_RAFFLE_WIG_ONETIME_URL  || cfg.STRIPE_RAFFLE_ONETIME_URL  || cfg.STRIPE_DONATE_ONE_TIME_URL);
-    } else {
-      url = isMonthly
-        ? (cfg.STRIPE_RAFFLE_ITEM_MONTHLY_URL || cfg.STRIPE_RAFFLE_MONTHLY_URL  || cfg.STRIPE_DONATE_MONTHLY_URL)
-        : (cfg.STRIPE_RAFFLE_ITEM_ONETIME_URL || cfg.STRIPE_RAFFLE_ONETIME_URL  || cfg.STRIPE_DONATE_ONE_TIME_URL);
-    }
+    // Look up the exact per-tier payment link first, then fall back to legacy keys
+    var tiers = cfg.STRIPE_RAFFLE_TIERS || {};
+    var url   = (tierVal && tiers[tierVal]) ||
+                (isMonthly
+                  ? (cfg.STRIPE_RAFFLE_MONTHLY_URL || cfg.STRIPE_DONATE_MONTHLY_URL)
+                  : (cfg.STRIPE_RAFFLE_ONETIME_URL  || cfg.STRIPE_DONATE_ONE_TIME_URL));
 
     if (url) {
       label.textContent = "Redirecting to checkout…";
