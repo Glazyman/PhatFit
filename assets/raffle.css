@@ -72,10 +72,21 @@
   font-size: 0.82rem;
   font-weight: 600;
   color: var(--r-text);
+  white-space: nowrap;
 }
 .r-trust-item svg { color: var(--r-blue); flex-shrink: 0; }
 .r-trust-dot { color: var(--r-border); font-size: 1.2rem; line-height: 1; }
-@media (max-width: 480px) { .r-trust-dot { display: none; } }
+@media (max-width: 600px) {
+  .r-trust-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 8px;
+    justify-items: start;
+    padding: 0 4px;
+  }
+  .r-trust-dot { display: none; }
+  .r-trust-item { font-size: 0.78rem; }
+}
 
 /* ── Impact ribbon ───────────────────────────────────────── */
 .r-impact-ribbon {
@@ -119,7 +130,26 @@
   background: rgba(255,255,255,0.25);
   flex-shrink: 0;
 }
-@media (max-width: 560px) { .r-ribbon-divider { display: none; } }
+@media (max-width: 640px) {
+  .r-impact-ribbon {
+    padding: clamp(28px, 5vw, 44px) clamp(16px, 4vw, 40px);
+  }
+  .r-impact-ribbon-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .r-ribbon-divider { display: none; }
+  .r-ribbon-stat {
+    padding: 22px 12px;
+    background: var(--r-blue);
+  }
+  .r-ribbon-stat strong { font-size: clamp(1.6rem, 7vw, 2.2rem); }
+  .r-ribbon-stat span { font-size: 0.72rem; }
+}
 
 /* ── Testimonial quote ───────────────────────────────────── */
 .r-testimonial {
