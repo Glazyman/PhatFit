@@ -324,6 +324,23 @@
   };
 
   /* ── Init ────────────────────────────────────────────────── */
+  function initReveal() {
+    const els = document.querySelectorAll(".reveal");
+    if (!els.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-visible");
+            observer.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+    );
+    els.forEach((el) => observer.observe(el));
+  }
+
   function init() {
     updateCountdown();
     setInterval(updateCountdown, 1000);
@@ -332,6 +349,7 @@
     bindTierCards();
     bindForm();
     hideForm();
+    initReveal();
     if (window.location.search.includes("admin=1")) showAdminPanel();
   }
 

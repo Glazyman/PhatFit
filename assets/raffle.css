@@ -9,6 +9,7 @@
   --r-navy:       #1C1C1E;
   --r-navy-light: #3A3A3C;
   --r-blue:       #007AFF;
+  --r-blue-soft:  #EBF3FF;
   --r-blue-hover: #0071E3;
   --r-blue-soft:  #E8F1FF;
   --r-red:        #FF2D55;
@@ -23,6 +24,132 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+
+/* ── Scroll reveal animations ────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Section h2 accent underline ────────────────────────── */
+.rhw h2::after,
+.rm-text h2::after,
+.re-header h2::after,
+.rw-header h2::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 3px;
+  background: var(--r-blue);
+  border-radius: 999px;
+  margin: 14px auto 0;
+}
+
+/* ── Trust bar ───────────────────────────────────────────── */
+.r-trust-bar {
+  background: var(--r-bg-alt);
+  border-bottom: 1px solid var(--r-border);
+  padding: 12px 20px;
+}
+.r-trust-inner {
+  max-width: var(--r-max);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+}
+.r-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--r-text);
+}
+.r-trust-item svg { color: var(--r-blue); flex-shrink: 0; }
+.r-trust-dot { color: var(--r-border); font-size: 1.2rem; line-height: 1; }
+@media (max-width: 480px) { .r-trust-dot { display: none; } }
+
+/* ── Impact ribbon ───────────────────────────────────────── */
+.r-impact-ribbon {
+  background: var(--r-blue);
+  padding: clamp(32px, 4vw, 52px) clamp(20px, 4vw, 60px);
+}
+.r-impact-ribbon-inner {
+  max-width: var(--r-max);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px 0;
+}
+.r-ribbon-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 clamp(24px, 4vw, 60px);
+}
+.r-ribbon-stat strong {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.r-ribbon-stat span {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.75);
+  margin-top: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.r-ribbon-divider {
+  width: 1px;
+  height: 48px;
+  background: rgba(255,255,255,0.25);
+  flex-shrink: 0;
+}
+@media (max-width: 560px) { .r-ribbon-divider { display: none; } }
+
+/* ── Testimonial quote ───────────────────────────────────── */
+.r-testimonial {
+  position: relative;
+  background: var(--r-blue-soft);
+  border-left: 4px solid var(--r-blue);
+  border-radius: 12px;
+  padding: 24px 24px 20px;
+  margin: 0 0 1.8em;
+}
+.r-testimonial-icon {
+  width: 36px;
+  height: 27px;
+  display: block;
+  margin-bottom: 12px;
+}
+.r-testimonial p {
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--r-navy);
+  line-height: 1.65;
+  margin: 0 0 10px;
+  font-weight: 500;
+}
+.r-testimonial cite {
+  font-size: 0.82rem;
+  font-style: normal;
+  font-weight: 600;
+  color: var(--r-muted);
+}
 
 /* ── Announcement bar ────────────────────────────────────── */
 .r-announce-bar {
@@ -367,9 +494,9 @@ body {
    3. HOW TO WIN
    ═══════════════════════════════════════════════════════════════ */
 .rhw {
-  background: var(--r-bg-alt);
+  background: var(--r-blue-soft);
   padding: clamp(56px, 7vw, 96px) clamp(20px, 4vw, 60px);
-  border-bottom: 1px solid var(--r-border);
+  border-bottom: 1px solid #d0e4ff;
 }
 .rhw-container { max-width: var(--r-max); margin: 0 auto; }
 .rhw > .rhw-container > h2,
