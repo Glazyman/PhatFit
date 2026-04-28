@@ -71,7 +71,7 @@ body {
   margin-bottom: clamp(28px, 4vw, 48px);
 }
 .rh-title {
-  font-size: clamp(1.9rem, 4.5vw, 3.4rem);
+  font-size: clamp(2.4rem, 6vw, 3.4rem);
   font-weight: 900;
   color: var(--r-navy);
   letter-spacing: -0.03em;
@@ -79,13 +79,13 @@ body {
   margin: 0 0 0.5em;
 }
 .rh-sub {
-  font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+  font-size: clamp(1.05rem, 2vw, 1.1rem);
   color: var(--r-text);
   margin: 0 0 0.3em;
   font-weight: 500;
 }
 .rh-sub2 {
-  font-size: clamp(0.85rem, 1.4vw, 0.97rem);
+  font-size: clamp(0.95rem, 1.6vw, 0.97rem);
   color: var(--r-muted);
   margin: 0;
 }
@@ -173,6 +173,10 @@ body {
 /* Prize info below image */
 .rh-prize-info {
   padding: 20px 4px 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .rh-prize-tag {
   font-size: 0.72rem;
@@ -183,7 +187,7 @@ body {
   margin: 0 0 6px;
 }
 .rh-prize-name {
-  font-size: clamp(1rem, 2vw, 1.35rem);
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
   font-weight: 800;
   color: var(--r-navy);
   margin: 0 0 8px;
@@ -203,9 +207,14 @@ body {
   font-family: var(--r-font);
   font-weight: 700;
   font-size: 0.97rem;
-  padding: 12px 28px;
+  padding: 12px 36px;
   border-radius: 8px;
   text-decoration: none;
+  text-align: center;
+}
+@media (max-width: 640px) {
+  .rh-prize-btn { width: 100%; padding: 14px 0; font-size: 1.05rem; }
+}
   transition: background 0.15s;
 }
 .rh-prize-btn:hover { background: var(--r-blue-hover); color: #fff; }
@@ -451,13 +460,83 @@ body {
 }
 .rm-container { max-width: var(--r-max); margin: 0 auto; }
 .rm-inner {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 48px;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: stretch;
 }
 @media (min-width: 860px) {
-  .rm-inner { grid-template-columns: 1fr 1fr; gap: 64px; }
+  .rm-inner { flex-direction: row; gap: 64px; align-items: center; }
+  .rm-text  { flex: 1; min-width: 0; }
+  .rm-collage { flex: 1; min-width: 0; min-height: 400px; order: 0; }
+}
+
+/* Desktop collage: 2-column grid */
+.rm-collage {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 400px;
+  align-self: stretch;
+}
+.rm-collage-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+.rm-collage figure {
+  margin: 0;
+  overflow: hidden;
+  position: relative;
+  flex: 1;
+}
+.rm-collage figure img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Mobile collage: move above text + horizontal scroll */
+@media (max-width: 860px) {
+  .rm-collage { order: -1; }
+  .rm-collage {
+    min-height: unset;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    border-radius: 12px;
+    flex-direction: row;
+    gap: 0;
+  }
+  .rm-collage::-webkit-scrollbar { display: none; }
+  .rm-collage-col {
+    flex-direction: row;
+    flex: none;
+    gap: 8px;
+  }
+  .rm-collage figure {
+    flex: none;
+    width: 220px;
+    height: 180px;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .rm-collage figure img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .rm-collage-col:first-child { margin-right: 8px; }
 }
 .rm-kicker {
   font-size: 0.72rem;
@@ -530,30 +609,6 @@ body {
 .rm-link:hover { text-decoration: underline; }
 
 /* Collage */
-.rm-collage {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(3, 1fr);
-  gap: 8px;
-  border-radius: 16px;
-  overflow: hidden;
-  min-height: 400px;
-  align-self: stretch;
-}
-.rm-collage figure {
-  margin: 0;
-  overflow: hidden;
-  position: relative;
-}
-.rm-collage figure img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-@media (max-width: 580px) { .rm-collage { display: none; } }
 
 /* ═══════════════════════════════════════════════════════════════
    5. ENTER SECTION — 3-card layout
