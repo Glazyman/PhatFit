@@ -7,7 +7,7 @@
   var FORMSUBMIT_EMAIL = "info@ahavaschaya.com";
 
   /* ── State ───────────────────────────────────────────────── */
-  var currentGiveaway = "wig"; // "wig" | "item"
+  var selectedTier = null; // { tier, price, entries, label, monthly }
 
   /* ── Countdown ───────────────────────────────────────────── */
   function getDrawDate() {
@@ -29,48 +29,12 @@
     if (g("cd-secs"))  g("cd-secs").textContent  = pad(secs);
   }
 
-  /* ── Giveaway tabs (Wig / Luxury Item) ───────────────────── */
-  function bindGiveawayTabs() {
-    var tabWig    = document.getElementById("gtab-wig");
-    var tabItem   = document.getElementById("gtab-item");
-    var panelWig  = document.getElementById("gpanel-wig");
-    var panelItem = document.getElementById("gpanel-item");
-    if (!tabWig || !panelWig) return;
-
-    function switchGiveaway(giveaway) {
-      currentGiveaway = giveaway;
-      var isWig = giveaway === "wig";
-      tabWig.classList.toggle("is-active", isWig);
-      tabWig.setAttribute("aria-selected", String(isWig));
-      tabItem.classList.toggle("is-active", !isWig);
-      tabItem.setAttribute("aria-selected", String(!isWig));
-      panelWig.hidden  = !isWig;
-      panelItem.hidden = isWig;
-      // Clear radios in the hidden panel
-      var hidden = isWig ? panelItem : panelWig;
-      hidden.querySelectorAll("input[type='radio']").forEach(function(r) { r.checked = false; });
-      // Auto-select in the visible panel's active freq tab
-      var shown      = isWig ? panelWig : panelItem;
-      var activeFreq = shown.querySelector("[role='tabpanel']:not([hidden])");
-      if (activeFreq) autoSelectInPanel(activeFreq);
-      updateSummary();
-    }
-
-    tabWig.addEventListener("click",  function() { switchGiveaway("wig"); });
-    tabItem.addEventListener("click", function() { switchGiveaway("item"); });
-
-    // Hero prize card "Enter X Drawing" buttons
-    document.querySelectorAll("[data-goto-wig]").forEach(function(btn) {
+  /* ── Hero prize buttons → scroll to enter ───────────────── */
+  function bindHeroButtons() {
+    var allHeroBtns = document.querySelectorAll("[data-goto-wig], [data-goto-item]");
+    allHeroBtns.forEach(function(btn) {
       btn.addEventListener("click", function(e) {
         e.preventDefault();
-        switchGiveaway("wig");
-        scrollToEnter();
-      });
-    });
-    document.querySelectorAll("[data-goto-item]").forEach(function(btn) {
-      btn.addEventListener("click", function(e) {
-        e.preventDefault();
-        switchGiveaway("item");
         scrollToEnter();
       });
     });
@@ -81,68 +45,71 @@
     if (s) setTimeout(function() { s.scrollIntoView({ behavior: "smooth" }); }, 50);
   }
 
-  /* ── Freq tabs (Single / Monthly per giveaway) ───────────── */
+  /* ── Single / Monthly toggle ─────────────────────────────── */
   function bindFreqTabs() {
-    document.querySelectorAll(".giveaway-freq-tab").forEach(function(btn) {
+    var tabSingle  = document.getElementById("re-tab-single");
+    var tabMonthly = document.getElementById("re-tab-monthly");
+    var panelSingle  = document.getElementById("re-panel-single");
+    var panelMonthly = document.getElementById("re-panel-monthly");
+    if (!tabSingle) return;
+
+    function showSingle() {
+      tabSingle.classList.add("is-active");     tabSingle.setAttribute("aria-selected", "true");
+      tabMonthly.classList.remove("is-active"); tabMonthly.setAttribute("aria-selected", "false");
+      panelSingle.style.display  = "grid";
+      panelMonthly.style.display = "none";
+      selectedTier = null;
+      hideForm();
+    }
+    function showMonthly() {
+      tabMonthly.classList.add("is-active");   tabMonthly.setAttribute("aria-selected", "true");
+      tabSingle.classList.remove("is-active"); tabSingle.setAttribute("aria-selected", "false");
+      panelMonthly.style.display = "grid";
+      panelSingle.style.display  = "none";
+      selectedTier = null;
+      hideForm();
+    }
+    tabSingle.addEventListener("click", showSingle);
+    tabMonthly.addEventListener("click", showMonthly);
+  }
+
+  /* ── Donate buttons on tier cards ───────────────────────── */
+  function bindTierCards() {
+    document.querySelectorAll(".re-tier-card").forEach(function(card) {
+      var btn = card.querySelector(".re-tier-btn");
+      if (!btn) return;
       btn.addEventListener("click", function() {
-        var giveaway = btn.dataset.giveaway;
-        var freq     = btn.dataset.freq;
-        var panel    = document.getElementById("gpanel-" + giveaway);
-        if (!panel) return;
-
-        // Update tab active states
-        panel.querySelectorAll(".giveaway-freq-tab").forEach(function(t) {
-          var active = t === btn;
-          t.classList.toggle("is-active", active);
-          t.setAttribute("aria-selected", String(active));
-        });
-
-        // Show/hide freq sub-panels
-        var targetId = giveaway + "-panel-" + freq;
-        panel.querySelectorAll("[id^='" + giveaway + "-panel-']").forEach(function(p) {
-          p.hidden = (p.id !== targetId);
-        });
-
-        // Auto-select popular tier in newly shown panel
-        var shown = document.getElementById(targetId);
-        if (shown) autoSelectInPanel(shown);
+        selectedTier = {
+          tier:    card.dataset.tier,
+          price:   card.dataset.price,
+          entries: card.dataset.entries,
+          label:   card.dataset.label,
+          monthly: card.dataset.monthly === "true"
+        };
         updateSummary();
+        showForm();
       });
     });
   }
 
-  function autoSelectInPanel(panel) {
-    if (panel.querySelector("input[type='radio']:checked")) return; // already selected
-    var popular = panel.querySelector(".raffle-tier-card.is-popular input[type='radio']");
-    var first   = panel.querySelector("input[type='radio']");
-    if (popular) popular.checked = true;
-    else if (first) first.checked = true;
+  function hideForm() {
+    var wrap = document.getElementById("raffle-form-wrap");
+    if (wrap) wrap.style.display = "none";
+  }
+  function showForm() {
+    var wrap = document.getElementById("raffle-form-wrap");
+    if (wrap) { wrap.style.display = "block"; wrap.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
   }
 
   /* ── Summary line ────────────────────────────────────────── */
   function updateSummary() {
-    var panel    = document.getElementById("gpanel-" + currentGiveaway);
     var el       = document.getElementById("raffle-summary");
     var btnLabel = document.getElementById("raffle-submit-label");
-    if (!panel || !el) return;
-    var checked = panel.querySelector("input[name='raffle-tier']:checked");
-    if (!checked) return;
-    var entries  = checked.dataset.entries;
-    var price    = checked.dataset.price;
-    var monthly  = checked.dataset.monthly === "true";
-    var gLabel   = currentGiveaway === "wig" ? "Wig Drawing" : "Luxury Item Drawing";
-    el.textContent = gLabel + " · " + entries + " " +
-      (entries === "1" ? "entry" : "entries") +
-      (monthly ? "/month · $" + price + "/mo" : " · $" + price + " one-time");
+    if (!selectedTier || !el) return;
+    el.textContent = selectedTier.label;
     if (btnLabel) {
-      btnLabel.textContent = monthly ? "Subscribe & Enter" : "Donate & Enter";
+      btnLabel.textContent = selectedTier.monthly ? "Subscribe & Enter" : "Donate & Enter";
     }
-  }
-
-  function bindTierChange() {
-    document.addEventListener("change", function(e) {
-      if (e.target && e.target.name === "raffle-tier") updateSummary();
-    });
   }
 
   /* ── Form validation & submit ────────────────────────────── */
@@ -162,30 +129,27 @@
       var email   = document.getElementById("rf-email");
       var phone   = document.getElementById("rf-phone");
       var terms   = document.getElementById("rf-terms");
-      var panel   = document.getElementById("gpanel-" + currentGiveaway);
-      var checked = panel ? panel.querySelector("input[name='raffle-tier']:checked") : null;
 
       [first, last, email].forEach(function(f) { f.classList.remove("is-error"); });
       if (!first.value.trim()) { first.classList.add("is-error"); first.focus(); errorEl.textContent = "Please enter your first name."; return; }
       if (!last.value.trim())  { last.classList.add("is-error");  last.focus();  errorEl.textContent = "Please enter your last name."; return; }
       if (!email.value.trim() || !email.value.includes("@")) { email.classList.add("is-error"); email.focus(); errorEl.textContent = "Please enter a valid email address."; return; }
-      if (!terms.checked) { errorEl.textContent = "Please agree to the Terms & Conditions to continue."; return; }
-      if (!checked)       { errorEl.textContent = "Please select an entry option above."; return; }
+      if (!terms.checked)    { errorEl.textContent = "Please agree to the Terms & Conditions to continue."; return; }
+      if (!selectedTier)     { errorEl.textContent = "Please select a donation option above."; return; }
 
-      var isMonthly     = checked.dataset.monthly === "true";
-      var now           = new Date();
-      var monthStr      = now.toLocaleString("default", { month: "long", year: "numeric" });
-      var giveawayLabel = currentGiveaway === "wig" ? "Wig Drawing" : "Luxury Item Drawing";
+      var isMonthly = selectedTier.monthly;
+      var now       = new Date();
+      var monthStr  = now.toLocaleString("default", { month: "long", year: "numeric" });
 
       var entry = {
         first:    first.value.trim(),
         last:     last.value.trim(),
         email:    email.value.trim(),
         phone:    phone.value.trim() || "—",
-        giveaway: giveawayLabel,
-        entries:  checked.dataset.entries,
+        giveaway: "Chai & Win Drawing",
+        entries:  selectedTier.entries,
         type:     isMonthly ? "Monthly" : "One-time",
-        price:    "$" + checked.dataset.price + (isMonthly ? "/mo" : ""),
+        price:    "$" + selectedTier.price + (isMonthly ? "/mo" : ""),
         month:    monthStr,
         ts:       now.toISOString()
       };
@@ -198,7 +162,7 @@
         method:  "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({
-          _subject:  "🎟 New Chai & Win Entry — " + giveawayLabel + " — " + monthStr,
+          _subject:  "🎟 New Chai & Win Entry — " + entry.entries + " " + (entry.entries === "1" ? "entry" : "entries") + " — " + monthStr,
           Name:      entry.first + " " + entry.last,
           Email:     entry.email,
           Phone:     entry.phone,
@@ -220,12 +184,9 @@
   }
 
   function goToStripe(isMonthly, btn, label) {
-    var cfg    = window.AHAVAS_CONFIG || {};
-    var panel  = document.getElementById("gpanel-" + currentGiveaway);
-    var checked = panel ? panel.querySelector("input[name='raffle-tier']:checked") : null;
-    var tierVal = checked ? checked.value : null; // e.g. "wig-single-5"
+    var cfg     = window.AHAVAS_CONFIG || {};
+    var tierVal = selectedTier ? selectedTier.tier : null; // e.g. "wig-single-5"
 
-    // Look up the exact per-tier payment link first, then fall back to legacy keys
     var tiers = cfg.STRIPE_RAFFLE_TIERS || {};
     var url   = (tierVal && tiers[tierVal]) ||
                 (isMonthly
@@ -366,11 +327,11 @@
   function init() {
     updateCountdown();
     setInterval(updateCountdown, 1000);
-    bindGiveawayTabs();
+    bindHeroButtons();
     bindFreqTabs();
-    bindTierChange();
+    bindTierCards();
     bindForm();
-    updateSummary();
+    hideForm();
     if (window.location.search.includes("admin=1")) showAdminPanel();
   }
 
