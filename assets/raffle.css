@@ -400,7 +400,7 @@ body {
   flex-shrink: 0;
 }
 .rhw-icon svg { width: 100%; height: 100%; display: block; }
-.rhw-step + .rhw-step { margin-top: 16px; }
+.rhw-step + .rhw-step { margin-top: 24px; }
 @media (min-width: 700px) {
   .rhw-step + .rhw-step { margin-top: 0; }
 }
