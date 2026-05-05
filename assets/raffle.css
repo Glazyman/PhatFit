@@ -193,7 +193,8 @@
 /* ── Announcement bar ────────────────────────────────────── */
 .r-announce-bar {
   background: var(--r-charcoal);
-  padding: 11px 20px;
+  padding: max(11px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px))
+    max(11px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
   text-align: center;
 }
 .r-announce-bar p {
@@ -276,7 +277,67 @@ body {
   align-items: start;
 }
 @media (max-width: 640px) {
-  .rh-prizes { grid-template-columns: 1fr; gap: 32px; }
+  .rh {
+    padding: clamp(28px, 7vw, 40px) max(16px, env(safe-area-inset-left, 0px))
+      clamp(40px, 9vw, 52px) max(16px, env(safe-area-inset-right, 0px));
+  }
+  .rh-title {
+    font-size: clamp(1.95rem, 9.2vw, 2.4rem);
+    line-height: 1.12;
+  }
+  .rh-sub { font-size: clamp(1rem, 4.2vw, 1.08rem); }
+  .rh-sub2 {
+    font-size: clamp(0.88rem, 3.6vw, 0.96rem);
+    padding: 0 2px;
+  }
+  .rh-prizes {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  /* Drawing + tickets timers: tighter so four units fit comfortably */
+  .rh-cd-timer,
+  .rh-tickets-timer {
+    gap: clamp(8px, 2.4vw, 14px);
+  }
+  .rh-cd-counter--outline {
+    min-width: clamp(2.85rem, 18vw, 3.85rem);
+    padding: 10px 10px 8px;
+  }
+  .rh-cd-val {
+    font-size: clamp(1.15rem, 5.2vw, 1.55rem);
+  }
+  .rh-cd-heading,
+  .rh-tickets-headline {
+    font-size: 0.6rem;
+    letter-spacing: 0.13em;
+    padding: 0 4px;
+  }
+  .rh-cd-label {
+    font-size: 0.63rem;
+    margin-top: 6px;
+  }
+  .rh-tickets-track { margin-left: 0; margin-right: 0; }
+  .rh-prize-btn {
+    width: 100%;
+    max-width: 100%;
+    padding: 14px 20px;
+    font-size: 1.05rem;
+    box-sizing: border-box;
+    min-height: 48px;
+    touch-action: manipulation;
+  }
+}
+
+@media (max-width: 380px) {
+  .rh-cd-timer,
+  .rh-tickets-timer {
+    gap: 6px;
+  }
+  .rh-cd-counter--outline {
+    min-width: 2.65rem;
+    padding: 8px 6px 6px;
+  }
+  .rh-cd-val { font-size: 1.05rem; }
 }
 
 .rh-prize-col {
@@ -486,12 +547,7 @@ body {
   text-decoration: none;
   text-align: center;
   box-shadow: var(--r-gold-shadow);
-  transition: opacity 0.15s, transform 0.15s;
-}
-@media (max-width: 640px) {
-  .rh-prize-btn { width: 100%; padding: 14px 0; font-size: 1.05rem; }
-}
-  transition: background 0.15s;
+  transition: opacity 0.15s, transform 0.15s, background 0.15s;
 }
 .rh-prize-btn:hover { opacity: 0.88; transform: translateY(-1px); color: var(--r-navy); }
 
