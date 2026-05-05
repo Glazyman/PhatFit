@@ -1,33 +1,33 @@
 /* ═══════════════════════════════════════════════════════════════
    Chai & Win Raffle — raffle.css
-   Design: Elite Altruism · Luxury-Minimalist
-   Font: Manrope · Gold #D4AF37 · Brand blue via --r-blue (#073257)
+   Aligns with DESIGN.md: royal blue + gold (main site tokens).
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── Tokens ──────────────────────────────────────────────────── */
 :root {
   --r-navy:         #191c1e;
-  /* Deep cobalt — richer next to metallic gold than bright #007AFF */
-  --r-charcoal:     #073257;
-  --r-gold:         #D4AF37;
-  --r-gold-light:   #f2ca50;
-  --r-gold-dark:    #b89128;
-  --r-gold-grad:    linear-gradient(135deg, #f2ca50 0%, #D4AF37 50%, #b89128 100%);
-  --r-gold-soft:    #fdf8e8;
-  --r-gold-shadow:  0 10px 40px -10px rgba(212,175,55,0.25);
-  --r-blue:         #073257;
-  --r-blue-soft:    #e4edf5;
+  --r-charcoal:     #152445;
+  --r-gold:         #c9a227;
+  --r-gold-light:   #e8d89a;
+  --r-gold-dark:    #8f7219;
+  --r-gold-grad:    linear-gradient(135deg, #e8d89a 0%, #c9a227 52%, #8f7219 100%);
+  --r-gold-soft:    #f5efdc;
+  --r-gold-shadow:  0 10px 40px -10px rgba(201, 162, 39, 0.28);
+  --r-blue:         #243b73;
+  --r-blue-soft:    #e8edf8;
   --r-red:          #c0392b;
-  --r-bg:           #f7f9fb;
-  --r-bg-alt:       #f2f4f6;
+  --r-bg:           #fafbfd;
+  --r-bg-alt:       #eef1f8;
   --r-bg-white:     #ffffff;
   --r-text:         #434655;
   --r-muted:        #737686;
   --r-border:       #c3c6d7;
   --r-font:         'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --r-radius:       4px;
-  --r-radius-lg:    8px;
-  --r-max:          1280px;
+  --r-radius:       6px;
+  --r-radius-lg:    16px;
+  --r-radius-pill:  999px;
+  --r-max:          1200px;
+  --r-shadow-soft:  0 2px 16px rgba(36, 59, 115, 0.06);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -95,10 +95,12 @@
   .r-trust-item { font-size: 0.78rem; }
 }
 
-/* ── Impact ribbon ───────────────────────────────────────── */
+/* ── Impact ribbon (light band — royal figures, muted labels) ── */
 .r-impact-ribbon {
-  background: var(--r-charcoal);
-  padding: clamp(32px, 4vw, 52px) clamp(20px, 4vw, 60px);
+  background: linear-gradient(180deg, rgba(232, 237, 248, 0.65) 0%, rgba(255, 255, 255, 0.98) 100%);
+  padding: clamp(36px, 5vw, 56px) clamp(20px, 4vw, 56px);
+  border-top: 1px solid rgba(36, 59, 115, 0.08);
+  border-bottom: 1px solid rgba(36, 59, 115, 0.08);
 }
 .r-impact-ribbon-inner {
   max-width: var(--r-max);
@@ -119,14 +121,14 @@
 .r-ribbon-stat strong {
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 900;
-  color: #fff;
+  color: var(--r-blue);
   letter-spacing: -0.04em;
   line-height: 1;
 }
 .r-ribbon-stat span {
   font-size: 0.85rem;
-  font-weight: 500;
-  color: rgba(255,255,255,0.75);
+  font-weight: 600;
+  color: var(--r-muted);
   margin-top: 6px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -134,7 +136,7 @@
 .r-ribbon-divider {
   width: 1px;
   height: 48px;
-  background: rgba(255,255,255,0.25);
+  background: rgba(36, 59, 115, 0.12);
   flex-shrink: 0;
 }
 @media (max-width: 640px) {
@@ -144,15 +146,16 @@
   .r-impact-ribbon-inner {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 14px;
+    gap: 0;
+    background: rgba(36, 59, 115, 0.06);
+    border-radius: var(--r-radius-lg);
     overflow: hidden;
+    border: 1px solid rgba(36, 59, 115, 0.08);
   }
   .r-ribbon-divider { display: none; }
   .r-ribbon-stat {
     padding: 22px 12px;
-    background: var(--r-charcoal);
+    background: var(--r-bg-white);
   }
   .r-ribbon-stat strong { font-size: clamp(1.6rem, 7vw, 2.2rem); }
   .r-ribbon-stat span { font-size: 0.72rem; }
@@ -190,21 +193,30 @@
   color: var(--r-muted);
 }
 
-/* ── Announcement bar ────────────────────────────────────── */
+/* ── Announcement bar (light editorial strip, matches main site vibe) ── */
 .r-announce-bar {
-  background: var(--r-charcoal);
-  padding: max(11px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px))
-    max(11px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  background: rgba(255, 255, 255, 0.92);
+  padding: 14px max(20px, env(safe-area-inset-right, 0px))
+    14px max(20px, env(safe-area-inset-left, 0px));
   text-align: center;
+  border-bottom: 1px solid rgba(36, 59, 115, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 .r-announce-bar p {
   margin: 0;
-  font-size: clamp(0.82rem, 1.4vw, 0.97rem);
-  color: #fff;
-  line-height: 1.5;
+  font-size: clamp(0.84rem, 1.5vw, 0.98rem);
+  color: var(--r-muted);
+  line-height: 1.55;
   font-family: var(--r-font);
+  max-width: 52rem;
+  margin-left: auto;
+  margin-right: auto;
 }
-.r-announce-bar strong { font-weight: 800; }
+.r-announce-bar strong {
+  font-weight: 800;
+  color: var(--r-blue);
+}
 
 body {
   font-family: var(--r-font);
@@ -214,16 +226,21 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Shared chrome from styles.css — keep raffle content visually primary */
+.raffle-page .site-header + .r-announce-bar {
+  border-top: 1px solid rgba(36, 59, 115, 0.06);
+}
+
 /* ═══════════════════════════════════════════════════════════════
    1. HERO  (L4C layout: headline top, two prize images below)
    ═══════════════════════════════════════════════════════════════ */
 .rh {
   background-color: var(--r-bg);
   background-image:
-    radial-gradient(ellipse 60% 50% at 0% 0%, rgba(212,175,55,0.06) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 45% at 100% 100%, rgba(212,175,55,0.04) 0%, transparent 65%);
-  padding: clamp(40px, 5vw, 64px) clamp(20px, 4vw, 60px) clamp(48px, 6vw, 80px);
-  border-bottom: 1px solid var(--r-border);
+    radial-gradient(ellipse 70% 55% at 0% 0%, rgba(36, 59, 115, 0.045) 0%, transparent 72%),
+    radial-gradient(ellipse 55% 50% at 100% 100%, rgba(201, 162, 39, 0.06) 0%, transparent 70%);
+  padding: clamp(48px, 7vw, 88px) clamp(20px, 4vw, 56px) clamp(56px, 8vw, 96px);
+  border-bottom: 1px solid rgba(36, 59, 115, 0.07);
 }
 .rh-container {
   max-width: var(--r-max);
@@ -233,16 +250,27 @@ body {
 /* Top text block */
 .rh-top {
   text-align: center;
-  margin-bottom: clamp(28px, 4vw, 48px);
+  margin: 0 auto clamp(32px, 5vw, 56px);
+  max-width: 42rem;
 }
 .rh-kicker {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--r-gold);
+  color: var(--r-blue);
   margin-bottom: 1rem;
+}
+.rh-kicker::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--r-gold);
+  flex-shrink: 0;
 }
 .rh-title {
   font-size: clamp(2.4rem, 6vw, 3.4rem);
@@ -350,9 +378,10 @@ body {
 .rh-prize-img-wrap {
   display: block;
   width: 100%;
-  border-radius: 14px;
+  border-radius: var(--r-radius-lg);
   overflow: hidden;
-  background: rgba(255,255,255,0.06);
+  background: var(--r-bg-white);
+  box-shadow: var(--r-shadow-soft);
   aspect-ratio: 4 / 3;
   position: relative;
   text-decoration: none;
@@ -404,13 +433,13 @@ body {
 .rh-cd-counter--outline {
   min-width: clamp(3.4rem, 11vw, 4.5rem);
   padding: 12px 14px 10px;
-  border-radius: 10px;
+  border-radius: 12px;
   font-family: var(--r-font);
   background: linear-gradient(180deg, #ffffff 0%, var(--r-bg-alt) 100%);
-  border: 1px solid rgba(7, 50, 87, 0.28);
+  border: 1px solid rgba(36, 59, 115, 0.14);
   box-shadow:
-    0 0 0 1px rgba(212, 175, 55, 0.22),
-    0 2px 8px rgba(7, 50, 87, 0.06),
+    0 0 0 1px rgba(201, 162, 39, 0.12),
+    0 2px 10px rgba(36, 59, 115, 0.05),
     inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 .rh-cd-val {
@@ -499,7 +528,7 @@ body {
   height: 100%;
   width: 0%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--r-blue) 0%, #0a5088 100%);
+  background: linear-gradient(90deg, var(--r-blue) 0%, #1c2f5c 100%);
   transition: width 0.5s ease;
 }
 
@@ -737,6 +766,7 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
+  box-shadow: var(--r-shadow-soft);
 }
 .rhw-icon {
   width: 88px;
@@ -963,34 +993,37 @@ body {
   margin: 0;
 }
 
-/* Single / Monthly toggle */
+/* Single / Monthly toggle (pill rail — matches main donation tabs) */
 .re-freq-tabs {
   display: flex;
   justify-content: center;
-  border: 1px solid var(--r-border);
-  border-radius: var(--r-radius);
-  overflow: hidden;
+  gap: 4px;
+  padding: 5px;
+  border-radius: var(--r-radius-pill);
   width: fit-content;
   margin: 0 auto 40px;
-  background: var(--r-bg-white);
+  background: rgba(36, 59, 115, 0.07);
+  border: 1px solid rgba(36, 59, 115, 0.08);
 }
 .re-freq-tab {
   font-family: var(--r-font);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  padding: 11px 36px;
+  padding: 10px 28px;
   border: none;
+  border-radius: var(--r-radius-pill);
   background: transparent;
   color: var(--r-muted);
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
 }
 .re-freq-tab.is-active {
-  background: var(--r-gold-grad);
-  color: var(--r-navy);
+  background: var(--r-bg-white);
+  color: var(--r-blue);
   font-weight: 700;
+  box-shadow: 0 1px 4px rgba(36, 59, 115, 0.08);
 }
 
 /* 3 big tier cards */
@@ -1020,8 +1053,9 @@ body {
 }
 .re-tier-card:last-child { border-right: none; }
 .re-tier-card.is-featured {
-  background: var(--r-charcoal);
+  background: linear-gradient(180deg, rgba(232, 237, 248, 0.55) 0%, rgba(255, 255, 255, 0.98) 100%);
   position: relative;
+  box-shadow: inset 0 0 0 1px rgba(201, 162, 39, 0.28);
 }
 .re-tier-card.is-featured::before {
   content: 'POPULAR CHOICE';
@@ -1034,7 +1068,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.1em;
   padding: 6px 14px;
-  border-bottom-left-radius: var(--r-radius);
+  border-bottom-left-radius: var(--r-radius-lg);
 }
 
 /* Pill badge at top */
@@ -1067,10 +1101,9 @@ body {
   margin-bottom: 24px;
 }
 .re-tier-card.is-featured .re-tier-price {
-  background: var(--r-gold-grad);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--r-blue);
+  background: none;
+  -webkit-text-fill-color: unset;
 }
 .re-per-mo {
   font-size: 1.2rem;
@@ -1087,7 +1120,7 @@ body {
   flex: 1;
   max-width: 240px;
 }
-.re-tier-card.is-featured .re-tier-note { color: rgba(255,255,255,0.6); }
+.re-tier-card.is-featured .re-tier-note { color: var(--r-muted); }
 
 /* Donate button */
 .re-tier-btn {
@@ -1129,7 +1162,7 @@ body {
   color: var(--r-muted);
   margin: 0;
 }
-.re-tier-card.is-featured .re-tier-permitted { color: rgba(255,255,255,0.4); }
+.re-tier-card.is-featured .re-tier-permitted { color: var(--r-muted); }
 
 /* Entry form */
 .raffle-form-card {
@@ -1409,14 +1442,20 @@ body {
    FOOTER
    ═══════════════════════════════════════════════════════════════ */
 .rf-footer {
-  background: var(--r-charcoal);
-  color: rgba(255,255,255,0.7);
-  padding: 40px 20px 32px;
+  background: linear-gradient(180deg, #1a2d52 0%, #152445 45%, #101a2c 100%);
+  color: rgba(255, 255, 255, 0.76);
+  padding: 48px 20px 36px;
+  margin-top: 0;
 }
 .rf-footer-inner { max-width: var(--r-max); margin: 0 auto; }
 .rf-footer-brand { margin-bottom: 20px; }
-.rf-footer-brand a { color: #fff; text-decoration: none; font-size: 1.1rem; }
-.rf-footer-brand p { font-size: 0.84rem; margin: 6px 0 0; }
+.rf-footer-brand a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.rf-footer-brand p { font-size: 0.84rem; margin: 6px 0 0; color: rgba(255, 255, 255, 0.6); }
 .rf-footer-links {
   display: flex;
   flex-wrap: wrap;
@@ -1425,11 +1464,11 @@ body {
 }
 .rf-footer-links a {
   font-size: 0.88rem;
-  color: rgba(255,255,255,0.65);
+  color: rgba(255, 255, 255, 0.72);
   text-decoration: none;
 }
-.rf-footer-links a:hover { color: #fff; }
-.rf-footer-copy { font-size: 0.8rem; color: rgba(255,255,255,0.35); margin: 0; }
+.rf-footer-links a:hover { color: var(--r-gold); }
+.rf-footer-copy { font-size: 0.8rem; color: rgba(255, 255, 255, 0.45); margin: 0; }
 
 /* ═══════════════════════════════════════════════════════════════
    ADMIN TABLE

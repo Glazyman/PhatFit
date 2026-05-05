@@ -6,12 +6,29 @@
   <title>Chai &amp; Win — Monthly Raffle · Ahavas Chaya</title>
   <meta name="description" content="Win a stunning wig or luxury prize every month while funding life-changing therapy for orphaned children. Enter Chai & Win — the monthly raffle by Ahavas Chaya." />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
   <link rel="stylesheet" href="assets/raffle.css" />
 </head>
-<body>
+<body class="raffle-page">
+
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">א</span>
+        <span>Ahavas Chaya</span>
+      </a>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+      <ul class="nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="raffle.html">Chai &amp; Win</a></li>
+        <li><a href="eligibility.html">Eligibility</a></li>
+        <li><a href="how-funding-works.html">How Funding Works</a></li>
+        <li><a href="apply.html">Apply</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a class="btn btn-primary" href="donate.html">Donate</a></li>
+      </ul>
+    </div>
+  </header>
 
 <div class="r-announce-bar">
   <p><strong>Your Monthly Entry to Change a Life.</strong> Win luxury prizes. Fund a child's healing. New drawing every single month.</p>
@@ -582,6 +599,7 @@
 </a>
 
 <script src="assets/config.js"></script>
+<script src="assets/main.js"></script>
 <script src="assets/raffle.js"></script>
 <script>
 (function() {
