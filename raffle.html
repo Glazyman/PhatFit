@@ -8,7 +8,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/raffle.css" />
 </head>
 <body>
@@ -27,7 +27,8 @@
 
     <!-- Top text -->
     <div class="rh-top">
-      <h1 class="rh-title">Win Luxury. Support a Child.</h1>
+      <span class="rh-kicker">Limited Time Charity Event</span>
+      <h1 class="rh-title">Win <span class="rh-title-accent">Luxury</span>.<br>Support a Child.</h1>
       <p class="rh-sub">Win Monthly Wig &amp; Luxury Prizes</p>
       <p class="rh-sub2">Every entry funds subsidized therapy for orphaned children — through Ahavas Chaya</p>
     </div>
@@ -42,14 +43,24 @@
         </a>
         <!-- Countdown sits below left image -->
         <div class="rh-cd">
-          <div class="rh-cd-row">
-            <div class="rh-cd-unit"><b id="cd-days">00</b><small>DAY</small></div>
-            <span class="rh-cd-sep">|</span>
-            <div class="rh-cd-unit"><b id="cd-hours">00</b><small>HR</small></div>
-            <span class="rh-cd-sep">|</span>
-            <div class="rh-cd-unit"><b id="cd-mins">00</b><small>MIN</small></div>
-            <span class="rh-cd-sep">|</span>
-            <div class="rh-cd-unit"><b id="cd-secs">00</b><small>SEC</small></div>
+          <p class="rh-cd-heading">Drawing ends in</p>
+          <div class="rh-cd-timer" role="timer" aria-live="polite">
+            <div class="rh-cd-unit">
+              <div class="rh-cd-counter rh-cd-counter--outline"><span id="cd-days" class="rh-cd-val">00</span></div>
+              <div class="rh-cd-label">Days</div>
+            </div>
+            <div class="rh-cd-unit">
+              <div class="rh-cd-counter rh-cd-counter--outline"><span id="cd-hours" class="rh-cd-val">00</span></div>
+              <div class="rh-cd-label">Hours</div>
+            </div>
+            <div class="rh-cd-unit">
+              <div class="rh-cd-counter rh-cd-counter--outline"><span id="cd-mins" class="rh-cd-val">00</span></div>
+              <div class="rh-cd-label">Minutes</div>
+            </div>
+            <div class="rh-cd-unit">
+              <div class="rh-cd-counter rh-cd-counter--outline"><span id="cd-secs" class="rh-cd-val">00</span></div>
+              <div class="rh-cd-label">Seconds</div>
+            </div>
           </div>
         </div>
         <div class="rh-prize-info">
@@ -63,8 +74,28 @@
       <!-- Right: Luxury Item -->
       <div class="rh-prize-col">
         <a href="#enter" class="rh-prize-img-wrap" data-goto-item>
-          <img src="assets/raffle/rolex-winner.jpg" alt="This Month's Luxury Item Prize" loading="eager" onerror="this.style.opacity='0.4'" />
+          <img src="assets/raffle/rolex-winner.png" alt="This Month's Luxury Item Prize" loading="eager" onerror="this.style.opacity='0.4'" />
         </a>
+        <div class="rh-tickets">
+          <p class="rh-tickets-headline">
+            Tickets left out of <span class="js-rh-tickets-cap-num">365</span>
+          </p>
+          <div class="rh-tickets-timer" aria-hidden="true">
+            <div class="rh-tickets-unit">
+              <div class="rh-cd-counter rh-cd-counter--outline"><span id="rh-tickets-d0" class="rh-cd-val">1</span></div>
+            </div>
+            <div class="rh-tickets-unit">
+              <div class="rh-cd-counter rh-cd-counter--outline"><span id="rh-tickets-d1" class="rh-cd-val">4</span></div>
+            </div>
+            <div class="rh-tickets-unit">
+              <div class="rh-cd-counter rh-cd-counter--outline"><span id="rh-tickets-d2" class="rh-cd-val">7</span></div>
+            </div>
+          </div>
+          <p class="rh-tickets-sr-only" id="rh-tickets-sr-announce" aria-live="polite"></p>
+          <div class="rh-tickets-track" aria-hidden="true">
+            <div class="rh-tickets-fill js-rh-tickets-bar"></div>
+          </div>
+        </div>
         <div class="rh-prize-info">
           <p class="rh-prize-tag">This Month's Luxury Item Drawing</p>
           <h2 class="rh-prize-name">Rolex Submariner Date</h2>
@@ -116,8 +147,8 @@
       <div class="rhw-step">
         <div class="rhw-icon">
           <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="32" cy="32" r="29.5" stroke="#007AFF" stroke-width="2"/>
-            <path d="M22 32h20M32 22v20" stroke="#007AFF" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="32" cy="32" r="29.5" stroke="currentColor" stroke-width="2"/>
+            <path d="M22 32h20M32 22v20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
           </svg>
         </div>
         <h3>Choose Your Entry</h3>
@@ -129,11 +160,11 @@
       <div class="rhw-step">
         <div class="rhw-icon">
           <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="32" cy="32" r="29.5" stroke="#007AFF" stroke-width="2"/>
-            <rect x="20" y="18" width="24" height="28" rx="3" stroke="#007AFF" stroke-width="2"/>
-            <line x1="25" y1="26" x2="39" y2="26" stroke="#007AFF" stroke-width="2" stroke-linecap="round"/>
-            <line x1="25" y1="32" x2="39" y2="32" stroke="#007AFF" stroke-width="2" stroke-linecap="round"/>
-            <line x1="25" y1="38" x2="33" y2="38" stroke="#007AFF" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="32" cy="32" r="29.5" stroke="currentColor" stroke-width="2"/>
+            <rect x="20" y="18" width="24" height="28" rx="3" stroke="currentColor" stroke-width="2"/>
+            <line x1="25" y1="26" x2="39" y2="26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="25" y1="32" x2="39" y2="32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="25" y1="38" x2="33" y2="38" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
         <h3>Fill Your Details</h3>
@@ -145,8 +176,8 @@
       <div class="rhw-step">
         <div class="rhw-icon">
           <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="32" cy="32" r="29.5" stroke="#007AFF" stroke-width="2"/>
-            <polyline points="20,33 28,41 44,25" stroke="#007AFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="32" cy="32" r="29.5" stroke="currentColor" stroke-width="2"/>
+            <polyline points="20,33 28,41 44,25" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <h3>Winner Announced</h3>
@@ -202,7 +233,7 @@
           <div class="rm-stat"><strong>50+</strong><span>children supported</span></div>
         </div>
         <blockquote class="r-testimonial">
-          <svg class="r-testimonial-icon" viewBox="0 0 40 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 30V18C0 7.5 6.5 1.5 19.5 0l2 4C14 5.5 10 9 9.5 15H17V30H0zm23 0V18C23 7.5 29.5 1.5 42.5 0l2 4C37 5.5 33 9 32.5 15H40V30H23z" fill="#007AFF" opacity="0.15"/></svg>
+          <svg class="r-testimonial-icon" viewBox="0 0 40 30" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M0 30V18C0 7.5 6.5 1.5 19.5 0l2 4C14 5.5 10 9 9.5 15H17V30H0zm23 0V18C23 7.5 29.5 1.5 42.5 0l2 4C37 5.5 33 9 32.5 15H40V30H23z" fill="currentColor"/></svg>
           <p>"The therapy Ahavas Chaya funded gave our daughter back her voice — and gave us back our daughter."</p>
           <cite>— A grateful mother, New York</cite>
         </blockquote>
@@ -214,12 +245,12 @@
       <div class="rm-collage" aria-hidden="true">
         <div class="rm-collage-col">
           <figure style="background:#e8eff8"><img src="assets/raffle/impact-1.jpg" alt="" loading="lazy" onerror="this.style.opacity='0'" /></figure>
-          <figure style="background:#e8f3e8"><img src="assets/raffle/impact-2.jpg" alt="" loading="lazy" onerror="this.style.opacity='0'" /></figure>
+          <figure style="background:#e8f3e8"><img src="assets/raffle/impact-2.png" alt="" loading="lazy" onerror="this.style.opacity='0'" /></figure>
           <figure style="background:#e8eff8"><img src="assets/raffle/impact-7.jpg" alt="" loading="lazy" onerror="this.style.opacity='0'" /></figure>
         </div>
         <div class="rm-collage-col">
-          <figure style="background:#ede8f5"><img src="assets/raffle/impact-3.jpg" alt="" loading="lazy" onerror="this.style.opacity='0'" /></figure>
-          <figure style="background:#fdf0e0"><img src="assets/raffle/impact-4.jpg" alt="" loading="lazy" onerror="this.style.opacity='0'" /></figure>
+          <figure style="background:#ede8f5"><img src="assets/raffle/impact-3.png" alt="" loading="lazy" onerror="this.style.opacity='0'" /></figure>
+          <figure style="background:#fdf0e0"><img src="assets/raffle/impact-4.png" alt="" loading="lazy" onerror="this.style.opacity='0'" /></figure>
           <figure style="background:#fce8f0"><img src="assets/raffle/impact-6.jpg" alt="" loading="lazy" onerror="this.style.opacity='0'" /></figure>
         </div>
       </div>
@@ -363,40 +394,7 @@
 
         <div class="winner-photo-card">
           <div class="winner-photo-wrap">
-            <img src="assets/raffle/rolex-winner.jpg" alt="R. Goldstein" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
-          </div>
-          <div class="winner-photo-info">
-            <strong>R. Goldstein</strong>
-            <span>Premium European Wig</span>
-            <time>March 2026</time>
-          </div>
-        </div>
-
-        <div class="winner-photo-card">
-          <div class="winner-photo-wrap">
-            <img src="assets/raffle/rolex-winner.jpg" alt="S. Bernstein" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
-          </div>
-          <div class="winner-photo-info">
-            <strong>S. Bernstein</strong>
-            <span>Luxury Sheitel Set</span>
-            <time>February 2026</time>
-          </div>
-        </div>
-
-        <div class="winner-photo-card">
-          <div class="winner-photo-wrap">
-            <img src="assets/raffle/rolex-winner.jpg" alt="M. Friedman" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
-          </div>
-          <div class="winner-photo-info">
-            <strong>M. Friedman</strong>
-            <span>Designer Accessory Bundle</span>
-            <time>January 2026</time>
-          </div>
-        </div>
-
-        <div class="winner-photo-card">
-          <div class="winner-photo-wrap">
-            <img src="assets/raffle/wig-april-2026.png" alt="D. Weiss" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
+            <img src="assets/raffle/hall-winner-4.png" alt="D. Weiss" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
           </div>
           <div class="winner-photo-info">
             <strong>D. Weiss</strong>
@@ -407,12 +405,45 @@
 
         <div class="winner-photo-card">
           <div class="winner-photo-wrap">
-            <img src="assets/raffle/wig-april-2026.png" alt="C. Levine" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
+            <img src="assets/raffle/hall-winner-5.png" alt="C. Levine" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
           </div>
           <div class="winner-photo-info">
             <strong>C. Levine</strong>
             <span>Luxury Hair Piece</span>
             <time>November 2025</time>
+          </div>
+        </div>
+
+        <div class="winner-photo-card">
+          <div class="winner-photo-wrap">
+            <img src="assets/raffle/hall-winner-3.png" alt="M. Friedman" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
+          </div>
+          <div class="winner-photo-info">
+            <strong>M. Friedman</strong>
+            <span>Designer Accessory Bundle</span>
+            <time>January 2026</time>
+          </div>
+        </div>
+
+        <div class="winner-photo-card">
+          <div class="winner-photo-wrap">
+            <img src="assets/raffle/hall-winner-1.png" alt="R. Goldstein" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
+          </div>
+          <div class="winner-photo-info">
+            <strong>R. Goldstein</strong>
+            <span>Premium European Wig</span>
+            <time>March 2026</time>
+          </div>
+        </div>
+
+        <div class="winner-photo-card">
+          <div class="winner-photo-wrap">
+            <img src="assets/raffle/hall-winner-2.png" alt="S. Bernstein" loading="lazy" onerror="this.parentElement.classList.add('no-photo')" />
+          </div>
+          <div class="winner-photo-info">
+            <strong>S. Bernstein</strong>
+            <span>Luxury Sheitel Set</span>
+            <time>February 2026</time>
           </div>
         </div>
 

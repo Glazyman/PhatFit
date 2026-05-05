@@ -16,17 +16,29 @@
   }
 
   function updateCountdown() {
-    var diff  = Math.max(0, getDrawDate() - new Date());
-    var days  = Math.floor(diff / 86400000);
+    var diff = Math.max(0, getDrawDate() - new Date());
+    var days = Math.floor(diff / 86400000);
     var hours = Math.floor((diff % 86400000) / 3600000);
-    var mins  = Math.floor((diff % 3600000)  / 60000);
-    var secs  = Math.floor((diff % 60000)    / 1000);
-    function pad(n) { return String(n).padStart(2, "0"); }
-    var g = function(id) { return document.getElementById(id); };
-    if (g("cd-days"))  g("cd-days").textContent  = pad(days);
-    if (g("cd-hours")) g("cd-hours").textContent = pad(hours);
-    if (g("cd-mins"))  g("cd-mins").textContent  = pad(mins);
-    if (g("cd-secs"))  g("cd-secs").textContent  = pad(secs);
+    var mins = Math.floor((diff % 3600000) / 60000);
+    var secs = Math.floor((diff % 60000) / 1000);
+    function pad(n) {
+      return String(n).padStart(2, "0");
+    }
+    var g = function(id) {
+      return document.getElementById(id);
+    };
+    if (g("cd-days")) {
+      g("cd-days").textContent = pad(days);
+    }
+    if (g("cd-hours")) {
+      g("cd-hours").textContent = pad(hours);
+    }
+    if (g("cd-mins")) {
+      g("cd-mins").textContent = pad(mins);
+    }
+    if (g("cd-secs")) {
+      g("cd-secs").textContent = pad(secs);
+    }
   }
 
   /* ── Hero prize buttons → scroll to enter ───────────────── */
@@ -155,6 +167,7 @@
       };
 
       saveEntry(entry);
+      updateTicketsLeft();
       submitBtn.disabled   = true;
       submitLbl.textContent = "Saving your entry…";
 
@@ -214,6 +227,63 @@
   function getEntries() {
     try { var r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : []; }
     catch(e) { return []; }
+  }
+
+  function ticketsMonthLabel() {
+    return new Date().toLocaleString("default", { month: "long", year: "numeric" });
+  }
+
+  function getSoldEntriesThisMonth() {
+    var label = ticketsMonthLabel();
+    return getEntries().reduce(function (sum, e) {
+      if (e.month === label && e.entries != null) {
+        var n = parseInt(String(e.entries), 10);
+        return sum + (isNaN(n) ? 0 : n);
+      }
+      return sum;
+    }, 0);
+  }
+
+  function padTicketDigits(num, places) {
+    var s = String(Math.max(0, Math.round(num)));
+    while (s.length < places) {
+      s = "0" + s;
+    }
+    if (s.length > places) {
+      s = s.slice(-places);
+    }
+    return s;
+  }
+
+  function updateTicketsLeft() {
+    var cfg = window.AHAVAS_CONFIG || {};
+    var cap = Number(cfg.RAFFLE_TICKETS_MONTHLY_CAP);
+    var start = Number(cfg.RAFFLE_TICKETS_REMAINING_START);
+    if (!isFinite(cap) || cap <= 0) cap = 365;
+    if (!isFinite(start) || start < 0) start = cap;
+    var sold = getSoldEntriesThisMonth();
+    var left = Math.max(0, Math.round(start - sold));
+    var leftDigits = padTicketDigits(left, 3);
+    var sr = document.getElementById("rh-tickets-sr-announce");
+    if (sr) {
+      sr.textContent =
+        left + " entries remaining out of " + cap + " this month.";
+    }
+    var capNumEl = document.querySelector(".js-rh-tickets-cap-num");
+    if (capNumEl) {
+      capNumEl.textContent = String(cap);
+    }
+    var fills = document.querySelectorAll(".js-rh-tickets-bar");
+    for (var di = 0; di < 3; di++) {
+      var cell = document.getElementById("rh-tickets-d" + di);
+      if (cell) {
+        cell.textContent = leftDigits.charAt(di);
+      }
+    }
+    var pct = cap > 0 ? Math.min(100, Math.max(0, (left / cap) * 100)) : 0;
+    fills.forEach(function (fill) {
+      fill.style.width = pct.toFixed(1) + "%";
+    });
   }
 
   /* ── Admin panel ─────────────────────────────────────────── */
@@ -344,6 +414,7 @@
   function init() {
     updateCountdown();
     setInterval(updateCountdown, 1000);
+    updateTicketsLeft();
     bindHeroButtons();
     bindFreqTabs();
     bindTierCards();

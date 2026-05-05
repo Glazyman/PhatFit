@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap');
 
 /* ────────────────────────────────────────────────────────────
    Ahavas Chaya — design system  (modern blue / dark pill nav)
@@ -44,7 +44,7 @@
   --shadow-lg:  0 12px 48px rgba(0,0,0,0.14), 0 4px 12px rgba(0,0,0,0.06);
   --shadow-blue: 0 4px 20px rgba(0, 122, 255, 0.30);
 
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
+  --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
 }
 
 /* ── Reset ──────────────────────────────────────────────────── */
@@ -66,11 +66,10 @@ a:hover { color: var(--blue-hover); }
 
 /* ── Typography ─────────────────────────────────────────────── */
 h1, h2, h3, h4 {
-  font-family: var(--font-sans);
-  color: var(--ink-900);
   margin: 0 0 0.4em;
-  letter-spacing: -0.025em;
-  line-height: 1.05;
+}
+h1, h2, h3 {
+  color: var(--ink-900);
 }
 h1 {
   font-size: clamp(2.6rem, 5.5vw + 0.5rem, 5.25rem);
@@ -96,6 +95,7 @@ h4 {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ink-500);
+  line-height: 1.05;
 }
 p {
   margin: 0 0 1.1em;

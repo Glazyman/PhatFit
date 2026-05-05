@@ -43,5 +43,9 @@ window.AHAVAS_CONFIG = {
 
   // Legacy / fallback (kept for the donation page)
   STRIPE_RAFFLE_ONETIME_URL: "https://buy.stripe.com/5kQ6oG2KQbiLdVn3V57wA0d",
-  STRIPE_RAFFLE_MONTHLY_URL: "https://buy.stripe.com/6oU00iety72vdVnbnx7wA0g"
+  STRIPE_RAFFLE_MONTHLY_URL: "https://buy.stripe.com/6oU00iety72vdVnbnx7wA0g",
+
+  /* Chai & Win hero — “entries left” (not synced to Stripe; update REMAINING_START as needed) */
+  RAFFLE_TICKETS_MONTHLY_CAP: 365,
+  RAFFLE_TICKETS_REMAINING_START: 147
 };
