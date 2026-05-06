@@ -288,27 +288,6 @@ body {
   padding-inline: clamp(8px, 2.5vw, 20px);
   box-sizing: content-box;
 }
-.rh-kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--r-gold-bright);
-  margin-bottom: 1rem;
-  text-shadow: 0 0 24px rgba(201, 162, 39, 0.4);
-}
-.rh-kicker::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--r-gold-grad);
-  flex-shrink: 0;
-  box-shadow: 0 0 12px rgba(201, 162, 39, 0.75);
-}
 /* h1.rh-title: beat global styles.css h1 { line-height: 0.98 } which clips descenders */
 h1.rh-title {
   font-size: clamp(2.4rem, 6vw, 3.4rem);
